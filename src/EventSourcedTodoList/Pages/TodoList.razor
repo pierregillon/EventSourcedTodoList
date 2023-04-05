@@ -1,0 +1,42 @@
+﻿@page "/todolist"
+@using EventSourcedTodoList.Actions
+@inherits BlazorState.BlazorStateComponent
+
+<PageTitle>Todo list</PageTitle>
+
+<h1>Todo list</h1>
+
+<div>
+    <InputText @bind-Value="NewTodoItemText"></InputText>
+
+    <button @onclick="AddTodoItem"> Add </button>
+</div>
+
+<h2>Items :</h2>
+
+<ol>
+    @foreach (var item in TodoListItems)
+    {
+        <li>@item.Text</li>
+    }
+</ol>
+
+@code {
+
+    TodoListState State => GetState<TodoListState>();
+
+    private IEnumerable<TodoListItem> TodoListItems => State.Items;
+
+    string? NewTodoItemText { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(0);
+    }
+
+    private async Task AddTodoItem()
+    {
+        await Mediator.Send(new TodoListState.AddNewItemCommand(NewTodoItemText));
+    }
+
+}
