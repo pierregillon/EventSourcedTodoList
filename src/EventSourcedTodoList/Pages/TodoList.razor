@@ -1,5 +1,6 @@
 ﻿@page "/todolist"
 @using EventSourcedTodoList.Actions
+@using EventSourcedTodoList.Domain.Todo.List
 @inherits BlazorState.BlazorStateComponent
 
 <PageTitle>Todo list</PageTitle>
@@ -17,7 +18,7 @@
 <ol>
     @foreach (var item in TodoListItems)
     {
-        <li>@item.Text</li>
+        <li>@item.Description</li>
     }
 </ol>
 
@@ -36,7 +37,7 @@
 
     private async Task AddTodoItem()
     {
-        await Mediator.Send(new TodoListState.AddNewItemCommand(NewTodoItemText));
+        await Mediator.Send(new TodoListState.AddNewItem(NewTodoItemText));
     }
 
 }

@@ -10,4 +10,8 @@
       <PackageReference Include="Blazor-State" Version="8.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\EventSourcedTodoList.Domain\EventSourcedTodoList.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
