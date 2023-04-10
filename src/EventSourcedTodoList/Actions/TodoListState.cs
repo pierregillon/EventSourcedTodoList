@@ -13,4 +13,6 @@ public class TodoListState : State<TodoListState>
     }
 
     public record AddNewItem(string? Text) : IAction;
+
+    public record CompleteItem(Guid ItemId) : IAction;
 }

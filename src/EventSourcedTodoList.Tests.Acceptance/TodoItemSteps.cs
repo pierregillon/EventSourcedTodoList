@@ -15,10 +15,20 @@ public class TodoItemSteps
         _application = application;
     }
 
+    [Given(@"the item ""(.*)"" has been added to to")]
     [When(@"I add the item ""(.*)"" to do")]
     public async Task WhenIAddTheItemToDo(string description)
     {
         await _application.Dispatch(new AddItemToDoCommand(description));
+    }
+
+    [When(@"I mark the item ""(.*)"" as completed")]
+    public async Task WhenIMarkTheItemAsCompleted(string itemDescription)
+    {
+        var items = await _application.Dispatch(new ListTodoListItemsQuery());
+        var completedItemId = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+
+        await _application.Dispatch(new CompleteTodoItemCommand(new TodoItemId(completedItemId ?? Guid.NewGuid())));
     }
 
     [Then(@"the todo list is")]
@@ -27,6 +37,9 @@ public class TodoItemSteps
         var expectedItems = table.CreateSet<TodoListItem>();
         var items = await _application.Dispatch(new ListTodoListItemsQuery());
 
-        Assert.Equivalent(expectedItems, items);
+        Assert.Equivalent(
+            expectedItems.Select(x => new { x.Description, x.IsCompleted }),
+            items!.Select(x => new { x.Description, x.IsCompleted })
+        );
     }
 }

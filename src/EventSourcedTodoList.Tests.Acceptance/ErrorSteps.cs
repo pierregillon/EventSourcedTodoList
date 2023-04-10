@@ -5,16 +5,22 @@ namespace EventSourcedTodoList.Tests.Acceptance;
 [Binding]
 public class ErrorSteps
 {
-    private readonly TestApplication _application;
+    private readonly ErrorDriver _errorDriver;
 
-    public ErrorSteps(TestApplication application)
+    public ErrorSteps(ErrorDriver errorDriver)
     {
-        _application = application;
+        _errorDriver = errorDriver;
     }
 
     [Then(@"an error occurred with the message ""(.*)""")]
     public void ThenAnErrorOccurredWithTheMessage(string errorMessage)
     {
-        _application.AssertErrorOccurredWithMessage(errorMessage);
+        _errorDriver.AssertErrorOccurredWithMessage(errorMessage);
+    }
+
+    [Then(@"no error occurred")]
+    public void ThenNoErrorOccurred()
+    {
+        _errorDriver.AssertNoErrorOccurred();
     }
 }

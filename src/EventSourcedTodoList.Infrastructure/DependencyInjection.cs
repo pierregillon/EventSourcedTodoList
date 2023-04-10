@@ -11,6 +11,7 @@ public static class DependencyInjection
         services
             .AddScoped<ITodoListRepository, TodoListRepository>()
             .AddSingleton<IReadModelDatabase, InMemoryReadModelDatabase>()
+            .AddSingleton<IEventStore, InMemoryEventStore>()
             ;
 
         return services;

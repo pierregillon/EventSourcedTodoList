@@ -6,7 +6,8 @@ namespace EventSourcedTodoList.Domain.Todo;
 public record ListTodoListItemsQuery : IQuery<IReadOnlyCollection<TodoListItem>>;
 
 internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQuery, IReadOnlyCollection<TodoListItem>>,
-    IDomainEventListener<TodoItemAdded>
+    IDomainEventListener<TodoItemAdded>,
+    IDomainEventListener<TodoItemCompleted>
 {
     private readonly IReadModelDatabase _database;
 
@@ -17,7 +18,16 @@ internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQu
 
     public async Task On(TodoItemAdded domainEvent)
     {
-        await _database.Add(new TodoListItem(domainEvent.Description.Value));
+        await _database.Add(new TodoListItem(domainEvent.ItemId.Value, domainEvent.Description.Value, false));
+    }
+
+    public async Task On(TodoItemCompleted domainEvent)
+    {
+        var items = await _database.GetAll<TodoListItem>();
+
+        var item = items.First(x => x.Id == domainEvent.TodoItemId.Value);
+
+        item.MarkAsCompleted();
     }
 
     public async Task<IReadOnlyCollection<TodoListItem>> Handle(ListTodoListItemsQuery query)

@@ -5,7 +5,8 @@ namespace EventSourcedTodoList.Infrastructure;
 
 public class TodoListRepository : EventRepository<TodoListId, TodoList>, ITodoListRepository
 {
-    public TodoListRepository(IDomainEventPublisher domainEventPublisher) : base(domainEventPublisher)
+    public TodoListRepository(IEventStore eventStore, IDomainEventPublisher domainEventPublisher) : base(eventStore,
+        domainEventPublisher)
     {
     }
 }
