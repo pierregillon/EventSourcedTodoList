@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EventSourcedTodoList.Domain\EventSourcedTodoList.Domain.csproj" />
+      <ProjectReference Include="..\EventSourcedTodoList.Infrastructure\EventSourcedTodoList.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

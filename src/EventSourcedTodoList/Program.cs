@@ -1,5 +1,7 @@
 using System.Reflection;
 using BlazorState;
+using EventSourcedTodoList.Domain;
+using EventSourcedTodoList.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,10 @@ builder.Services.AddBlazorState
                 typeof(Program).GetTypeInfo().Assembly
             }
 );
+
+builder.Services
+    .AddDomain()
+    .AddInfrastructure();
 
 
 var app = builder.Build();

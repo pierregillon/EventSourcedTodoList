@@ -1,9 +1,8 @@
-using EventSourcedTodoList.Domain.BuildingBlocks;
 using EventSourcedTodoList.Domain.Todo.List;
 
 namespace EventSourcedTodoList.Domain.Todo;
 
-internal class ProjectTodoListItem : IDomainEventListener<TodoItemAdded>
+internal class ProjectTodoListItem
 {
     private readonly IReadModelDatabase _database;
 
