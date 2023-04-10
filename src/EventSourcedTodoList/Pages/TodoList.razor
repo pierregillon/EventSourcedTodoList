@@ -19,20 +19,26 @@
     @foreach (var item in TodoListItems)
     {
         <li>
-            @if (item.IsCompleted)
+            @if (item.IsDone)
             {
-                <span style="text-decoration: line-through;">@item.Description</span>
+                <span class="done">@item.Description</span>
             }
             else
             {
-                @item.Description
+                <span>@item.Description</span>
             }
-            <button @onclick="() => CompleteTodoItem(item.Id)">
-                <span class="oi oi-home" aria-hidden="true"></span>
+            <button @onclick="() => MarkItemAsDone(item.Id)">
+                <span class="oi oi-check" aria-hidden="true"></span>
             </button>
         </li>
     }
 </ul>
+
+<style>
+    .done {
+        text-decoration: line-through;
+    }
+</style>
 
 @code {
 
@@ -44,7 +50,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(0);
+        await Mediator.Send(new TodoListState.LoadTodoList());
     }
 
     private async Task AddTodoItem()
@@ -52,9 +58,9 @@
         await Mediator.Send(new TodoListState.AddNewItem(NewTodoItemText));
     }
 
-    private async Task CompleteTodoItem(Guid itemId)
+    private async Task MarkItemAsDone(Guid itemId)
     {
-        await Mediator.Send(new TodoListState.CompleteItem(itemId));
+        await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
     }
 
 }

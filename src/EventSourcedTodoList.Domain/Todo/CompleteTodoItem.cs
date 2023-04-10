@@ -3,22 +3,19 @@ using EventSourcedTodoList.Domain.Todo.List;
 
 namespace EventSourcedTodoList.Domain.Todo;
 
-public record CompleteTodoItemCommand(TodoItemId ItemId) : ICommand;
+public record MarkItemAsDoneCommand(TodoItemId ItemId) : ICommand;
 
-internal class CompleteTodoItemCommandHandler : ICommandHandler<CompleteTodoItemCommand>
+internal class MarkItemAsDoneCommandHandler : ICommandHandler<MarkItemAsDoneCommand>
 {
     private readonly ITodoListRepository _repository;
 
-    public CompleteTodoItemCommandHandler(ITodoListRepository repository)
-    {
-        _repository = repository;
-    }
+    public MarkItemAsDoneCommandHandler(ITodoListRepository repository) => _repository = repository;
 
-    public async Task Handle(CompleteTodoItemCommand command)
+    public async Task Handle(MarkItemAsDoneCommand command)
     {
         var todoList = await _repository.Get();
 
-        todoList.Complete(command.ItemId);
+        todoList.MarkItemAsDone(command.ItemId);
 
         await _repository.Save(todoList);
     }

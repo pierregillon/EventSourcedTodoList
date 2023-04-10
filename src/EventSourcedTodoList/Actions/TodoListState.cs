@@ -12,7 +12,9 @@ public class TodoListState : State<TodoListState>
     {
     }
 
+    public record LoadTodoList : IAction;
+
     public record AddNewItem(string? Text) : IAction;
 
-    public record CompleteItem(Guid ItemId) : IAction;
+    public record MarkItemAsDone(Guid ItemId) : IAction;
 }

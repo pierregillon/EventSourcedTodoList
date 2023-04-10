@@ -1,11 +1,11 @@
 namespace EventSourcedTodoList.Domain.Todo.List;
 
-public record TodoListItem(Guid Id, string Description, bool IsCompleted)
+public record TodoListItem(Guid Id, string Description, bool IsDone)
 {
-    public bool IsCompleted { get; private set; } = IsCompleted;
+    public bool IsDone { get; private set; } = IsDone;
 
-    public void MarkAsCompleted()
+    public void MarkAsDone()
     {
-        IsCompleted = true;
+        IsDone = true;
     }
 }

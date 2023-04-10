@@ -11,10 +11,7 @@ internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQu
 {
     private readonly IReadModelDatabase _database;
 
-    public ListTodoListItemsQueryHandler(IReadModelDatabase database)
-    {
-        _database = database;
-    }
+    public ListTodoListItemsQueryHandler(IReadModelDatabase database) => _database = database;
 
     public async Task On(TodoItemAdded domainEvent)
     {
@@ -27,7 +24,7 @@ internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQu
 
         var item = items.First(x => x.Id == domainEvent.TodoItemId.Value);
 
-        item.MarkAsCompleted();
+        item.MarkAsDone();
     }
 
     public async Task<IReadOnlyCollection<TodoListItem>> Handle(ListTodoListItemsQuery query)

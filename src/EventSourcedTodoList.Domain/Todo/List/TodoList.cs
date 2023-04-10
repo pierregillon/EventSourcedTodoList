@@ -27,7 +27,7 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         }
     }
 
-    public void Complete(TodoItemId itemId)
+    public void MarkItemAsDone(TodoItemId itemId)
     {
         var item = _items.FirstOrDefault(x => x.Id == itemId);
 
