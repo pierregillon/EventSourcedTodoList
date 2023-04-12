@@ -23,6 +23,7 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
 
         await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.Text));
 
+        state.NewTodoItemDescription = string.Empty;
         state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery());
 
         return Unit.Value;

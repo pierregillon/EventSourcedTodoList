@@ -6,7 +6,7 @@ namespace EventSourcedTodoList.Actions;
 public class TodoListState : State<TodoListState>
 {
     public IReadOnlyCollection<TodoListItem> Items { get; set; } = new List<TodoListItem>();
-
+    public string NewTodoItemDescription { get; set; } = string.Empty;
 
     public override void Initialize()
     {

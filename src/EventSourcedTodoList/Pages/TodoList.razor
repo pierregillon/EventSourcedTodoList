@@ -7,40 +7,68 @@
 
 <h1>Todo list</h1>
 
-<div>
-    <InputText @bind-Value="NewTodoItemText"></InputText>
-
-    <button @onclick="AddTodoItem"> Add </button>
-</div>
-
-<h2>Items :</h2>
-
 <ul>
     @foreach (var item in TodoListItems)
     {
-        <li>
+        <li class="task short-padding-left">
             @if (item.IsDone)
             {
                 <span class="done">@item.Description</span>
-                <button @onclick="() => MarkAsToDo(item.Id)">
-                    <span class="oi oi-action-undo" aria-hidden="true"></span>
-                </button>
+                <span @onclick="() => MarkAsToDo(item.Id)"
+                      class="oi oi-action-undo"
+                      aria-hidden="true">
+                </span>
             }
             else
             {
                 <span>@item.Description</span>
-                <button @onclick="() => MarkItemAsDone(item.Id)">
-                    <span class="oi oi-check" aria-hidden="true"></span>
-                </button>
+                <span @onclick="() => MarkItemAsDone(item.Id)"
+                      class="oi oi-check"
+                      aria-hidden="true">
+                </span>
             }
 
         </li>
     }
+    <li class="addItemInput short-padding-left">
+        <InputText @bind-Value="NewTodoItemDescription" @onkeyup="@AddItemToDo"></InputText>
+    </li>
 </ul>
 
 <style>
-    .done {
+    .short-padding-left {
+        padding-left: 5px;;
+    }
+
+    .task .oi {
+        opacity: 0;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+
+    .task:hover .oi {
+        opacity: 1;
+    }
+    
+    .task .done {
         text-decoration: line-through;
+        color: #B4B4B4;
+        font-style: italic;
+    }
+    
+    .addItemInput {
+        list-style: disclosure-closed;
+    }
+    
+    .addItemInput input {
+        border:0;
+        outline:0;
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .addItemInput input:focus {
+        outline:none!important;
     }
 </style>
 
@@ -49,27 +77,22 @@
     TodoListState State => GetState<TodoListState>();
 
     private IEnumerable<TodoListItem> TodoListItems => State.Items;
+    private string NewTodoItemDescription { get; set; } = string.Empty;
 
-    string? NewTodoItemText { get; set; }
+    protected override async Task OnInitializedAsync() => await Mediator.Send(new TodoListState.LoadTodoList());
 
-    protected override async Task OnInitializedAsync()
+    private async Task AddItemToDo(KeyboardEventArgs e)
     {
-        await Mediator.Send(new TodoListState.LoadTodoList());
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await Mediator.Send(new TodoListState.AddNewItem(NewTodoItemDescription));
+
+            NewTodoItemDescription = string.Empty;
+        }
     }
 
-    private async Task AddTodoItem()
-    {
-        await Mediator.Send(new TodoListState.AddNewItem(NewTodoItemText));
-    }
+    private async Task MarkItemAsDone(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
 
-    private async Task MarkItemAsDone(Guid itemId)
-    {
-        await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
-    }
-
-    private async Task MarkAsToDo(Guid itemId)
-    {
-        await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
-    }
+    private async Task MarkAsToDo(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
 
 }
