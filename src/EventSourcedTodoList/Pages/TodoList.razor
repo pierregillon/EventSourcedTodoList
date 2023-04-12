@@ -22,14 +22,18 @@
             @if (item.IsDone)
             {
                 <span class="done">@item.Description</span>
+                <button @onclick="() => MarkAsToDo(item.Id)">
+                    <span class="oi oi-action-undo" aria-hidden="true"></span>
+                </button>
             }
             else
             {
                 <span>@item.Description</span>
+                <button @onclick="() => MarkItemAsDone(item.Id)">
+                    <span class="oi oi-check" aria-hidden="true"></span>
+                </button>
             }
-            <button @onclick="() => MarkItemAsDone(item.Id)">
-                <span class="oi oi-check" aria-hidden="true"></span>
-            </button>
+
         </li>
     }
 </ul>
@@ -61,6 +65,11 @@
     private async Task MarkItemAsDone(Guid itemId)
     {
         await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
+    }
+
+    private async Task MarkAsToDo(Guid itemId)
+    {
+        await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
     }
 
 }

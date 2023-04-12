@@ -23,9 +23,18 @@ public class TodoItemSteps
     public async Task WhenIMarkTheItemAsCompleted(string itemDescription)
     {
         var items = await _application.Dispatch(new ListTodoListItemsQuery());
-        var completedItemId = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+        var itemId = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
 
-        await _application.Dispatch(new MarkItemAsDoneCommand(new TodoItemId(completedItemId ?? Guid.NewGuid())));
+        await _application.Dispatch(new MarkItemAsDoneCommand(new TodoItemId(itemId ?? Guid.NewGuid())));
+    }
+
+    [When(@"I mark the item ""(.*)"" as to do")]
+    public async Task WhenIMarkTheItemAsToDo(string itemDescription)
+    {
+        var items = await _application.Dispatch(new ListTodoListItemsQuery());
+        var itemId = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+
+        await _application.Dispatch(new MarkItemAsToDoCommand(new TodoItemId(itemId ?? Guid.NewGuid())));
     }
 
     [Then(@"the todo list is")]

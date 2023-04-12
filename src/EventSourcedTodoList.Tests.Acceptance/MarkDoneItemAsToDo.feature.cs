@@ -19,7 +19,7 @@ namespace EventSourcedTodoList.Tests.Acceptance
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "4.0.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class MarkTodoItemAsDoneFeature : object, Xunit.IClassFixture<MarkTodoItemAsDoneFeature.FixtureData>, Xunit.IAsyncLifetime
+    public partial class MarkDoneItemAsToDoFeature : object, Xunit.IClassFixture<MarkDoneItemAsToDoFeature.FixtureData>, Xunit.IAsyncLifetime
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,10 +28,10 @@ namespace EventSourcedTodoList.Tests.Acceptance
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "MarkTodoItemAsDone.feature"
+#line 1 "MarkDoneItemAsToDo.feature"
 #line hidden
         
-        public MarkTodoItemAsDoneFeature(MarkTodoItemAsDoneFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public MarkDoneItemAsToDoFeature(MarkDoneItemAsToDoFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -39,7 +39,7 @@ namespace EventSourcedTodoList.Tests.Acceptance
         public static async System.Threading.Tasks.Task FeatureSetupAsync()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunnerForAssembly(null, TechTalk.SpecFlow.xUnit.SpecFlowPlugin.XUnitParallelWorkerTracker.Instance.GetWorkerId());
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "Mark todo item as done", "As a user\nI want to mark a todo item as done\nIn order to track items a completed", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "Mark done item as to do", "As a user\nI want to mark a done item to do\nIn order to re do it", ProgrammingLanguage.CSharp, featureTags);
             await testRunner.OnFeatureStartAsync(featureInfo);
         }
         
@@ -86,16 +86,16 @@ namespace EventSourcedTodoList.Tests.Acceptance
             await this.TestTearDownAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Cannot mark an unknown item as done")]
-        [Xunit.TraitAttribute("FeatureTitle", "Mark todo item as done")]
-        [Xunit.TraitAttribute("Description", "Cannot mark an unknown item as done")]
+        [Xunit.SkippableFactAttribute(DisplayName="Cannot mark an unknown item as to do")]
+        [Xunit.TraitAttribute("FeatureTitle", "Mark done item as to do")]
+        [Xunit.TraitAttribute("Description", "Cannot mark an unknown item as to do")]
         [Xunit.TraitAttribute("Category", "ErrorHandling")]
-        public async System.Threading.Tasks.Task CannotMarkAnUnknownItemAsDone()
+        public async System.Threading.Tasks.Task CannotMarkAnUnknownItemAsToDo()
         {
             string[] tagsOfScenario = new string[] {
                     "ErrorHandling"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot mark an unknown item as done", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot mark an unknown item as to do", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 7
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -107,23 +107,23 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 await this.ScenarioStartAsync();
 #line 8
-    await testRunner.WhenAsync("I mark the item \"call dad\" as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    await testRunner.WhenAsync("I mark the item \"call dad\" as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
-    await testRunner.ThenAsync("an error occurred with the message \"Cannot complete the item: unknown item\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    await testRunner.ThenAsync("an error occurred with the message \"Cannot mark the item as to do: unknown item\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Item to do marked as completed are listed")]
-        [Xunit.TraitAttribute("FeatureTitle", "Mark todo item as done")]
-        [Xunit.TraitAttribute("Description", "Item to do marked as completed are listed")]
-        public async System.Threading.Tasks.Task ItemToDoMarkedAsCompletedAreListed()
+        [Xunit.SkippableFactAttribute(DisplayName="Item marked as to do are listed as not done")]
+        [Xunit.TraitAttribute("FeatureTitle", "Mark done item as to do")]
+        [Xunit.TraitAttribute("Description", "Item marked as to do are listed as not done")]
+        public async System.Threading.Tasks.Task ItemMarkedAsToDoAreListedAsNotDone()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Item to do marked as completed are listed", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Item marked as to do are listed as not done", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -140,48 +140,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 13
     await testRunner.WhenAsync("I mark the item \"call dad\" as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+#line 14
+    await testRunner.AndAsync("I mark the item \"call dad\" as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
                             "Is done?"});
-                table4.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "call dad",
-                            "true"});
-#line 14
-    await testRunner.ThenAsync("the todo list is", ((string)(null)), table4, "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Marking an already completed item as completed to nothing")]
-        [Xunit.TraitAttribute("FeatureTitle", "Mark todo item as done")]
-        [Xunit.TraitAttribute("Description", "Marking an already completed item as completed to nothing")]
-        public async System.Threading.Tasks.Task MarkingAnAlreadyCompletedItemAsCompletedToNothing()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Marking an already completed item as completed to nothing", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 18
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 19
-    await testRunner.GivenAsync("the item \"call dad\" has been added to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 20
-    await testRunner.WhenAsync("I mark the item \"call dad\" as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 21
-    await testRunner.AndAsync("I mark the item \"call dad\" as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 22
-    await testRunner.ThenAsync("no error occurred", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+                            "false"});
+#line 15
+    await testRunner.ThenAsync("the todo list is", ((string)(null)), table3, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -194,12 +163,12 @@ this.ScenarioInitialize(scenarioInfo);
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await MarkTodoItemAsDoneFeature.FeatureSetupAsync();
+                await MarkDoneItemAsToDoFeature.FeatureSetupAsync();
             }
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await MarkTodoItemAsDoneFeature.FeatureTearDownAsync();
+                await MarkDoneItemAsToDoFeature.FeatureTearDownAsync();
             }
         }
     }
