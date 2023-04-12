@@ -29,4 +29,25 @@
       <ProjectReference Include="..\EventSourcedTodoList.Infrastructure\EventSourcedTodoList.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Features\AddAnItemToDo.feature.cs">
+        <DependentUpon>AddAnItemToDo.feature</DependentUpon>
+        <AutoGen>true</AutoGen>
+        <DesignTime>true</DesignTime>
+        <Visible>true</Visible>
+      </Compile>
+      <Compile Update="Features\MarkDoneItemAsToDo.feature.cs">
+        <DependentUpon>MarkDoneItemAsToDo.feature</DependentUpon>
+        <AutoGen>true</AutoGen>
+        <DesignTime>true</DesignTime>
+        <Visible>true</Visible>
+      </Compile>
+      <Compile Update="Features\MarkTodoItemAsDone.feature.cs">
+        <DependentUpon>MarkTodoItemAsDone.feature</DependentUpon>
+        <AutoGen>true</AutoGen>
+        <DesignTime>true</DesignTime>
+        <Visible>true</Visible>
+      </Compile>
+    </ItemGroup>
+
 </Project>

@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace EventSourcedTodoList.Tests.Acceptance
+namespace EventSourcedTodoList.Tests.Acceptance.Features
 {
     using TechTalk.SpecFlow;
     using System;
@@ -39,7 +39,7 @@ namespace EventSourcedTodoList.Tests.Acceptance
         public static async System.Threading.Tasks.Task FeatureSetupAsync()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunnerForAssembly(null, TechTalk.SpecFlow.xUnit.SpecFlowPlugin.XUnitParallelWorkerTracker.Instance.GetWorkerId());
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "Mark todo item as done", "As a user\nI want to mark a todo item as done\nIn order to track items a completed", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Mark todo item as done", "As a user\nI want to mark a todo item as done\nIn order to track items a completed", ProgrammingLanguage.CSharp, featureTags);
             await testRunner.OnFeatureStartAsync(featureInfo);
         }
         
