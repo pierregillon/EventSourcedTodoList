@@ -14,7 +14,7 @@ public class TodoListState : State<TodoListState>
 
     public record LoadTodoList : IAction;
 
-    public record AddNewItem(string? Text) : IAction;
+    public record AddNewItem(string? Text, Temporality Temporality) : IAction;
 
     public record MarkItemAsDone(Guid ItemId) : IAction;
 

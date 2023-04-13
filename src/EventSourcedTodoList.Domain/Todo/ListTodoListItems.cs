@@ -25,7 +25,8 @@ internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQu
     }
 
     public async Task On(TodoItemAdded domainEvent) =>
-        await _database.Add(new TodoListItem(domainEvent.ItemId.Value, domainEvent.Description.Value, false));
+        await _database.Add(new TodoListItem(domainEvent.ItemId.Value, domainEvent.Description.Value, false,
+            domainEvent.Temporality));
 
     public async Task On(TodoItemCompleted domainEvent)
     {

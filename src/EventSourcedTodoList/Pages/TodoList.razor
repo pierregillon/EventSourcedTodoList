@@ -1,5 +1,6 @@
 ﻿@page "/todolist"
 @using EventSourcedTodoList.Actions
+@using EventSourcedTodoList.Domain.Todo.List
 @inherits BlazorState.BlazorStateComponent
 
 <PageTitle>Aujourd'hui</PageTitle>
@@ -43,46 +44,13 @@
     }
 </style>
 
-@* <style> *@
-@*     .short-padding-left { *@
-@*         padding-left: 5px;; *@
-@*     } *@
-@*      *@
-@*     .addItemInput { *@
-@*         list-style: disclosure-closed; *@
-@*     } *@
-@*      *@
-@*     .transparentInput { *@
-@*         border:0; *@
-@*         outline:0; *@
-@*         background-color: transparent; *@
-@*         padding: 0; *@
-@*         width: 100%; *@
-@*     } *@
-@*      *@
-@*     .transparentTextArea { *@
-@*         border:0; *@
-@*         outline:0; *@
-@*         background-color: transparent; *@
-@*         padding: 0; *@
-@*         width: 100%; *@
-@*         resize: inherit; *@
-@*         overflow: hidden; *@
-@*         min-height: 30px; *@
-@*         display: block; *@
-@*     } *@
-@*      *@
-@*     .transparentInput:focus { *@
-@*         outline:none !important; *@
-@*     } *@
-@* </style> *@
-
 @code {
 
     TodoListState State => GetState<TodoListState>();
 
     protected override async Task OnInitializedAsync() => await Mediator.Send(new TodoListState.LoadTodoList());
 
-    private async Task AddItemToDo(string itemDescription) => await Mediator.Send(new TodoListState.AddNewItem(itemDescription));
+    private async Task AddItemToDo(string itemDescription)
+        => await Mediator.Send(new TodoListState.AddNewItem(itemDescription, Temporality.ThisDay));
 
 }

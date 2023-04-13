@@ -1,6 +1,6 @@
 namespace EventSourcedTodoList.Domain.Todo.List;
 
-public record TodoListItem(Guid Id, string Description, bool IsDone)
+public record TodoListItem(Guid Id, string Description, bool IsDone, Temporality Temporality)
 {
     public bool IsDone { get; private set; } = IsDone;
     public string Description { get; private set; } = Description;

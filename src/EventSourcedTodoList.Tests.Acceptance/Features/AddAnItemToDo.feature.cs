@@ -39,7 +39,8 @@ namespace EventSourcedTodoList.Tests.Acceptance.Features
         public static async System.Threading.Tasks.Task FeatureSetupAsync()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunnerForAssembly(null, TechTalk.SpecFlow.xUnit.SpecFlowPlugin.XUnitParallelWorkerTracker.Instance.GetWorkerId());
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Add an item to do", "As a user\nI want to add a new item to do\nIn order to remember it", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Add an item to do", "As a user\nI want to add a new item to do in a certain temporality\nIn order to rem" +
+                    "ember it", ProgrammingLanguage.CSharp, featureTags);
             await testRunner.OnFeatureStartAsync(featureInfo);
         }
         
@@ -107,7 +108,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 await this.ScenarioStartAsync();
 #line 8
-    await testRunner.WhenAsync("I add the item \"    \" to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    await testRunner.WhenAsync("I add the item \"    \" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
     await testRunner.ThenAsync("an error occurred with the message \"An item to do must have a description\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -143,14 +144,14 @@ this.ScenarioInitialize(scenarioInfo);
             await this.ScenarioCleanupAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Items to do are listed")]
+        [Xunit.SkippableFactAttribute(DisplayName="Items to do are listed with their temporality")]
         [Xunit.TraitAttribute("FeatureTitle", "Add an item to do")]
-        [Xunit.TraitAttribute("Description", "Items to do are listed")]
-        public async System.Threading.Tasks.Task ItemsToDoAreListed()
+        [Xunit.TraitAttribute("Description", "Items to do are listed with their temporality")]
+        public async System.Threading.Tasks.Task ItemsToDoAreListedWithTheirTemporality()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items to do are listed", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items to do are listed with their temporality", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -162,19 +163,62 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 await this.ScenarioStartAsync();
 #line 16
-    await testRunner.WhenAsync("I add the item \"call daddy\" to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 17
-    await testRunner.AndAsync("I add the item \"prepare job interview\" to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    await testRunner.AndAsync("I add the item \"prepare job interview\" to do this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Description"});
+                            "Description",
+                            "Temporality"});
                 table2.AddRow(new string[] {
-                            "call daddy"});
+                            "call daddy",
+                            "this day"});
                 table2.AddRow(new string[] {
-                            "prepare job interview"});
+                            "prepare job interview",
+                            "this week"});
 #line 18
     await testRunner.ThenAsync("the todo list is", ((string)(null)), table2, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="By default, items are to do")]
+        [Xunit.TraitAttribute("FeatureTitle", "Add an item to do")]
+        [Xunit.TraitAttribute("Description", "By default, items are to do")]
+        public async System.Threading.Tasks.Task ByDefaultItemsAreToDo()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("By default, items are to do", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 23
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 24
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 25
+    await testRunner.AndAsync("I add the item \"prepare job interview\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Description",
+                            "Is done?"});
+                table3.AddRow(new string[] {
+                            "call daddy",
+                            "false"});
+                table3.AddRow(new string[] {
+                            "prepare job interview",
+                            "false"});
+#line 26
+    await testRunner.ThenAsync("the todo list is", ((string)(null)), table3, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

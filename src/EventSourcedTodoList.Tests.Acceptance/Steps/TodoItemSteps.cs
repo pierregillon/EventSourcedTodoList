@@ -12,10 +12,10 @@ public class TodoItemSteps
 
     public TodoItemSteps(TestApplication application) => _application = application;
 
-    [Given(@"the item ""(.*)"" has been added to do")]
-    [When(@"I add the item ""(.*)"" to do")]
-    public async Task WhenIAddTheItemToDo(string description) =>
-        await _application.Dispatch(new AddItemToDoCommand(description));
+    [Given(@"the item ""(.*)"" has been added to do (.*)")]
+    [When(@"I add the item ""(.*)"" to do (.*)")]
+    public async Task WhenIAddTheItemToDo(string description, Temporality temporality) =>
+        await _application.Dispatch(new AddItemToDoCommand(description, temporality));
 
     [When(@"I mark the item ""(.*)"" as done")]
     public async Task WhenIMarkTheItemAsCompleted(string itemDescription)
@@ -48,8 +48,8 @@ public class TodoItemSteps
         var items = await _application.Dispatch(new ListTodoListItemsQuery());
 
         Assert.Equivalent(
-            expectedItems.Select(x => new { x.Description, x.IsDone }),
-            items!.Select(x => new { x.Description, x.IsDone })
+            expectedItems.Select(x => new { x.Description, x.IsDone, x.Temporality }),
+            items!.Select(x => new { x.Description, x.IsDone, x.Temporality })
         );
     }
 

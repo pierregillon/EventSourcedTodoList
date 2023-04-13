@@ -12,7 +12,8 @@ public class TodoList : EventSourcedAggregate<TodoListId>
 
     public static TodoList Empty => new(TodoListId.Unique);
 
-    public void AddItem(ItemDescription description) => StoreEvent(new TodoItemAdded(TodoItemId.New(), description));
+    public void AddItem(ItemDescription description, Temporality temporality) =>
+        StoreEvent(new TodoItemAdded(TodoItemId.New(), description, temporality));
 
     public void MarkItemAsDone(TodoItemId itemId)
     {
@@ -63,6 +64,12 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     private record TodoListItem(TodoItemId Id, ItemDescription Description);
 }
 
+public enum Temporality
+{
+    ThisDay,
+    ThisWeek
+}
+
 public record TodoItemDescriptionFixed(TodoListId Id, TodoItemId ItemId, ItemDescription PreviousItemDescription,
     ItemDescription NewItemDescription) : IDomainEvent;
 
@@ -70,9 +77,9 @@ public record ItemReadyTodo(TodoListId Id, TodoItemId ItemId) : IDomainEvent;
 
 public record TodoItemId(Guid Value)
 {
-    public static TodoItemId New() => new TodoItemId(Guid.NewGuid());
+    public static TodoItemId New() => new(Guid.NewGuid());
 }
 
-public record TodoItemAdded(TodoItemId ItemId, ItemDescription Description) : IDomainEvent;
+public record TodoItemAdded(TodoItemId ItemId, ItemDescription Description, Temporality Temporality) : IDomainEvent;
 
 public record TodoItemCompleted(TodoListId TodoListId, TodoItemId TodoItemId) : IDomainEvent;
