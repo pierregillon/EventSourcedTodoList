@@ -2,107 +2,47 @@
 @using EventSourcedTodoList.Actions
 @inherits BlazorState.BlazorStateComponent
 
-<div class="task">
-    @if (Item.IsDone)
-    {
-        <input
-            class="transparentInput done"
-            value="@Item.Description"
-            @oninput="e => NewTodoItemDescription = (string)e.Value!"
-            @onblur="FixDescription2"
-            @onkeyup="FixDescription"/>
+@if (Item is not null)
+{
+    <div class="task">
+        <div class="d-flex">
+            <MudCheckBox
+                T="bool"
+                Checked="Item.IsDone"
+                CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.Id) : MarkAsToDo(Item.Id)"
+                Class="compact"
+                Color="Color.Primary">
+            </MudCheckBox>
 
-        <span @onclick="() => MarkAsToDo(Item.Id)"
-              class="oi oi-action-undo"
-              aria-hidden="true">
-        </span>
-    }
-    else
-    {
-        <input
-            class="transparentInput"
-            value="@Item.Description"
-            @oninput="e => NewTodoItemDescription = (string)e.Value!"
-            @onblur="FixDescription2"
-            @onkeyup="FixDescription"/>
-
-        <span @onclick="() => MarkItemAsDone(Item.Id)"
-              class="oi oi-check"
-              aria-hidden="true">
-        </span>
-    }
-</div>
+            <MudTextField
+                T="string"
+                Class="@(Item.IsDone ? "compact done" : "compact")"
+                InputMode="InputMode.text"
+                Text="@Item.Description"
+                TextChanged="text => FixItemDescription(Item.Id, text)"
+                DisableUnderLine="true">
+            </MudTextField>
+        </div>
+    </div>
+}
 
 <style>
-    
-    .task {
-        position: relative;
-        display: flex;
-    }
-
-    .task .oi {
-        margin-left: 10px;
-        cursor: pointer;
-        display: none;
-    }
-
-    .task:hover .oi {
-        display: block;
-    }
-    
-    .task .done {
+    .done .mud-input input {
         text-decoration: line-through;
         color: #B4B4B4;
         font-style: italic;
-    }
-    
-    .transparentInput {
-        border:0;
-        outline:0;
-        background-color: transparent;
-        padding: 0;
-        width: 100%;
-    }
-    
-    .transparentInput:focus {
-        outline:none !important;
     }
 </style>
 
 @code {
 
     [Parameter]
-    public TodoListItem? Item
-    {
-        get => _item;
-        set
-        {
-            _item = value;
-            NewTodoItemDescription = _item!.Description;
-        }
-    }
+    public TodoListItem? Item { get; set; }
 
-    private string NewTodoItemDescription { get; set; } = string.Empty;
+    private async Task FixItemDescription(Guid itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(itemId, newValue));
 
     private async Task MarkItemAsDone(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
 
     private async Task MarkAsToDo(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
-
-    private async Task FixDescription(KeyboardEventArgs e)
-    {
-        if (Item is null)
-        {
-            return;
-        }
-
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            await Mediator.Send(new TodoListState.FixItemDescription(Item.Id, NewTodoItemDescription));
-        }
-    }
-
-    private TodoListItem? _item;
-
-    private async Task FixDescription2() => await Mediator.Send(new TodoListState.FixItemDescription(Item.Id, NewTodoItemDescription));
 
 }

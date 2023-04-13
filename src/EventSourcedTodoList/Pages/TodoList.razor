@@ -1,79 +1,88 @@
 ﻿@page "/todolist"
 @using EventSourcedTodoList.Actions
-@using EventSourcedTodoList.Domain.Todo.List
 @inherits BlazorState.BlazorStateComponent
 
-<PageTitle>Todo list</PageTitle>
+<PageTitle>Aujourd'hui</PageTitle>
 
-<h1>Todo list</h1>
+<MudContainer MaxWidth="MaxWidth.Small">
 
-<ul>
-    @foreach (var item in TodoListItems)
-    {
-        <li class="short-padding-left">
+    <h1>Aujourd'hui</h1>
+
+    <MudDivider Class="items"/>
+
+    <div>
+        @foreach (var item in State.Items)
+        {
             <TaskItem Item="@item"></TaskItem>
-        </li>
-    }
-    <li class="addItemInput short-padding-left">
-        <input
-            class="transparentInput"
-            value="@NewTodoItemDescription"
-            @oninput="e => NewTodoItemDescription = (string)e.Value!"
-            @onkeyup="AddItemToDo"/>
-    </li>
-</ul>
+        }
+
+        <div class="d-flex">
+            <MudCheckBox
+                Class="compact"
+                Checked="@(false)"
+                Color="Color.Secondary">
+            </MudCheckBox>
+
+            <MudTextField
+                T="string"
+                InputMode="InputMode.text"
+                Text="@State.NewTodoItemDescription"
+                TextChanged="AddItemToDo"
+                TextUpdateSuppression="false"
+                Class="compact"
+                DisableUnderLine="true">
+            </MudTextField>
+        </div>
+    </div>
+
+</MudContainer>
 
 <style>
-    .short-padding-left {
-        padding-left: 5px;;
-    }
-    
-    .addItemInput {
-        list-style: disclosure-closed;
-    }
-    
-    .transparentInput {
-        border:0;
-        outline:0;
-        background-color: transparent;
-        padding: 0;
-        width: 100%;
-    }
-    
-    .transparentTextArea {
-        border:0;
-        outline:0;
-        background-color: transparent;
-        padding: 0;
-        width: 100%;
-        resize: inherit;
-        overflow: hidden;
-        min-height: 30px;
-        display: block;
-    }
-    
-    .transparentInput:focus {
-        outline:none !important;
+    .items {
+        margin: 15px 0;
     }
 </style>
+
+@* <style> *@
+@*     .short-padding-left { *@
+@*         padding-left: 5px;; *@
+@*     } *@
+@*      *@
+@*     .addItemInput { *@
+@*         list-style: disclosure-closed; *@
+@*     } *@
+@*      *@
+@*     .transparentInput { *@
+@*         border:0; *@
+@*         outline:0; *@
+@*         background-color: transparent; *@
+@*         padding: 0; *@
+@*         width: 100%; *@
+@*     } *@
+@*      *@
+@*     .transparentTextArea { *@
+@*         border:0; *@
+@*         outline:0; *@
+@*         background-color: transparent; *@
+@*         padding: 0; *@
+@*         width: 100%; *@
+@*         resize: inherit; *@
+@*         overflow: hidden; *@
+@*         min-height: 30px; *@
+@*         display: block; *@
+@*     } *@
+@*      *@
+@*     .transparentInput:focus { *@
+@*         outline:none !important; *@
+@*     } *@
+@* </style> *@
 
 @code {
 
     TodoListState State => GetState<TodoListState>();
 
-    private IEnumerable<TodoListItem> TodoListItems => State.Items;
-    private string NewTodoItemDescription { get; set; } = string.Empty;
-
     protected override async Task OnInitializedAsync() => await Mediator.Send(new TodoListState.LoadTodoList());
 
-    private async Task AddItemToDo(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            await Mediator.Send(new TodoListState.AddNewItem(NewTodoItemDescription));
-
-            NewTodoItemDescription = string.Empty;
-        }
-    }
+    private async Task AddItemToDo(string itemDescription) => await Mediator.Send(new TodoListState.AddNewItem(itemDescription));
 
 }
