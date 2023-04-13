@@ -42,6 +42,16 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         StoreEvent(new TodoItemDescriptionFixed(Id, item.Id, item.Description, newItemDescription));
     }
 
+    public void Reschedule(TodoItemId itemId, Temporality anotherTemporality)
+    {
+        var item = _items.FirstOrDefault(x => x.Id == itemId);
+
+        if (item is null) throw new InvalidOperationException("Cannot reschedule item to do: unknown item");
+
+        if (item.Temporality != anotherTemporality)
+            StoreEvent(new TodoItemRescheduled(Id, item.Id, item.Temporality, anotherTemporality));
+    }
+
     public static TodoList Rehydrate(IEnumerable<IDomainEvent> eventHistory)
     {
         var todoList = Empty;
@@ -53,16 +63,31 @@ public class TodoList : EventSourcedAggregate<TodoListId>
 
     protected override void Apply(IDomainEvent domainEvent)
     {
+        TodoListItem item;
+
         switch (domainEvent)
         {
             case TodoItemAdded added:
-                _items.Add(new TodoListItem(added.ItemId, added.Description));
+                _items.Add(new TodoListItem(added.ItemId, added.Description, added.Temporality));
+                break;
+
+            case TodoItemDescriptionFixed descriptionFixed:
+                item = _items.Single(x => x.Id == descriptionFixed.ItemId);
+                _items.Replace(item, item with { Description = descriptionFixed.NewItemDescription });
+                break;
+
+            case TodoItemRescheduled rescheduled:
+                item = _items.Single(x => x.Id == rescheduled.ItemId);
+                _items.Replace(item, item with { Temporality = rescheduled.NewTemporality });
                 break;
         }
     }
 
-    private record TodoListItem(TodoItemId Id, ItemDescription Description);
+    private record TodoListItem(TodoItemId Id, ItemDescription Description, Temporality Temporality);
 }
+
+public record TodoItemRescheduled(TodoListId Id, TodoItemId ItemId, Temporality PreviousTemporality,
+    Temporality NewTemporality) : IDomainEvent;
 
 public enum Temporality
 {
@@ -83,3 +108,26 @@ public record TodoItemId(Guid Value)
 public record TodoItemAdded(TodoItemId ItemId, ItemDescription Description, Temporality Temporality) : IDomainEvent;
 
 public record TodoItemCompleted(TodoListId TodoListId, TodoItemId TodoItemId) : IDomainEvent;
+
+public static class ListExtensions
+{
+    public static IList<T> Replace<T>(this IList<T> list, T existingElement, T newElement)
+    {
+        var indexOfExistingElement = list.IndexOf(existingElement);
+        if (indexOfExistingElement == -1)
+            throw new InvalidOperationException("The existing element does not belong to the list");
+        list.Insert(indexOfExistingElement, newElement);
+        list.Remove(existingElement);
+
+        return list;
+    }
+
+    public static IEnumerable<T> Replace<T>(this IEnumerable<T> enumerable, T existingElement, T newElement)
+    {
+        foreach (var element in enumerable)
+            if (Equals(element, existingElement))
+                yield return newElement;
+            else
+                yield return element;
+    }
+}

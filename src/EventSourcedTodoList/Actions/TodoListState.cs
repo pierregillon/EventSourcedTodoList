@@ -21,4 +21,6 @@ public class TodoListState : State<TodoListState>
     public record MarkItemAsToDo(Guid ItemId) : IAction;
 
     public record FixItemDescription(Guid ItemId, string NewDescription) : IAction;
+
+    public record RescheduleTodoItem(Guid ItemId, Temporality Temporality) : IAction;
 }

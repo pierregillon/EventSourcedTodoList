@@ -12,7 +12,7 @@
 
         <div class="d-flex">
             <MudCheckBox
-                Class="compact"
+                Class="compact fake"
                 Checked="@(false)"
                 Color="Color.Secondary">
             </MudCheckBox>
@@ -30,7 +30,11 @@
     </div>
 }
 
-
+<style>
+    .fake.mud-input-control.mud-input-control-boolean-input {
+        margin-left: 26px;
+    }
+</style>
 
 @code {
 

@@ -1,7 +1,6 @@
 using EventSourcedTodoList.Domain.Todo;
 using EventSourcedTodoList.Domain.Todo.List;
 using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
 
 namespace EventSourcedTodoList.Tests.Acceptance;
 
@@ -41,16 +40,44 @@ public class TodoItemSteps
         await _application.Dispatch(new FixItemDescriptionCommand(itemId, new ItemDescription(newItemDescription)));
     }
 
+    [When(@"I reschedule the item ""(.*)"" to (.*)")]
+    public async Task WhenIRescheduleTheItemToThisDay(string itemDescription, Temporality temporality)
+    {
+        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+
+        await _application.Dispatch(new RescheduleTodoItemCommand(itemId, temporality));
+    }
+
     [Then(@"the todo list of (.*) is")]
     public async Task ThenTheTodoListIs(Temporality temporality, Table table)
     {
-        var expectedItems = table.CreateSet<TodoListItem>();
         var items = await _application.Dispatch(new ListTodoListItemsQuery(temporality));
 
-        Assert.Equivalent(
-            expectedItems.Select(x => new { x.Description, x.IsDone, x.Temporality }),
-            items!.Select(x => new { x.Description, x.IsDone, x.Temporality })
-        );
+        for (var index = 0; index < table.Rows.Count; index++)
+        {
+            var item = items.ElementAt(index);
+            var tableRow = table.Rows[index];
+            foreach (var cell in tableRow)
+                if (cell.Key == "Description")
+                {
+                    Assert.Equal(cell.Value, item.Description);
+                }
+                else if (cell.Key == "Is done?")
+                {
+                    Assert.Equal(bool.Parse(cell.Value), item.IsDone);
+                }
+                else if (cell.Key == "Temporality")
+                {
+                    var normalized = cell.Value
+                        .Replace(" ", string.Empty)
+                        .Trim();
+                    Assert.Equal(Enum.Parse<Temporality>(normalized, true), item.Temporality);
+                }
+                else
+                {
+                    throw new NotImplementedException("Unknown cell");
+                }
+        }
     }
 
     private async Task<TodoItemId?> FindItemId(string itemDescription)

@@ -29,4 +29,21 @@ public class InMemoryReadModelDatabase : IReadModelDatabase
 
         return Task.CompletedTask;
     }
+
+    public Task Update<T>(Predicate<T> predicate, Func<T, T> update)
+    {
+        if (!_elements.TryGetValue(typeof(T), out var list))
+            throw new InvalidOperationException("Cannot update element: list was not found");
+
+        for (var index = 0; index < list.Count; index++)
+        {
+            var element = (T)list[index]!;
+            if (!predicate(element)) continue;
+            list.Insert(index, update(element));
+            list.Remove(element);
+            break;
+        }
+
+        return Task.CompletedTask;
+    }
 }

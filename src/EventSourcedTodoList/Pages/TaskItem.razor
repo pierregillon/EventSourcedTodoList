@@ -6,6 +6,19 @@
 {
     <div class="task">
         <div class="d-flex">
+            <MudMenu
+                Class="overlay-menu"
+                Icon="@Icons.Material.Filled.MoreHoriz"
+                Size="Size.Small"
+                AnchorOrigin="Origin.BottomLeft"
+                TransformOrigin="Origin.TopRight">
+                <MudMenuItem
+                    Icon="@Icons.Material.Filled.Redo"
+                    OnClick="() => RescheduleToThisWeek(Item.Id)">
+                    Déplacer à cette semaine
+                </MudMenuItem>
+            </MudMenu>
+
             <MudCheckBox
                 T="bool"
                 Checked="Item.IsDone"
@@ -32,6 +45,14 @@
         color: #B4B4B4;
         font-style: italic;
     }
+    
+    .overlay-menu {
+        opacity: 0;
+    }
+    
+    .task:hover .overlay-menu {
+        opacity: 0.7;
+    }
 </style>
 
 @code {
@@ -44,5 +65,7 @@
     private async Task MarkItemAsDone(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
 
     private async Task MarkAsToDo(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
+
+    private async Task RescheduleToThisWeek(Guid itemId) => await Mediator.Send(new TodoListState.RescheduleTodoItem(itemId, Temporality.ThisWeek));
 
 }
