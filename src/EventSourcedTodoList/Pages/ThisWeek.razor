@@ -1,0 +1,29 @@
+@page "/thisWeek"
+@using EventSourcedTodoList.Domain.Todo.List
+@using EventSourcedTodoList.Actions
+@inherits BlazorState.BlazorStateComponent
+
+<PageTitle>Cette semaine</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small">
+
+    <h1>Cette semaine</h1>
+
+    <MudDivider Class="items"/>
+
+    <TodoListComponent Temporality="Temporality.ThisWeek"></TodoListComponent>
+
+</MudContainer>
+
+<style>
+    .items {
+        margin: 15px 0;
+    }
+</style>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+        => await Mediator.Send(new TodoListState.LoadTodoList(Temporality.ThisWeek));
+
+}

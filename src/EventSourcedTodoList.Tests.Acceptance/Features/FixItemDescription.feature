@@ -11,6 +11,6 @@ Scenario: Cannot fix description of an unknown item
 Scenario: Item marked as to do are listed as not done
     Given the item "call dad" has been added to do this day
     When I fix description of the item "call dad" to "call daddy"
-    Then the todo list is
+    Then the todo list of this day is
       | Description |
       | call daddy  |

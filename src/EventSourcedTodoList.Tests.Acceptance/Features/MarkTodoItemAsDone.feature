@@ -11,7 +11,7 @@ Scenario: Cannot mark an unknown item as done
 Scenario: Item to do marked as completed are listed
     Given the item "call dad" has been added to do this day
     When I mark the item "call dad" as done
-    Then the todo list is
+    Then the todo list of this day is
       | Description | Is done? |
       | call dad    | true     |
 

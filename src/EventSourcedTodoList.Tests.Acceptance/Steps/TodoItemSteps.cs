@@ -41,11 +41,11 @@ public class TodoItemSteps
         await _application.Dispatch(new FixItemDescriptionCommand(itemId, new ItemDescription(newItemDescription)));
     }
 
-    [Then(@"the todo list is")]
-    public async Task ThenTheTodoListIs(Table table)
+    [Then(@"the todo list of (.*) is")]
+    public async Task ThenTheTodoListIs(Temporality temporality, Table table)
     {
         var expectedItems = table.CreateSet<TodoListItem>();
-        var items = await _application.Dispatch(new ListTodoListItemsQuery());
+        var items = await _application.Dispatch(new ListTodoListItemsQuery(temporality));
 
         Assert.Equivalent(
             expectedItems.Select(x => new { x.Description, x.IsDone, x.Temporality }),
@@ -55,7 +55,13 @@ public class TodoItemSteps
 
     private async Task<TodoItemId?> FindItemId(string itemDescription)
     {
-        var items = await _application.Dispatch(new ListTodoListItemsQuery());
+        var items = (await Task.WhenAll(
+                Enum.GetValues<Temporality>()
+                    .Select(x => _application.Dispatch(new ListTodoListItemsQuery(x)))
+            ))
+            .SelectMany(x => x)
+            .ToArray();
+
         var id = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
 
         if (id is null) return null;

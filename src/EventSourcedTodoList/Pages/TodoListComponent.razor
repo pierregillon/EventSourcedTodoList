@@ -1,18 +1,11 @@
-﻿@page "/todolist"
-@using EventSourcedTodoList.Actions
 @using EventSourcedTodoList.Domain.Todo.List
+@using EventSourcedTodoList.Actions
 @inherits BlazorState.BlazorStateComponent
 
-<PageTitle>Aujourd'hui</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.Small">
-
-    <h1>Aujourd'hui</h1>
-
-    <MudDivider Class="items"/>
-
+@if (State.Items.TryGetValue(Temporality, out var items))
+{
     <div>
-        @foreach (var item in State.Items)
+        @foreach (var item in items)
         {
             <TaskItem Item="@item"></TaskItem>
         }
@@ -35,22 +28,18 @@
             </MudTextField>
         </div>
     </div>
+}
 
-</MudContainer>
 
-<style>
-    .items {
-        margin: 15px 0;
-    }
-</style>
 
 @code {
 
+    [Parameter]
+    public Temporality Temporality { get; set; }
+
     TodoListState State => GetState<TodoListState>();
 
-    protected override async Task OnInitializedAsync() => await Mediator.Send(new TodoListState.LoadTodoList());
-
     private async Task AddItemToDo(string itemDescription)
-        => await Mediator.Send(new TodoListState.AddNewItem(itemDescription, Temporality.ThisDay));
+        => await Mediator.Send(new TodoListState.AddNewItem(itemDescription, Temporality));
 
 }

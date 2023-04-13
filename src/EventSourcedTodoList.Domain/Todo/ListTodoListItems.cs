@@ -3,7 +3,7 @@ using EventSourcedTodoList.Domain.Todo.List;
 
 namespace EventSourcedTodoList.Domain.Todo;
 
-public record ListTodoListItemsQuery : IQuery<IReadOnlyCollection<TodoListItem>>;
+public record ListTodoListItemsQuery(Temporality Temporality) : IQuery<IReadOnlyCollection<TodoListItem>>;
 
 internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQuery, IReadOnlyCollection<TodoListItem>>,
     IDomainEventListener<TodoItemAdded>,
@@ -47,5 +47,5 @@ internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQu
     }
 
     public async Task<IReadOnlyCollection<TodoListItem>> Handle(ListTodoListItemsQuery query) =>
-        (await _database.GetAll<TodoListItem>()).ToArray();
+        (await _database.GetAll<TodoListItem>()).Where(x => x.Temporality == query.Temporality).ToArray();
 }

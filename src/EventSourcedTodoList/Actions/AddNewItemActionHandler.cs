@@ -24,7 +24,8 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
         await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.Text, action.Temporality));
 
         state.NewTodoItemDescription = string.Empty;
-        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery());
+        state.Items[action.Temporality] =
+            await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(action.Temporality));
 
         return Unit.Value;
     }

@@ -24,7 +24,11 @@ public class CompleteItemActionHandler : ActionHandler<TodoListState.MarkItemAsD
 
         await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(new TodoItemId(action.ItemId)));
 
-        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery());
+        var temporality = state.Items
+            .SelectMany(x => x.Value)
+            .Single(x => x.Id == action.ItemId).Temporality;
+
+        state.Items[temporality] = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(temporality));
 
         return Unit.Value;
     }

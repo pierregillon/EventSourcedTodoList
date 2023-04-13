@@ -5,14 +5,14 @@ namespace EventSourcedTodoList.Actions;
 
 public class TodoListState : State<TodoListState>
 {
-    public IReadOnlyCollection<TodoListItem> Items { get; set; } = new List<TodoListItem>();
+    public Dictionary<Temporality, IEnumerable<TodoListItem>> Items { get; set; } = new();
     public string NewTodoItemDescription { get; set; } = string.Empty;
 
     public override void Initialize()
     {
     }
 
-    public record LoadTodoList : IAction;
+    public record LoadTodoList(Temporality Temporality) : IAction;
 
     public record AddNewItem(string? Text, Temporality Temporality) : IAction;
 

@@ -12,6 +12,6 @@ Scenario: Item marked as to do are listed as not done
     Given the item "call dad" has been added to do this day
     When I mark the item "call dad" as done
     And I mark the item "call dad" as to do
-    Then the todo list is
+    Then the todo list of this day is
       | Description | Is done? |
       | call dad    | false    |

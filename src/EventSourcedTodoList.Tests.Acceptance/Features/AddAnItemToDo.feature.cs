@@ -138,20 +138,20 @@ this.ScenarioInitialize(scenarioInfo);
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
 #line 12
-    await testRunner.ThenAsync("the todo list is", ((string)(null)), table1, "Then ");
+    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table1, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Items to do are listed with their temporality")]
+        [Xunit.SkippableFactAttribute(DisplayName="Listed items are filtered by their temporality")]
         [Xunit.TraitAttribute("FeatureTitle", "Add an item to do")]
-        [Xunit.TraitAttribute("Description", "Items to do are listed with their temporality")]
-        public async System.Threading.Tasks.Task ItemsToDoAreListedWithTheirTemporality()
+        [Xunit.TraitAttribute("Description", "Listed items are filtered by their temporality")]
+        public async System.Threading.Tasks.Task ListedItemsAreFilteredByTheirTemporality()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items to do are listed with their temporality", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Listed items are filtered by their temporality", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -174,11 +174,17 @@ this.ScenarioInitialize(scenarioInfo);
                 table2.AddRow(new string[] {
                             "call daddy",
                             "this day"});
-                table2.AddRow(new string[] {
+#line 18
+    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table2, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Description",
+                            "Temporality"});
+                table3.AddRow(new string[] {
                             "prepare job interview",
                             "this week"});
-#line 18
-    await testRunner.ThenAsync("the todo list is", ((string)(null)), table2, "Then ");
+#line 21
+    await testRunner.AndAsync("the todo list of this week is", ((string)(null)), table3, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -192,7 +198,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("By default, items are to do", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 23
+#line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -202,23 +208,23 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 24
+#line 26
     await testRunner.WhenAsync("I add the item \"call daddy\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 25
+#line 27
     await testRunner.AndAsync("I add the item \"prepare job interview\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
                             "Is done?"});
-                table3.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "call daddy",
                             "false"});
-                table3.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "prepare job interview",
                             "false"});
-#line 26
-    await testRunner.ThenAsync("the todo list is", ((string)(null)), table3, "Then ");
+#line 28
+    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table4, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
