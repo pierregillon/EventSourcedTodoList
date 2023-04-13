@@ -8,7 +8,8 @@ public record ListTodoListItemsQuery : IQuery<IReadOnlyCollection<TodoListItem>>
 internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQuery, IReadOnlyCollection<TodoListItem>>,
     IDomainEventListener<TodoItemAdded>,
     IDomainEventListener<TodoItemCompleted>,
-    IDomainEventListener<ItemReadyTodo>
+    IDomainEventListener<ItemReadyTodo>,
+    IDomainEventListener<TodoItemDescriptionFixed>
 {
     private readonly IReadModelDatabase _database;
 
@@ -33,6 +34,15 @@ internal class ListTodoListItemsQueryHandler : IQueryHandler<ListTodoListItemsQu
         var item = items.First(x => x.Id == domainEvent.TodoItemId.Value);
 
         item.MarkAsDone();
+    }
+
+    public async Task On(TodoItemDescriptionFixed domainEvent)
+    {
+        var items = await _database.GetAll<TodoListItem>();
+
+        var item = items.First(x => x.Id == domainEvent.ItemId.Value);
+
+        item.UpdateDescription(domainEvent.NewItemDescription);
     }
 
     public async Task<IReadOnlyCollection<TodoListItem>> Handle(ListTodoListItemsQuery query) =>

@@ -14,27 +14,31 @@ public class TodoItemSteps
 
     [Given(@"the item ""(.*)"" has been added to do")]
     [When(@"I add the item ""(.*)"" to do")]
-    public async Task WhenIAddTheItemToDo(string description)
-    {
+    public async Task WhenIAddTheItemToDo(string description) =>
         await _application.Dispatch(new AddItemToDoCommand(description));
-    }
 
     [When(@"I mark the item ""(.*)"" as done")]
     public async Task WhenIMarkTheItemAsCompleted(string itemDescription)
     {
-        var items = await _application.Dispatch(new ListTodoListItemsQuery());
-        var itemId = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
 
-        await _application.Dispatch(new MarkItemAsDoneCommand(new TodoItemId(itemId ?? Guid.NewGuid())));
+        await _application.Dispatch(new MarkItemAsDoneCommand(itemId));
     }
 
     [When(@"I mark the item ""(.*)"" as to do")]
     public async Task WhenIMarkTheItemAsToDo(string itemDescription)
     {
-        var items = await _application.Dispatch(new ListTodoListItemsQuery());
-        var itemId = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
 
-        await _application.Dispatch(new MarkItemAsToDoCommand(new TodoItemId(itemId ?? Guid.NewGuid())));
+        await _application.Dispatch(new MarkItemAsToDoCommand(itemId));
+    }
+
+    [When(@"I fix description of the item ""(.*)"" to ""(.*)""")]
+    public async Task WhenIFixDescriptionOfTheItemTo(string itemDescription, string newItemDescription)
+    {
+        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+
+        await _application.Dispatch(new FixItemDescriptionCommand(itemId, new ItemDescription(newItemDescription)));
     }
 
     [Then(@"the todo list is")]
@@ -47,5 +51,15 @@ public class TodoItemSteps
             expectedItems.Select(x => new { x.Description, x.IsDone }),
             items!.Select(x => new { x.Description, x.IsDone })
         );
+    }
+
+    private async Task<TodoItemId?> FindItemId(string itemDescription)
+    {
+        var items = await _application.Dispatch(new ListTodoListItemsQuery());
+        var id = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+
+        if (id is null) return null;
+
+        return new TodoItemId(id.Value);
     }
 }

@@ -10,28 +10,16 @@
 <ul>
     @foreach (var item in TodoListItems)
     {
-        <li class="task short-padding-left">
-            @if (item.IsDone)
-            {
-                <span class="done">@item.Description</span>
-                <span @onclick="() => MarkAsToDo(item.Id)"
-                      class="oi oi-action-undo"
-                      aria-hidden="true">
-                </span>
-            }
-            else
-            {
-                <span>@item.Description</span>
-                <span @onclick="() => MarkItemAsDone(item.Id)"
-                      class="oi oi-check"
-                      aria-hidden="true">
-                </span>
-            }
-
+        <li class="short-padding-left">
+            <TaskItem Item="@item"></TaskItem>
         </li>
     }
     <li class="addItemInput short-padding-left">
-        <InputText @bind-Value="NewTodoItemDescription" @onkeyup="@AddItemToDo"></InputText>
+        <input
+            class="transparentInput"
+            value="@NewTodoItemDescription"
+            @oninput="e => NewTodoItemDescription = (string)e.Value!"
+            @onkeyup="AddItemToDo"/>
     </li>
 </ul>
 
@@ -39,36 +27,33 @@
     .short-padding-left {
         padding-left: 5px;;
     }
-
-    .task .oi {
-        opacity: 0;
-        margin-left: 10px;
-        cursor: pointer;
-    }
-
-    .task:hover .oi {
-        opacity: 1;
-    }
-    
-    .task .done {
-        text-decoration: line-through;
-        color: #B4B4B4;
-        font-style: italic;
-    }
     
     .addItemInput {
         list-style: disclosure-closed;
     }
     
-    .addItemInput input {
+    .transparentInput {
         border:0;
         outline:0;
         background-color: transparent;
         padding: 0;
+        width: 100%;
     }
     
-    .addItemInput input:focus {
-        outline:none!important;
+    .transparentTextArea {
+        border:0;
+        outline:0;
+        background-color: transparent;
+        padding: 0;
+        width: 100%;
+        resize: inherit;
+        overflow: hidden;
+        min-height: 30px;
+        display: block;
+    }
+    
+    .transparentInput:focus {
+        outline:none !important;
     }
 </style>
 
@@ -90,9 +75,5 @@
             NewTodoItemDescription = string.Empty;
         }
     }
-
-    private async Task MarkItemAsDone(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
-
-    private async Task MarkAsToDo(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
 
 }
