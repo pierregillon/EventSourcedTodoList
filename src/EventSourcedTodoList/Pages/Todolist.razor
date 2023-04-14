@@ -3,35 +3,9 @@
 @using EventSourcedTodoList.Actions
 @inherits BlazorState.BlazorStateComponent
 
-<PageTitle>Aujourd'hui</PageTitle>
+<PageTitle>TodoList</PageTitle>
 
-<MudTimeline
-    Style="margin-top: 20px"
-    TimelineOrientation="TimelineOrientation.Horizontal"
-    TimelinePosition="TimelinePosition.Bottom">
-
-    @foreach (var temporality in Enum.GetValues<Temporality>())
-    {
-        var isCurrent = State.CurrentTemporality == temporality;
-
-        <MudTimelineItem
-            Class="timeline-item"
-            Color="isCurrent ? Color.Primary : Color.Default"
-            Size="isCurrent ? Size.Large : Size.Small"
-            @onclick="() => ChangeCurrentTemporality(temporality)">
-
-            <MudText
-                Class="@(isCurrent ? "temporality important" : "temporality")"
-                Color="isCurrent ? Color.Primary : Color.Dark"
-                Align="Align.Center"
-                @onclick="() => ChangeCurrentTemporality(temporality)">
-                @temporality.ToText()
-            </MudText>
-
-        </MudTimelineItem>
-    }
-
-</MudTimeline>
+<Timeline></Timeline>
 
 <MudContainer MaxWidth="MaxWidth.Small">
 
@@ -47,18 +21,6 @@
     .items {
         margin: 15px 0;
     }
-    
-    .mud-timeline-item.timeline-item > .mud-timeline-item-divider{
-        min-height: 90px;
-    }
-    
-    .temporality {
-        cursor: pointer;
-    }
-    
-    .temporality.important {
-        font-weight: bold
-    }
 </style>
 
 @code {
@@ -67,8 +29,5 @@
 
     protected override async Task OnInitializedAsync()
         => await Mediator.Send(new TodoListState.LoadTodoList(Temporality.ThisDay));
-
-    private async Task ChangeCurrentTemporality(Temporality temporality)
-        => await Mediator.Send(new TodoListState.ChangeCurrentTemporality(temporality));
 
 }
