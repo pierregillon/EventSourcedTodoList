@@ -29,10 +29,6 @@ public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixIt
 
         await _commandDispatcher.Dispatch(command);
 
-        var temporality = state.Items
-            .SelectMany(x => x.Value)
-            .Single(x => x.Id == action.ItemId).Temporality;
-
-        state.Items[temporality] = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(temporality));
+        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(state.CurrentTemporality));
     }
 }

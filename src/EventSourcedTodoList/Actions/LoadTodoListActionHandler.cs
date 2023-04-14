@@ -16,8 +16,7 @@ public class LoadTodoListActionHandler : ActionHandler<TodoListState.LoadTodoLis
     {
         var state = Store.GetState<TodoListState>();
 
-        state.Items[action.Temporality] =
-            await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(action.Temporality));
+        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(action.Temporality));
 
         return Unit.Value;
     }

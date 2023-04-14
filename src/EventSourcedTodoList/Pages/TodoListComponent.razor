@@ -1,34 +1,30 @@
-@using EventSourcedTodoList.Domain.Todo.List
 @using EventSourcedTodoList.Actions
 @inherits BlazorState.BlazorStateComponent
 
-@if (State.Items.TryGetValue(Temporality, out var items))
-{
-    <div>
-        @foreach (var item in items)
-        {
-            <TaskItem Item="@item"></TaskItem>
-        }
+<div>
+    @foreach (var item in State.Items)
+    {
+        <TaskItem Item="@item"></TaskItem>
+    }
 
-        <div class="d-flex">
-            <MudCheckBox
-                Class="compact fake"
-                Checked="@(false)"
-                Color="Color.Secondary">
-            </MudCheckBox>
+    <div class="d-flex">
+        <MudCheckBox
+            Class="compact fake"
+            Checked="@(false)"
+            Color="Color.Secondary">
+        </MudCheckBox>
 
-            <MudTextField
-                T="string"
-                InputMode="InputMode.text"
-                Text="@State.NewTodoItemDescription"
-                TextChanged="AddItemToDo"
-                TextUpdateSuppression="false"
-                Class="compact"
-                DisableUnderLine="true">
-            </MudTextField>
-        </div>
+        <MudTextField
+            T="string"
+            InputMode="InputMode.text"
+            Text="@State.NewTodoItemDescription"
+            TextChanged="AddItemToDo"
+            TextUpdateSuppression="false"
+            Class="compact"
+            DisableUnderLine="true">
+        </MudTextField>
     </div>
-}
+</div>
 
 <style>
     .fake.mud-input-control.mud-input-control-boolean-input {
@@ -38,12 +34,9 @@
 
 @code {
 
-    [Parameter]
-    public Temporality Temporality { get; set; }
-
     TodoListState State => GetState<TodoListState>();
 
     private async Task AddItemToDo(string itemDescription)
-        => await Mediator.Send(new TodoListState.AddNewItem(itemDescription, Temporality));
+        => await Mediator.Send(new TodoListState.AddNewItem(itemDescription));
 
 }
