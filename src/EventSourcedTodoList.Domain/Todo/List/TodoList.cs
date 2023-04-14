@@ -92,7 +92,25 @@ public record TodoItemRescheduled(TodoListId Id, TodoItemId ItemId, Temporality 
 public enum Temporality
 {
     ThisDay,
-    ThisWeek
+    ThisWeek,
+    ThisMonth,
+    ThisQuarter,
+    ThisYear,
+    ThisLife
+}
+
+public static class TemporalityExtensions
+{
+    public static string ToText(this Temporality temporality) => temporality switch
+    {
+        Temporality.ThisDay => "Ce jour",
+        Temporality.ThisWeek => "Cette semaine",
+        Temporality.ThisMonth => "Ce mois",
+        Temporality.ThisQuarter => "Ce trimestre",
+        Temporality.ThisYear => "Cette année",
+        Temporality.ThisLife => "Cette vie",
+        _ => throw new ArgumentOutOfRangeException(nameof(temporality), temporality, null)
+    };
 }
 
 public record TodoItemDescriptionFixed(TodoListId Id, TodoItemId ItemId, ItemDescription PreviousItemDescription,
