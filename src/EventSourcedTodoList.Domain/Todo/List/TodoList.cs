@@ -19,7 +19,10 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     {
         var item = _items.FirstOrDefault(x => x.Id == itemId);
 
-        if (item is null) throw new InvalidOperationException("Cannot complete the item: unknown item");
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot complete the item: unknown item");
+        }
 
         StoreEvent(new TodoItemCompleted(Id, itemId));
     }
@@ -28,7 +31,10 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     {
         var item = _items.FirstOrDefault(x => x.Id == itemId);
 
-        if (item is null) throw new InvalidOperationException("Cannot mark the item as to do: unknown item");
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot mark the item as to do: unknown item");
+        }
 
         StoreEvent(new ItemReadyTodo(Id, item.Id));
     }
@@ -37,7 +43,10 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     {
         var item = _items.FirstOrDefault(x => x.Id == itemId);
 
-        if (item is null) throw new InvalidOperationException("Cannot fix item description: unknown item");
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot fix item description: unknown item");
+        }
 
         StoreEvent(new TodoItemDescriptionFixed(Id, item.Id, item.Description, newItemDescription));
     }
@@ -46,10 +55,27 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     {
         var item = _items.FirstOrDefault(x => x.Id == itemId);
 
-        if (item is null) throw new InvalidOperationException("Cannot reschedule item to do: unknown item");
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot reschedule item to do: unknown item");
+        }
 
         if (item.Temporality != anotherTemporality)
+        {
             StoreEvent(new TodoItemRescheduled(Id, item.Id, item.Temporality, anotherTemporality));
+        }
+    }
+
+    public void Delete(TodoItemId itemId)
+    {
+        var item = _items.FirstOrDefault(x => x.Id == itemId);
+
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot delete the item: unknown item");
+        }
+
+        StoreEvent(new TodoItemDeleted(itemId));
     }
 
     public static TodoList Rehydrate(IEnumerable<IDomainEvent> eventHistory)
@@ -80,11 +106,18 @@ public class TodoList : EventSourcedAggregate<TodoListId>
                 item = _items.Single(x => x.Id == rescheduled.ItemId);
                 _items.Replace(item, item with { Temporality = rescheduled.NewTemporality });
                 break;
+
+            case TodoItemDeleted deleted:
+                item = _items.Single(x => x.Id == deleted.ItemId);
+                _items.Remove(item);
+                break;
         }
     }
 
     private record TodoListItem(TodoItemId Id, ItemDescription Description, Temporality Temporality);
 }
+
+public record TodoItemDeleted(TodoItemId ItemId) : IDomainEvent;
 
 public record TodoItemRescheduled(TodoListId Id, TodoItemId ItemId, Temporality PreviousTemporality,
     Temporality NewTemporality) : IDomainEvent;
@@ -147,7 +180,10 @@ public static class ListExtensions
     {
         var indexOfExistingElement = list.IndexOf(existingElement);
         if (indexOfExistingElement == -1)
+        {
             throw new InvalidOperationException("The existing element does not belong to the list");
+        }
+
         list.Insert(indexOfExistingElement, newElement);
         list.Remove(existingElement);
 
@@ -158,8 +194,12 @@ public static class ListExtensions
     {
         foreach (var element in enumerable)
             if (Equals(element, existingElement))
+            {
                 yield return newElement;
+            }
             else
+            {
                 yield return element;
+            }
     }
 }

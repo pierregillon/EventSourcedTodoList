@@ -26,4 +26,6 @@ public class TodoListState : State<TodoListState>
     public record RescheduleTodoItem(Guid ItemId, Temporality Temporality) : IAction;
 
     public record ChangeCurrentTemporality(Temporality Temporality) : IAction;
+
+    public record DeleteItem(Guid ItemId) : IAction;
 }

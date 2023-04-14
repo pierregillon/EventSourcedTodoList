@@ -19,7 +19,7 @@ namespace EventSourcedTodoList.Tests.Acceptance.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "4.0.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class RescheduleTodoItemFeature : object, Xunit.IClassFixture<RescheduleTodoItemFeature.FixtureData>, Xunit.IAsyncLifetime
+    public partial class DeleteTodoItemFeature : object, Xunit.IClassFixture<DeleteTodoItemFeature.FixtureData>, Xunit.IAsyncLifetime
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,10 +28,10 @@ namespace EventSourcedTodoList.Tests.Acceptance.Features
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "RescheduleTodoItem.feature"
+#line 1 "DeleteTodoItem.feature"
 #line hidden
         
-        public RescheduleTodoItemFeature(RescheduleTodoItemFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public DeleteTodoItemFeature(DeleteTodoItemFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -39,8 +39,8 @@ namespace EventSourcedTodoList.Tests.Acceptance.Features
         public static async System.Threading.Tasks.Task FeatureSetupAsync()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunnerForAssembly(null, TechTalk.SpecFlow.xUnit.SpecFlowPlugin.XUnitParallelWorkerTracker.Instance.GetWorkerId());
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Reschedule todo item", "As a user\nI want to reschedule a todo item\nIn order to better organize my items a" +
-                    "cross time ranges", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Delete todo item", "As a user\nI want to delete a todo item\nIn order to stop seeing it because it is n" +
+                    "o longer a item to do", ProgrammingLanguage.CSharp, featureTags);
             await testRunner.OnFeatureStartAsync(featureInfo);
         }
         
@@ -87,16 +87,16 @@ namespace EventSourcedTodoList.Tests.Acceptance.Features
             await this.TestTearDownAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Cannot reschedule an unknown todo item")]
-        [Xunit.TraitAttribute("FeatureTitle", "Reschedule todo item")]
-        [Xunit.TraitAttribute("Description", "Cannot reschedule an unknown todo item")]
+        [Xunit.SkippableFactAttribute(DisplayName="Cannot delete an unknown item")]
+        [Xunit.TraitAttribute("FeatureTitle", "Delete todo item")]
+        [Xunit.TraitAttribute("Description", "Cannot delete an unknown item")]
         [Xunit.TraitAttribute("Category", "ErrorHandling")]
-        public async System.Threading.Tasks.Task CannotRescheduleAnUnknownTodoItem()
+        public async System.Threading.Tasks.Task CannotDeleteAnUnknownItem()
         {
             string[] tagsOfScenario = new string[] {
                     "ErrorHandling"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot reschedule an unknown todo item", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot delete an unknown item", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 7
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -108,23 +108,23 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 await this.ScenarioStartAsync();
 #line 8
-    await testRunner.WhenAsync("I reschedule the item \"call dad\" to this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    await testRunner.WhenAsync("I delete the item \"call dad\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
-    await testRunner.ThenAsync("an error occurred with the message \"Cannot reschedule item to do: unknown item\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    await testRunner.ThenAsync("an error occurred with the message \"Cannot delete the item: unknown item\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Rescheduling an item to the same time range do nothing")]
-        [Xunit.TraitAttribute("FeatureTitle", "Reschedule todo item")]
-        [Xunit.TraitAttribute("Description", "Rescheduling an item to the same time range do nothing")]
-        public async System.Threading.Tasks.Task ReschedulingAnItemToTheSameTimeRangeDoNothing()
+        [Xunit.SkippableFactAttribute(DisplayName="Deleted item are not listed anymore")]
+        [Xunit.TraitAttribute("FeatureTitle", "Delete todo item")]
+        [Xunit.TraitAttribute("Description", "Deleted item are not listed anymore")]
+        public async System.Threading.Tasks.Task DeletedItemAreNotListedAnymore()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Rescheduling an item to the same time range do nothing", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deleted item are not listed anymore", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -139,24 +139,28 @@ this.ScenarioInitialize(scenarioInfo);
     await testRunner.GivenAsync("the item \"call dad\" has been added to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 13
-    await testRunner.WhenAsync("I reschedule the item \"call dad\" to this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    await testRunner.WhenAsync("I delete the item \"call dad\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Description"});
 #line 14
-    await testRunner.ThenAsync("no error occurred", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table5, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Rescheduling an item correctly list it on new time range")]
-        [Xunit.TraitAttribute("FeatureTitle", "Reschedule todo item")]
-        [Xunit.TraitAttribute("Description", "Rescheduling an item correctly list it on new time range")]
-        public async System.Threading.Tasks.Task ReschedulingAnItemCorrectlyListItOnNewTimeRange()
+        [Xunit.SkippableFactAttribute(DisplayName="Cannot delete an already deleted item")]
+        [Xunit.TraitAttribute("FeatureTitle", "Delete todo item")]
+        [Xunit.TraitAttribute("Description", "Cannot delete an already deleted item")]
+        [Xunit.TraitAttribute("Category", "ErrorHandling")]
+        public async System.Threading.Tasks.Task CannotDeleteAnAlreadyDeletedItem()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "ErrorHandling"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Rescheduling an item correctly list it on new time range", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 16
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot delete an already deleted item", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 18
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -166,23 +170,17 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 17
+#line 19
     await testRunner.GivenAsync("the item \"call dad\" has been added to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 18
-    await testRunner.WhenAsync("I reschedule the item \"call dad\" to this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 20
+    await testRunner.AndAsync("the item \"call dad\" has been deleted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Description"});
-#line 19
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table9, "Then ");
-#line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Description"});
-                table10.AddRow(new string[] {
-                            "call dad"});
 #line 21
-    await testRunner.ThenAsync("the todo list of this week is", ((string)(null)), table10, "Then ");
+    await testRunner.WhenAsync("I delete the item \"call dad\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 22
+    await testRunner.ThenAsync("an error occurred with the message \"Cannot delete the item: unknown item\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -195,12 +193,12 @@ this.ScenarioInitialize(scenarioInfo);
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await RescheduleTodoItemFeature.FeatureSetupAsync();
+                await DeleteTodoItemFeature.FeatureSetupAsync();
             }
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await RescheduleTodoItemFeature.FeatureTearDownAsync();
+                await DeleteTodoItemFeature.FeatureTearDownAsync();
             }
         }
     }

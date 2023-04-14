@@ -31,6 +31,13 @@
                     </MudMenuItem>
                 }
 
+                <MudMenuItem
+                    Icon="@Icons.Material.Filled.Delete"
+                    IconColor="Color.Warning"
+                    OnClick="() => Delete(Item.Id)">
+                    Supprimer
+                </MudMenuItem>
+
             </MudMenu>
 
             <MudCheckBox
@@ -87,5 +94,7 @@
     private async Task MarkAsToDo(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
 
     private async Task Reschedule(Guid itemId, Temporality temporality) => await Mediator.Send(new TodoListState.RescheduleTodoItem(itemId, temporality));
+
+    private async Task Delete(Guid itemId) => await Mediator.Send(new TodoListState.DeleteItem(itemId));
 
 }

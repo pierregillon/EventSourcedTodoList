@@ -48,10 +48,22 @@ public class TodoItemSteps
         await _application.Dispatch(new RescheduleTodoItemCommand(itemId, temporality));
     }
 
+    [Given(@"the item ""(.*)"" has been deleted")]
+    [When(@"I delete the item ""(.*)""")]
+    public async Task WhenIDeleteTheItem(string itemDescription)
+    {
+        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+
+        await _application.Dispatch(new DeleteTodoItemCommand(itemId));
+    }
+
     [Then(@"the todo list of (.*) is")]
     public async Task ThenTheTodoListIs(Temporality temporality, Table table)
     {
-        var items = await _application.Dispatch(new ListTodoListItemsQuery(temporality));
+        var items = await _application.Dispatch(new ListTodoListItemsQuery(temporality))
+                    ?? throw new InvalidOperationException("Specflow: unable to load items");
+
+        Assert.Equal(table.RowCount, items.Count);
 
         for (var index = 0; index < table.Rows.Count; index++)
         {
@@ -91,7 +103,10 @@ public class TodoItemSteps
 
         var id = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
 
-        if (id is null) return null;
+        if (id is null)
+        {
+            return null;
+        }
 
         return new TodoItemId(id.Value);
     }

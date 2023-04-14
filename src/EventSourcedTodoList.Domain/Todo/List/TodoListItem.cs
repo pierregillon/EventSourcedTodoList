@@ -1,3 +1,3 @@
 namespace EventSourcedTodoList.Domain.Todo.List;
 
-public record TodoListItem(Guid Id, string Description, bool IsDone, Temporality Temporality);
+public record TodoListItem(Guid Id, string Description, bool IsDone, Temporality Temporality, bool IsDeleted);
