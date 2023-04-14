@@ -1,6 +1,5 @@
 @using EventSourcedTodoList.Domain.Todo.List
 @using EventSourcedTodoList.Actions
-
 @inherits BlazorState.BlazorStateComponent
 
 <MudTimeline
@@ -16,7 +15,8 @@
             Class="timeline-item"
             Color="isCurrent ? Color.Primary : Color.Default"
             Size="isCurrent ? Size.Large : Size.Small"
-            @onclick="() => ChangeCurrentTemporality(temporality)">
+            Style="cursor: pointer;"
+            @onmousedown="() => ChangeCurrentTemporality(temporality)">
 
             <MudText
                 Class="@(isCurrent ? "temporality important" : "temporality")"
@@ -35,9 +35,10 @@
     
     .mud-timeline-item.timeline-item > .mud-timeline-item-divider{
         min-height: 90px;
+        cursor: pointer;
     }
     
-    .temporality {
+    .temporality, .mud-timeline-item-dot.mud-timeline-dot-size-small {
         cursor: pointer;
     }
     
@@ -51,4 +52,5 @@
 
     private async Task ChangeCurrentTemporality(Temporality temporality)
         => await Mediator.Send(new TodoListState.ChangeCurrentTemporality(temporality));
+
 }
