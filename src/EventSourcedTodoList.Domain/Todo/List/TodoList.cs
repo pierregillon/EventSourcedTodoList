@@ -111,6 +111,20 @@ public static class TemporalityExtensions
         Temporality.ThisLife => "Cette vie",
         _ => throw new ArgumentOutOfRangeException(nameof(temporality), temporality, null)
     };
+
+    public static Temporality Next(this Temporality temporality)
+    {
+        var next = temporality + 1;
+        var temporalities = Enum.GetValues<Temporality>();
+        return temporalities.Contains(next) ? next : temporalities.Last();
+    }
+
+    public static Temporality Previous(this Temporality temporality)
+    {
+        var next = temporality - 1;
+        var temporalities = Enum.GetValues<Temporality>();
+        return temporalities.Contains(next) ? next : temporalities.First();
+    }
 }
 
 public record TodoItemDescriptionFixed(TodoListId Id, TodoItemId ItemId, ItemDescription PreviousItemDescription,
