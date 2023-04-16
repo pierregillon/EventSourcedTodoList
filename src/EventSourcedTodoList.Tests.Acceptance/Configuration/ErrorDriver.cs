@@ -1,6 +1,6 @@
 using TechTalk.SpecFlow;
 
-namespace EventSourcedTodoList.Tests.Acceptance;
+namespace EventSourcedTodoList.Tests.Acceptance.Configuration;
 
 public class ErrorDriver
 {
@@ -17,7 +17,10 @@ public class ErrorDriver
         }
         catch (Exception exception)
         {
-            if (!_scenarioInfo.Tags.Contains("ErrorHandling")) throw;
+            if (!_scenarioInfo.Tags.Contains("ErrorHandling"))
+            {
+                throw;
+            }
 
             _errors.Enqueue(exception);
         }
@@ -31,7 +34,10 @@ public class ErrorDriver
         }
         catch (Exception exception)
         {
-            if (!_scenarioInfo.Tags.Contains("ErrorHandling")) throw;
+            if (!_scenarioInfo.Tags.Contains("ErrorHandling"))
+            {
+                throw;
+            }
 
             _errors.Enqueue(exception);
 

@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using EventSourcedTodoList.Pages
+@inherits LayoutComponentBase
+@inject IDialogService Dialog
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -12,6 +14,11 @@
             Edge="Edge.Start"
             OnClick="@(e => DrawerToggle())"/>
         Mes tâches
+        <MudIconButton
+            Icon="@Icons.Material.Filled.Bolt"
+            OnClick="@(e => OpenDialog())"
+            Color="Color.Warning">
+        </MudIconButton>
     </MudAppBar>
 
     <MudDrawer @bind-Open="@_drawerOpen">
@@ -24,7 +31,10 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen = false;
+    bool _drawerOpen;
 
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
+
+    private void OpenDialog() => Dialog.Show<Wizard>("Préparation des tâches du jour", new DialogOptions { FullScreen = true, CloseButton = true });
+
 }

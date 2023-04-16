@@ -1,5 +1,5 @@
 .mud-input-control.compact .mud-icon-button {
-    padding: 1px;
+    padding: 1px 10px 1px 1px;
 }
 
 .mud-input-control.compact {
@@ -7,7 +7,7 @@
 }
 
 .mud-input-control.compact .mud-input > input.mud-input-root {
-    padding: 1px 0 1px 5px;
+    padding: 1px 0 1px 0px;
 }
 
 .mud-input-control.compact > .mud-input-control-input-container > div.mud-input.mud-input-text {

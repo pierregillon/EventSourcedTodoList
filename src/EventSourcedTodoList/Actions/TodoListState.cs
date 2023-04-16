@@ -13,7 +13,7 @@ public class TodoListState : State<TodoListState>
     {
     }
 
-    public record LoadTodoList(Temporality Temporality) : IAction;
+    public record LoadData : IAction;
 
     public record AddNewItem(string? Text) : IAction;
 

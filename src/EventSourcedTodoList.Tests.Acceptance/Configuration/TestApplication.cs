@@ -3,7 +3,7 @@ using EventSourcedTodoList.Domain.BuildingBlocks;
 using EventSourcedTodoList.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcedTodoList.Tests.Acceptance;
+namespace EventSourcedTodoList.Tests.Acceptance.Configuration;
 
 public class TestApplication
 {
@@ -19,10 +19,7 @@ public class TestApplication
             .BuildServiceProvider();
     }
 
-    private T GetService<T>() where T : notnull
-    {
-        return _serviceProvider.GetRequiredService<T>();
-    }
+    private T GetService<T>() where T : notnull => _serviceProvider.GetRequiredService<T>();
 
     public async Task Dispatch<TCommand>(TCommand command) where TCommand : ICommand
     {

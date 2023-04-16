@@ -172,17 +172,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 18
     await testRunner.WhenAsync("I reschedule the item \"call dad\" to this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
 #line 19
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table9, "Then ");
+    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table15, "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-                table10.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "call dad"});
 #line 21
-    await testRunner.ThenAsync("the todo list of this week is", ((string)(null)), table10, "Then ");
+    await testRunner.ThenAsync("the todo list of this week is", ((string)(null)), table16, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

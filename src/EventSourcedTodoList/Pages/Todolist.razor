@@ -28,6 +28,6 @@
     TodoListState State => GetState<TodoListState>();
 
     protected override async Task OnInitializedAsync()
-        => await Mediator.Send(new TodoListState.LoadTodoList(Temporality.ThisDay));
+        => await Mediator.Send(new TodoListState.LoadData());
 
 }

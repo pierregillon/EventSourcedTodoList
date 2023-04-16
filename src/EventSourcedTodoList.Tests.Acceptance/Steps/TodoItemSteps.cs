@@ -1,8 +1,9 @@
 using EventSourcedTodoList.Domain.Todo;
 using EventSourcedTodoList.Domain.Todo.List;
+using EventSourcedTodoList.Tests.Acceptance.Configuration;
 using TechTalk.SpecFlow;
 
-namespace EventSourcedTodoList.Tests.Acceptance;
+namespace EventSourcedTodoList.Tests.Acceptance.Steps;
 
 [Binding]
 public class TodoItemSteps
@@ -70,6 +71,7 @@ public class TodoItemSteps
             var item = items.ElementAt(index);
             var tableRow = table.Rows[index];
             foreach (var cell in tableRow)
+            {
                 if (cell.Key == "Description")
                 {
                     Assert.Equal(cell.Value, item.Description);
@@ -89,7 +91,36 @@ public class TodoItemSteps
                 {
                     throw new NotImplementedException("Unknown cell");
                 }
+            }
         }
+    }
+
+    [Then(@"the yesterday undone tasks are")]
+    public async Task ThenTheYesterdayUndoneTasksAre(Table table)
+    {
+        var tasks = await _application.Dispatch(new ListYesterdayUndoneTasksQuery())
+                    ?? throw new InvalidOperationException("Specflow: unable to load items");
+
+        var expectedTasks = table.Rows.Select(x => x["Description"]).ToArray();
+
+        Assert.Equal(
+            expectedTasks,
+            tasks.Select(x => x.Description)
+        );
+    }
+
+    [Then(@"the undone tasks from (.*) are")]
+    public async Task ThenTheUndoneTasksFromThisWeekAre(Temporality temporality, Table table)
+    {
+        var tasks = await _application.Dispatch(new ListUndoneTasksFromTemporalityCommand(temporality))
+                    ?? throw new InvalidOperationException("Specflow: unable to load items");
+
+        var expectedTasks = table.Rows.Select(x => x["Description"]).ToArray();
+
+        Assert.Equal(
+            expectedTasks,
+            tasks.Select(x => x.Description)
+        );
     }
 
     private async Task<TodoItemId?> FindItemId(string itemDescription)

@@ -143,14 +143,14 @@ this.ScenarioInitialize(scenarioInfo);
 #line 14
     await testRunner.AndAsync("I mark the item \"call dad\" as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
                             "Is done?"});
-                table7.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "call dad",
                             "false"});
 #line 15
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table7, "Then ");
+    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table13, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
