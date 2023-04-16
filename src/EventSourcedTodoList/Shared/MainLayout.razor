@@ -1,4 +1,4 @@
-﻿@using EventSourcedTodoList.Pages
+﻿@using EventSourcedTodoList.Pages.TodayTaskPreparation
 @inherits LayoutComponentBase
 @inject IDialogService Dialog
 
@@ -35,6 +35,6 @@
 
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
 
-    private void OpenDialog() => Dialog.Show<Wizard>("Préparation des tâches du jour", new DialogOptions { FullScreen = true, CloseButton = true });
+    private void OpenDialog() => Dialog.Show<TodayTaskPreparation>("Préparation des tâches du jour", new DialogOptions { FullScreen = true, CloseButton = true });
 
 }

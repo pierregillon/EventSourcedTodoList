@@ -1,18 +1,12 @@
 using BlazorState;
 using EventSourcedTodoList.Domain.Todo;
+using EventSourcedTodoList.Pages.TodayTaskPreparation.Steps;
 
-namespace EventSourcedTodoList.Actions;
+namespace EventSourcedTodoList.Pages.TodayTaskPreparation;
 
 public class TodayTaskPreparationState : State<TodayTaskPreparationState>
 {
-    public enum TodayTaskPreparationSteps
-    {
-        EndYesterdayTasks,
-        AddThisWeekTasks,
-        RemoveNotWanted
-    }
-
-    public TodayTaskPreparationSteps CurrentStep { get; set; }
+    public ITodayTaskPreparationStep? CurrentStep { get; set; }
 
     public IReadOnlyCollection<SelectableTodoItem> YesterdayUndoneTasks { get; set; } =
         Array.Empty<SelectableTodoItem>();

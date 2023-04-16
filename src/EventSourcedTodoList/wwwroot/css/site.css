@@ -13,3 +13,7 @@
 .mud-input-control.compact > .mud-input-control-input-container > div.mud-input.mud-input-text {
     margin-top: 3px !important;
 }
+
+.mud-divider.medium {
+    margin: 15px 0;
+}

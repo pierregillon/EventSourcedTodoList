@@ -1,0 +1,37 @@
+@inherits BlazorState.BlazorStateComponent
+
+<MudText Typo="Typo.h4">
+    Clôture des tâches de la veille
+</MudText>
+
+@if (State.YesterdayUndoneTasks.Any())
+{
+    <MudText>
+        Il vous reste des tâches d'hier.
+        Veuillez sélectionner celles que vous avez traitées.
+    </MudText>
+
+    <MudDivider Class="medium"/>
+
+    @foreach (var item in State.YesterdayUndoneTasks)
+    {
+        <MudCheckBox
+            T="bool"
+            Label="@item.Description"
+            Checked="@item.IsSelected"
+            CheckedChanged="isChecked => item.IsSelected = isChecked"
+            Class="compact"
+            Color="Color.Primary">
+        </MudCheckBox>
+    }
+}
+else
+{
+    <MudText>
+        Toutes vos tâches d'hier ont été finies. Vous pouvez aller à l'étape suivante 😀.
+    </MudText>
+}
+
+@code {
+    TodayTaskPreparationState State => GetState<TodayTaskPreparationState>();
+}

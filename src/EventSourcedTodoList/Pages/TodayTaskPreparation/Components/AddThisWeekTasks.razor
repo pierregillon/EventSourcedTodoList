@@ -1,0 +1,30 @@
+@inherits BlazorState.BlazorStateComponent
+
+<MudText Typo="Typo.h4">Choisir des tâches de la semaine</MudText>
+@if (State.ThisWeekUndoneTasks.Any())
+{
+    <MudText>Compléter vos tâches du jour en choisissant des tâches prévues cette semaine que vous comptez faire aujourd'hui.</MudText>
+    <MudDivider Class="medium"/>
+
+    foreach (var item in State.ThisWeekUndoneTasks)
+    {
+        <MudCheckBox
+            T="bool"
+            Label="@item.Description"
+            Checked="@item.IsSelected"
+            CheckedChanged="isChecked => item.IsSelected = isChecked"
+            Class="compact"
+            Color="Color.Primary">
+        </MudCheckBox>
+    }
+}
+else
+{
+    <MudText>
+        Aucune tâche disponible cette semaine. Vous pouvez aller à l'étape suivante 😀.
+    </MudText>
+}
+
+@code {
+    TodayTaskPreparationState State => GetState<TodayTaskPreparationState>();
+}
