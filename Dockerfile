@@ -14,4 +14,4 @@ RUN dotnet publish -c Release -o out
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /src/out .
-ENTRYPOINT ["dotnet", "TimeOignon.dll"]
+ENTRYPOINT ["dotnet", "TimeOnion.dll"]
