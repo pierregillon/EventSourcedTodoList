@@ -1,6 +1,6 @@
 # Time Onion
 
-This app is a smart **todo list** allowing to organize your tasks over a **time horizon** concept and **beneficits**, instead of date and priorities.
+This app is a smart **todo list** allowing to organize your tasks over a **time horizon** concept and **benefits**, instead of date and priorities.
 
 ## Domain and features
 
