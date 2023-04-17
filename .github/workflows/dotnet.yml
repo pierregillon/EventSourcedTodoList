@@ -1,0 +1,55 @@
+name: .NET
+
+env:
+  REGISTRY: rg.fr-par.scw.cloud/namespace-wizardly-kowalevski
+  IMAGE_NAME: time-onion/app
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_and_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        working-directory: src
+        run: dotnet restore
+      - name: Build
+        working-directory: src
+        run: dotnet build --no-restore
+      - name: Test
+        working-directory: src
+        run: dotnet test --no-build --verbosity normal
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    needs: build_and_tests
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: nologin
+          password: ${{ secrets.SCALEWAY_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
