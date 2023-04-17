@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOnion", "TimeOnion\TimeOnion.csproj", "{9BBF7AEB-8290-4B8C-8BA1-AD34589F882D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOnion.Domain", "TimeOnion.Domain\TimeOnion.Domain.csproj", "{432AEABC-5421-45EA-A5DE-0D317C69FD4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOnion.Tests.Acceptance", "TimeOnion.Tests.Acceptance\TimeOnion.Tests.Acceptance.csproj", "{4D419192-054E-4236-919E-7C1167BF7D4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOnion.Infrastructure", "TimeOnion.Infrastructure\TimeOnion.Infrastructure.csproj", "{0B174E49-6BC9-46DC-BD2D-D0911B9C8BF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{7A778201-7B6C-4B16-BFCE-70D1BEDA1E34}"
+	ProjectSection(SolutionItems) = preProject
+		..\Dockerfile = ..\Dockerfile
+		..\dev-stack\docker-compose.yml = ..\dev-stack\docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9BBF7AEB-8290-4B8C-8BA1-AD34589F882D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BBF7AEB-8290-4B8C-8BA1-AD34589F882D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BBF7AEB-8290-4B8C-8BA1-AD34589F882D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BBF7AEB-8290-4B8C-8BA1-AD34589F882D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432AEABC-5421-45EA-A5DE-0D317C69FD4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432AEABC-5421-45EA-A5DE-0D317C69FD4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432AEABC-5421-45EA-A5DE-0D317C69FD4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432AEABC-5421-45EA-A5DE-0D317C69FD4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D419192-054E-4236-919E-7C1167BF7D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D419192-054E-4236-919E-7C1167BF7D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D419192-054E-4236-919E-7C1167BF7D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D419192-054E-4236-919E-7C1167BF7D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B174E49-6BC9-46DC-BD2D-D0911B9C8BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B174E49-6BC9-46DC-BD2D-D0911B9C8BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B174E49-6BC9-46DC-BD2D-D0911B9C8BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B174E49-6BC9-46DC-BD2D-D0911B9C8BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

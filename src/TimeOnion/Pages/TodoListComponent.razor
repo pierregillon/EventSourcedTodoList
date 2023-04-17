@@ -1,0 +1,42 @@
+@using TimeOnion.Actions
+@inherits BlazorState.BlazorStateComponent
+
+<div>
+    @foreach (var item in State.Items)
+    {
+        <TaskItem Item="@item"></TaskItem>
+    }
+
+    <div class="d-flex">
+        <MudCheckBox
+            Class="compact fake"
+            Checked="@(false)"
+            Color="Color.Secondary">
+        </MudCheckBox>
+
+        <MudTextField
+            T="string"
+            InputMode="InputMode.text"
+            Text="@State.NewTodoItemDescription"
+            TextChanged="AddItemToDo"
+            TextUpdateSuppression="false"
+            Class="compact"
+            DisableUnderLine="true">
+        </MudTextField>
+    </div>
+</div>
+
+<style>
+    .fake.mud-input-control.mud-input-control-boolean-input {
+        margin-left: 26px;
+    }
+</style>
+
+@code {
+
+    TodoListState State => GetState<TodoListState>();
+
+    private async Task AddItemToDo(string itemDescription)
+        => await Mediator.Send(new TodoListState.AddNewItem(itemDescription));
+
+}

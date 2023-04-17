@@ -2,6 +2,6 @@ version: '3.1'
 services:
   api:
     build: ..
-    container_name: EventSourcedTodoList
+    container_name: TimeOnion
     ports:
       - "80:80"
