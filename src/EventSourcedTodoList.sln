@@ -8,6 +8,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcedTodoList.Tests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcedTodoList.Infrastructure", "EventSourcedTodoList.Infrastructure\EventSourcedTodoList.Infrastructure.csproj", "{0B174E49-6BC9-46DC-BD2D-D0911B9C8BF1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{7A778201-7B6C-4B16-BFCE-70D1BEDA1E34}"
+	ProjectSection(SolutionItems) = preProject
+		..\Dockerfile = ..\Dockerfile
+		..\dev-stack\docker-compose.yml = ..\dev-stack\docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
