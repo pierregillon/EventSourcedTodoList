@@ -3,6 +3,7 @@ name: .NET
 env:
   REGISTRY: rg.fr-par.scw.cloud/namespace-wizardly-kowalevski
   IMAGE_NAME: time-onion/app
+  SCALEWAY_REGION: fr-par
 
 on:
   push:
@@ -53,3 +54,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          
+      - name: Promote
+        run: |
+          curl -X PATCH https://api.scaleway.com/containers/v1beta1/regions/${{ env.SCALEWAY_REGION }}/containers/${{ secrets.SCALEWAY_CONTAINER_ID }} -d '{"registry_image":"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"}' -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json'
