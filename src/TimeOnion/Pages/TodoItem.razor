@@ -18,7 +18,7 @@
                     <MudMenuItem
                         Icon="@Icons.Material.Filled.Redo"
                         OnClick="() => Reschedule(Item.Id, NextTemporality)">
-                        Déplacer à @NextTemporality.ToText().ToLower()
+                        Reporter à @NextTemporality.ToText().ToLower()
                     </MudMenuItem>
                 }
 
@@ -27,7 +27,7 @@
                     <MudMenuItem
                         Icon="@Icons.Material.Filled.Undo"
                         OnClick="() => Reschedule(Item.Id, PreviousTemporality)">
-                        Déplacer à @PreviousTemporality.ToText().ToLower()
+                        Avancer à @PreviousTemporality.ToText().ToLower()
                     </MudMenuItem>
                 }
 
