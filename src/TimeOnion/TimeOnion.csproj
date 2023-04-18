@@ -7,18 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazor-State" Version="8.0.1"/>
-        <PackageReference Include="MudBlazor" Version="6.2.1"/>
+        <PackageReference Include="Blazor-State" Version="8.0.1" />
+        <PackageReference Include="MudBlazor" Version="6.2.1" />
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TimeOnion.Domain\TimeOnion.Domain.csproj"/>
-        <ProjectReference Include="..\TimeOnion.Infrastructure\TimeOnion.Infrastructure.csproj"/>
+        <ProjectReference Include="..\TimeOnion.Domain\TimeOnion.Domain.csproj" />
+        <ProjectReference Include="..\TimeOnion.Infrastructure\TimeOnion.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
     </ItemGroup>
 
 </Project>
