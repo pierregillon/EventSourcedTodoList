@@ -1,3 +1,5 @@
+[![.NET](https://github.com/pierregillon/TimeOnion/actions/workflows/dotnet.yml/badge.svg)](https://github.com/pierregillon/TimeOnion/actions/workflows/dotnet.yml)
+
 # Time Onion
 
 This app is a smart **todo list** allowing to organize your tasks over a **time horizon** concept and **benefits**, instead of date and priorities.
