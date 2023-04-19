@@ -1,5 +1,3 @@
-using System.Text.Json;
-using Microsoft.Extensions.Options;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Infrastructure;
 
@@ -14,9 +12,6 @@ public static class ReplayAllDomainEventsExtensions
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<WebApplication>>();
         var eventPublisher = scope.ServiceProvider.GetRequiredService<IDomainEventPublisher>();
         var eventStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
-        var configuration = scope.ServiceProvider.GetRequiredService<IOptions<S3StorageConfiguration>>();
-
-        Console.WriteLine(JsonSerializer.Serialize(configuration));
         
         logger.LogInformation("Loading existing events ...");
         var allEvents = await eventStore.GetAll();
