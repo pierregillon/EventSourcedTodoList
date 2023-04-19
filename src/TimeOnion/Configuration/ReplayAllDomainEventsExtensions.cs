@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Options;
+using Minio;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Infrastructure;
 
@@ -17,6 +18,17 @@ public static class ReplayAllDomainEventsExtensions
         var configuration = scope.ServiceProvider.GetRequiredService<IOptions<S3StorageConfiguration>>().Value;
 
         Console.WriteLine(JsonSerializer.Serialize(configuration));
+
+        var client = new MinioClient()
+            .WithEndpoint(configuration.EndPoint)
+            .WithCredentials(configuration.AccessKey, configuration.SecretKey)
+            .WithRegion(configuration.Region)
+            .WithSSL()
+            .Build();
+
+        var buckets = await client.ListBucketsAsync();
+
+        Console.WriteLine(JsonSerializer.Serialize(buckets));
 
         logger.LogInformation("Loading existing events ...");
         var allEvents = await eventStore.GetAll();
