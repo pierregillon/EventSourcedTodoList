@@ -13,7 +13,9 @@ public static class DependencyInjection
         services
             .AddScoped<ITodoListRepository, TodoListRepository>()
             .AddSingleton<IReadModelDatabase, InMemoryReadModelDatabase>()
+            .AddSingleton<DomainEventsCache>()
             .AddScoped<IEventStore, S3StorageEventStore>()
+            .Decorate<IEventStore, CachedEventStore>()
             .AddScoped<MinioClient>(x =>
             {
                 var configuration = x.GetRequiredService<IOptions<S3StorageConfiguration>>().Value;

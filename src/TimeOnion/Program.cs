@@ -24,6 +24,7 @@ builder.Services
     .AddDomain()
     .AddInfrastructure();
 
+builder.Services.AddHostedService<SaveUncommittedEventsHostedService>();
 
 var app = builder.Build();
 

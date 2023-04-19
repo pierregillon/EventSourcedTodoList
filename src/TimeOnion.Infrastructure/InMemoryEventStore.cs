@@ -9,7 +9,7 @@ public class InMemoryEventStore : IEventStore
     public Task<IReadOnlyCollection<IDomainEvent>> GetAll() =>
         Task.FromResult<IReadOnlyCollection<IDomainEvent>>(_domainEvents);
 
-    public Task AddRange(IEnumerable<IDomainEvent> domainEvents)
+    public Task Save(IEnumerable<IDomainEvent> domainEvents)
     {
         _domainEvents.AddRange(domainEvents);
 

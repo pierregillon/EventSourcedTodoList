@@ -44,7 +44,7 @@ public class S3StorageEventStore : IEventStore
         return events.Select(RehydrateEvent).ToArray();
     }
 
-    public async Task AddRange(IEnumerable<IDomainEvent> domainEvents)
+    public async Task Save(IEnumerable<IDomainEvent> domainEvents)
     {
         var allEvents = (await GetAll()).Concat(domainEvents);
 

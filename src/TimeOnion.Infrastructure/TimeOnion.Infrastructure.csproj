@@ -7,14 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Minio" Version="4.0.7"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.3.23174.8"/>
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0-preview.3.23174.8"/>
-        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0-preview.3.23174.8"/>
+        <PackageReference Include="Minio" Version="4.0.7" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.3.23174.8" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0-preview.3.23174.8" />
+        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0-preview.3.23174.8" />
+        <PackageReference Include="Scrutor" Version="4.2.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TimeOnion.Domain\TimeOnion.Domain.csproj"/>
+        <ProjectReference Include="..\TimeOnion.Domain\TimeOnion.Domain.csproj" />
     </ItemGroup>
 
 </Project>

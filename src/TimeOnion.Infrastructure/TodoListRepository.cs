@@ -22,7 +22,7 @@ public class TodoListRepository : ITodoListRepository
 
     public async Task Save(TodoList aggregate)
     {
-        await _eventStore.AddRange(aggregate.UncommittedChanges);
+        await _eventStore.Save(aggregate.UncommittedChanges);
         await _domainEventPublisher.Publish(aggregate.UncommittedChanges);
         aggregate.MarkAsCommitted();
     }

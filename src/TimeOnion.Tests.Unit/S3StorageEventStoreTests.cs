@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Minio;
@@ -11,13 +12,14 @@ namespace TimeOnion.Tests.Unit;
 public class S3StorageEventStoreTests
 {
     private readonly S3StorageConfiguration _configuration;
-    private readonly IEventStore _eventStore;
+    private readonly S3StorageEventStore _eventStore;
     private readonly MinioClient _minio;
 
     public S3StorageEventStoreTests()
     {
         var serviceProvider = new ServiceCollection()
             .AddInfrastructure()
+            .AddScoped<IConfiguration>(_ => new ConfigurationManager().AddInMemoryCollection().Build())
             .Configure<S3StorageConfiguration>(configuration =>
             {
                 configuration.EndPoint = "s3.fr-par.scw.cloud";
@@ -30,7 +32,7 @@ public class S3StorageEventStoreTests
             .BuildServiceProvider();
 
         _minio = serviceProvider.GetRequiredService<MinioClient>();
-        _eventStore = serviceProvider.GetRequiredService<IEventStore>();
+        _eventStore = ActivatorUtilities.CreateInstance<S3StorageEventStore>(serviceProvider);
         _configuration = serviceProvider.GetRequiredService<IOptions<S3StorageConfiguration>>().Value;
     }
 
@@ -47,7 +49,7 @@ public class S3StorageEventStoreTests
     {
         try
         {
-            await _eventStore.AddRange(new IDomainEvent[]
+            await _eventStore.Save(new IDomainEvent[]
             {
                 new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisDay)
             });
@@ -76,7 +78,7 @@ public class S3StorageEventStoreTests
         {
             var todoItemAdded = new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisWeek);
 
-            await _eventStore.AddRange(new IDomainEvent[]
+            await _eventStore.Save(new IDomainEvent[]
             {
                 todoItemAdded
             });
