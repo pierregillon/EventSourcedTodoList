@@ -1,7 +1,7 @@
 using System.Reflection;
 using BlazorState;
-using Bootstrap.WebApi.Configuration;
 using MudBlazor.Services;
+using TimeOnion.Configuration;
 using TimeOnion.Domain;
 using TimeOnion.Infrastructure;
 
@@ -39,5 +39,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+await app.ReplayAllDomainEvents();
 
 app.Run();

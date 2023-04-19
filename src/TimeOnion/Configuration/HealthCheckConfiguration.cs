@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Bootstrap.WebApi.Configuration;
+namespace TimeOnion.Configuration;
 
 public static class HealthCheckConfiguration
 {

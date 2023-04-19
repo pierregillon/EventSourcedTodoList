@@ -21,7 +21,7 @@ public class S3StorageEventStore : IEventStore
         _configuration = configuration.Value;
     }
 
-    public async Task<IEnumerable<IDomainEvent>> GetAll()
+    public async Task<IReadOnlyCollection<IDomainEvent>> GetAll()
     {
         try
         {
@@ -33,7 +33,7 @@ public class S3StorageEventStore : IEventStore
         }
         catch (ObjectNotFoundException)
         {
-            return Enumerable.Empty<IDomainEvent>();
+            return Array.Empty<IDomainEvent>();
         }
 
         var json = await File.ReadAllTextAsync(TemporaryFilePath);
