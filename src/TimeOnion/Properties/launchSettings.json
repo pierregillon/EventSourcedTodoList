@@ -1,12 +1,4 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:65320",
-      "sslPort": 44302
-    }
-  },
   "profiles": {
     "http": {
       "commandName": "Project",
@@ -14,23 +6,10 @@
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5140",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:7071;http://localhost:5140",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "S3StorageConfiguration__AccessKey": "SCWFZCK0CB6ZCFJJ6NS5",
+        "S3StorageConfiguration__SecretKey": "dd53bc39-19ea-401f-998e-7e71801dc8e7",
+        "S3StorageConfiguration__ObjectName": "dev-domain-events.json"
       }
     }
   }

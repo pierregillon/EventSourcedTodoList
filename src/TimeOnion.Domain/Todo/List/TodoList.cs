@@ -122,8 +122,12 @@ public class TodoList : EventSourcedAggregate<TodoListId>
 
 public record TodoItemDeleted(TodoItemId ItemId) : IDomainEvent;
 
-public record TodoItemRescheduled(TodoListId Id, TodoItemId ItemId, Temporality PreviousTemporality,
-    Temporality NewTemporality) : IDomainEvent;
+public record TodoItemRescheduled(
+    TodoListId Id,
+    TodoItemId ItemId,
+    Temporality PreviousTemporality,
+    Temporality NewTemporality
+) : IDomainEvent;
 
 public enum Temporality
 {
@@ -163,8 +167,12 @@ public static class TemporalityExtensions
     }
 }
 
-public record TodoItemDescriptionFixed(TodoListId Id, TodoItemId ItemId, ItemDescription PreviousItemDescription,
-    ItemDescription NewItemDescription) : IDomainEvent;
+public record TodoItemDescriptionFixed(
+    TodoListId Id,
+    TodoItemId ItemId,
+    ItemDescription PreviousItemDescription,
+    ItemDescription NewItemDescription
+) : IDomainEvent;
 
 public record ItemReadyTodo(TodoListId Id, TodoItemId ItemId) : IDomainEvent;
 

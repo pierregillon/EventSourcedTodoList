@@ -1,0 +1,100 @@
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Minio;
+using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.List;
+using TimeOnion.Infrastructure;
+
+namespace TimeOnion.Tests.Unit;
+
+public class S3StorageEventStoreTests
+{
+    private readonly S3StorageConfiguration _configuration;
+    private readonly IEventStore _eventStore;
+    private readonly MinioClient _minio;
+
+    public S3StorageEventStoreTests()
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddInfrastructure()
+            .Configure<S3StorageConfiguration>(configuration =>
+            {
+                configuration.EndPoint = "s3.fr-par.scw.cloud";
+                configuration.Region = "fr-par";
+                configuration.AccessKey = "";
+                configuration.SecretKey = "";
+                configuration.BucketName = "time-onion-bucket";
+                configuration.ObjectName = Guid.NewGuid().ToString();
+            })
+            .BuildServiceProvider();
+
+        _minio = serviceProvider.GetRequiredService<MinioClient>();
+        _eventStore = serviceProvider.GetRequiredService<IEventStore>();
+        _configuration = serviceProvider.GetRequiredService<IOptions<S3StorageConfiguration>>().Value;
+    }
+
+    [Fact(Skip = "infra")]
+    public async Task Unknown_object_does_not_throw_error_on_getting_events()
+    {
+        var domainEvents = await _eventStore.GetAll();
+
+        domainEvents.Should().BeEmpty();
+    }
+
+    [Fact(Skip = "infra")]
+    public async Task Adding_domain_events_on_unknown_object_name_creates_it()
+    {
+        try
+        {
+            await _eventStore.AddRange(new IDomainEvent[]
+            {
+                new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisDay)
+            });
+
+            var stat = await _minio.StatObjectAsync(new StatObjectArgs()
+                .WithBucket(_configuration.BucketName)
+                .WithObject(_configuration.ObjectName)
+            );
+
+            stat.Should().NotBeNull();
+        }
+        finally
+        {
+            await _minio
+                .RemoveObjectAsync(new RemoveObjectArgs()
+                    .WithBucket(_configuration.BucketName)
+                    .WithObject(_configuration.ObjectName)
+                );
+        }
+    }
+
+    [Fact(Skip = "infra")]
+    public async Task Added_domain_events_are_correctly_retrieved()
+    {
+        try
+        {
+            var todoItemAdded = new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisWeek);
+
+            await _eventStore.AddRange(new IDomainEvent[]
+            {
+                todoItemAdded
+            });
+
+            var domainEvents = await _eventStore.GetAll();
+
+            domainEvents
+                .Should()
+                .ContainEquivalentOf(todoItemAdded)
+                .And.HaveCount(1);
+        }
+        finally
+        {
+            await _minio
+                .RemoveObjectAsync(new RemoveObjectArgs()
+                    .WithBucket(_configuration.BucketName)
+                    .WithObject(_configuration.ObjectName)
+                );
+        }
+    }
+}

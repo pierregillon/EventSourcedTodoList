@@ -9,6 +9,14 @@
     <ItemGroup>
         <ProjectReference Include="..\TimeOnion.Domain\TimeOnion.Domain.csproj"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.2.23128.3"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="6.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Minio">
+            <HintPath>..\..\..\..\..\.nuget\packages\minio\4.0.7\lib\netstandard2.0\Minio.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>
