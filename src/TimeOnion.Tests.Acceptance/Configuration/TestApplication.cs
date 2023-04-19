@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TimeOnion.Domain;
 using TimeOnion.Domain.BuildingBlocks;
@@ -14,8 +15,10 @@ public class TestApplication
     {
         _errorDriver = errorDriver;
         _serviceProvider = new ServiceCollection()
+            .AddScoped<IConfiguration>(_ => new ConfigurationBuilder().Build())
             .AddDomain()
             .AddInfrastructure()
+            .AddSingleton<IEventStore, InMemoryEventStore>()
             .BuildServiceProvider();
     }
 
