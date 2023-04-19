@@ -60,6 +60,6 @@ jobs:
 
       - name: Promote
         run: |
-          containerId=$(curl ${{ env.SCALEWAY_CONTAINER_BASE_ROUTE }} -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json' | jq '.containers[] | select(.name|test("${{ env.SCALEWAY_CONTAINER_NAME }}")) | .id')
+          containerId=$(curl ${{ env.SCALEWAY_CONTAINER_BASE_ROUTE }} -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json' | jq '.containers[] | select(.name|test("${{ env.SCALEWAY_CONTAINER_NAME }}")) | .id' | cut -d '"' -f 2)
           echo $containerId
           curl -X PATCH ${{ env.SCALEWAY_CONTAINER_BASE_ROUTE }}/$containerId -d '{"registry_image":"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"}' -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json'
