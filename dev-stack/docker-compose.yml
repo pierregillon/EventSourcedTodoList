@@ -3,5 +3,9 @@ services:
   api:
     build: ..
     container_name: TimeOnion
+    environment:
+      S3StorageConfiguration__AccessKey: xx
+      S3StorageConfiguration__SecretKey: xx
+      S3StorageConfiguration__ObjectName: xx
     ports:
       - "80:80"

@@ -3,7 +3,8 @@ name: .NET
 env:
   REGISTRY: rg.fr-par.scw.cloud/namespace-wizardly-kowalevski
   IMAGE_NAME: time-onion/app
-  SCALEWAY_REGION: fr-par
+  SCALEWAY_CONTAINER_NAME: time-onion-app
+  SCALEWAY_CONTAINER_BASE_ROUTE: https://api.scaleway.com/containers/v1beta1/regions/fr-par/containers
 
 on:
   push:
@@ -56,7 +57,9 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          
+
       - name: Promote
         run: |
-          curl -X PATCH https://api.scaleway.com/containers/v1beta1/regions/${{ env.SCALEWAY_REGION }}/containers/${{ secrets.SCALEWAY_CONTAINER_ID }} -d '{"registry_image":"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"}' -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json'
+          containerId=$(curl ${{ env.SCALEWAY_CONTAINER_BASE_ROUTE }} -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json' | jq '.containers[] | select(.name|test("${{ env.SCALEWAY_CONTAINER_NAME }}")) | .id')
+          echo $containerId
+          curl -X PATCH ${{ env.SCALEWAY_CONTAINER_BASE_ROUTE }}/$containerId -d '{"registry_image":"${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"}' -H 'accept: application/json' -H 'X-Auth-Token: ${{ secrets.SCALEWAY_TOKEN }}' -H 'Content-Type: application/json'
