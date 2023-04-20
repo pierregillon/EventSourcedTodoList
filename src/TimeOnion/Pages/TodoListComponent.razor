@@ -4,7 +4,7 @@
 
 @if (TodoList is not null)
 {
-    <MudContainer MaxWidth="MaxWidth.Small">
+    <div class="todolist">
 
         <MudText Typo="Typo.h4">@TodoList.Name</MudText>
 
@@ -15,14 +15,14 @@
             {
                 <TodoListItemComponent Item="@item"></TodoListItemComponent>
             }
-    
+
             <div class="d-flex">
                 <MudCheckBox
                     Class="compact fake"
                     Checked="@(false)"
                     Color="Color.Secondary">
                 </MudCheckBox>
-    
+
                 <MudTextField
                     T="string"
                     InputMode="InputMode.text"
@@ -35,12 +35,16 @@
             </div>
         </div>
 
-    </MudContainer>
+    </div>
 }
 
 <style>
     .fake.mud-input-control.mud-input-control-boolean-input {
         margin-left: 26px;
+    }
+    
+    .todolist {
+        flex-grow: 1;
     }
 </style>
 
@@ -53,4 +57,5 @@
 
     private async Task AddItemToDo(TodoListId listId, string itemDescription)
         => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
+
 }
