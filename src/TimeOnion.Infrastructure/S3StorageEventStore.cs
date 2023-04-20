@@ -83,15 +83,21 @@ public class S3StorageEventStore : IEventStore
             throw new InvalidOperationException($"Unable to rehydrate the event {storedEvent.Type}");
         }
 
-        return (IDomainEvent)(storedEvent.JsonData.Deserialize(type)
+        var domainEvent = (IDomainEvent)(storedEvent.JsonData.Deserialize(type)
             ?? throw new InvalidOperationException($"Unable to deserialize the event {storedEvent.Type}"));
+
+        domainEvent.Version = storedEvent.Version;
+        domainEvent.CreatedAt = storedEvent.CreatedAt;
+
+        return domainEvent;
     }
 
-    public record StoredEvent(Guid AggregateId, string Type, DateTime Date, JsonElement JsonData)
+    public record StoredEvent(Guid AggregateId, string Type, int Version, DateTime CreatedAt, JsonElement JsonData)
     {
         public static StoredEvent From(IDomainEvent domainEvent, IClock clock) => new(
             domainEvent.AggregateId,
             domainEvent.GetType().Name,
+            domainEvent.Version,
             clock.Now(),
             JsonSerializer.SerializeToElement(domainEvent, domainEvent.GetType())
         );

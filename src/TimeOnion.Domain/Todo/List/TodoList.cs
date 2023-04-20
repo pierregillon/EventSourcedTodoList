@@ -9,23 +9,26 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     private readonly List<TodoListItem> _items = new();
     private TodoListName _name = default!;
 
-    private TodoList(TodoListId id, IEnumerable<IDomainEvent> eventHistory) : base(id)
+    private TodoList(TodoListId id) : base(id)
     {
-        foreach (var domainEvent in eventHistory)
-        {
-            Apply(domainEvent);
-        }
     }
 
     public static TodoList New(TodoListName name)
     {
         var todoListId = TodoListId.New();
-        var todoList = new TodoList(todoListId, Enumerable.Empty<IDomainEvent>());
+        var todoList = new TodoList(todoListId);
         todoList.StoreEvent(new TodoListCreated(todoListId, name));
         return todoList;
     }
 
-    public static TodoList Rehydrate(TodoListId id, IEnumerable<IDomainEvent> eventHistory) => new(id, eventHistory);
+    public static TodoList Rehydrate(TodoListId id, IReadOnlyCollection<IDomainEvent> eventHistory)
+    {
+        var todoList = new TodoList(id);
+
+        todoList.LoadFromHistory(eventHistory);
+
+        return todoList;
+    }
 
     public void Rename(TodoListName newName)
     {
