@@ -155,14 +155,14 @@ await this.FeatureBackgroundAsync();
 #line 16
     await testRunner.WhenAsync("I mark the item \"call dad\" in my personal list as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
                             "Is done?"});
-                table15.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "call dad",
                             "true"});
 #line 17
-    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table15, "Then ");
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table17, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

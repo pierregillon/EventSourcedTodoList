@@ -91,6 +91,8 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         StoreEvent(new TodoItemDeleted(Id, itemId));
     }
 
+    public void Delete() => StoreEvent(new TodoListDeleted(Id));
+
     protected sealed override void Apply(IDomainEvent domainEvent)
     {
         TodoListItem item;
@@ -136,6 +138,8 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         }
     }
 }
+
+public record TodoListDeleted(TodoListId Id) : TodoListDomainEvent(Id);
 
 public record TodoListRenamed(TodoListId Id, TodoListName PreviousName, TodoListName NewName) : TodoListDomainEvent(Id);
 

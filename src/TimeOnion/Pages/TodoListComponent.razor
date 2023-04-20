@@ -6,18 +6,27 @@
 {
     <div class="todolist">
 
-        @* <MudText Typo="Typo.h4">@TodoList.Name</MudText> *@
+        <div class="title-actions">
+            <MudTextField
+                T="string"
+                InputMode="InputMode.text"
+                Text="@TodoList.Name"
+                TextChanged="newName => Rename(TodoList.Id, newName)"
+                TextUpdateSuppression="false"
+                DebounceInterval="1000"
+                Class="compact title"
+                DisableUnderLine="true">
+            </MudTextField>
 
-        <MudTextField
-            T="string"
-            InputMode="InputMode.text"
-            Text="@TodoList.Name"
-            TextChanged="newName => Rename(TodoList.Id, newName)"
-            TextUpdateSuppression="false"
-            DebounceInterval="1000"
-            Class="compact title"
-            DisableUnderLine="true">
-        </MudTextField>
+            <MudTooltip Text="Supprimer la liste">
+                <MudIconButton
+                    Class="delete-button"
+                    Icon="@Icons.Material.Filled.Delete"
+                    Color="Color.Error"
+                    OnClick="() => Delete(TodoList.Id)">
+                </MudIconButton>
+            </MudTooltip>
+        </div>
 
         <MudDivider Class="medium"/>
 
@@ -61,6 +70,22 @@
     .title .mud-input > input {
         font-size: 30px;
     }
+    
+    .title-actions {
+         display: flex;
+         align-items: self-end;
+         justify-content: center;
+         gap: 20px;
+         margin-bottom: 30px;
+     }
+     
+     .delete-button {
+        opacity: 0;
+     }
+     
+     .title-actions:hover .delete-button {
+        opacity: 1;
+     }
 </style>
 
 @code {
@@ -75,5 +100,8 @@
 
     private async Task Rename(TodoListId todoListId, string newName)
         => await Mediator.Send(new TodoListState.RenameTodoList(todoListId, newName));
+
+    private async Task Delete(TodoListId todoListId)
+        => await Mediator.Send(new TodoListState.DeleteTodoList(todoListId));
 
 }

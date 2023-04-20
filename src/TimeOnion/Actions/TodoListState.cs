@@ -32,4 +32,6 @@ public class TodoListState : State<TodoListState>
     public record DeleteItem(TodoListId ListId, TodoItemId ItemId) : IAction;
 
     public record RenameTodoList(TodoListId ListId, string NewName) : IAction;
+
+    public record DeleteTodoList(TodoListId ListId) : IAction;
 }

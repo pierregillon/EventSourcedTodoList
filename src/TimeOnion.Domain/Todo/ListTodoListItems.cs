@@ -8,6 +8,7 @@ public record ListTodoListsQuery(Temporality Temporality) : IQuery<IReadOnlyColl
 internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IReadOnlyCollection<TodoListReadModel>>,
     IDomainEventListener<TodoListCreated>,
     IDomainEventListener<TodoListRenamed>,
+    IDomainEventListener<TodoListDeleted>,
     IDomainEventListener<TodoItemAdded>,
     IDomainEventListener<TodoItemCompleted>,
     IDomainEventListener<ItemReadyTodo>,
@@ -30,6 +31,9 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
         x => x.Id == domainEvent.Id,
         x => x with { Name = domainEvent.NewName.Value }
     );
+
+    public async Task On(TodoListDeleted domainEvent) =>
+        await _database.Delete<TodoListReadModel>(x => x.Id == domainEvent.Id);
 
     public async Task On(TodoItemAdded domainEvent)
     {

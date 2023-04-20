@@ -156,12 +156,12 @@ await this.FeatureBackgroundAsync();
 #line 16
     await testRunner.WhenAsync("I fix description of the item \"call dad\" to \"call daddy\" in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-                table7.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "call daddy"});
 #line 17
-    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table7, "Then ");
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table9, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

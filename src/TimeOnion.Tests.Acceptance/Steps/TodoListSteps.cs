@@ -26,6 +26,14 @@ public class TodoListSteps
         await _application.Dispatch(() => new RenameTodoListCommand(listId, new TodoListName(newListName)));
     }
 
+    [When(@"I delete my (.*) todo list")]
+    public async Task WhenIDeleteMyPersonalTodoList(string listName)
+    {
+        var listId = await FindListId(listName) ?? TodoListId.New();
+
+        await _application.Dispatch(new DeleteTodoListCommand(listId));
+    }
+
     [Then(@"the todo list are")]
     public async Task ThenTheTodoListAre(Table table)
     {

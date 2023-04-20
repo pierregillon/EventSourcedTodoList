@@ -55,4 +55,23 @@ public class InMemoryReadModelDatabase : IReadModelDatabase
 
         return Task.CompletedTask;
     }
+
+    public Task Delete<T>(Predicate<T> predicate)
+    {
+        if (!_elements.TryGetValue(typeof(T), out var list))
+        {
+            throw new InvalidOperationException("Cannot update element: list was not found");
+        }
+
+        for (var index = 0; index < list.Count; index++)
+        {
+            var element = (T)list[index]!;
+            if (predicate(element))
+            {
+                list.Remove(element);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
 }
