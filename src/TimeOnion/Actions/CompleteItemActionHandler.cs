@@ -24,7 +24,7 @@ public class CompleteItemActionHandler : ActionHandler<TodoListState.MarkItemAsD
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(action.ItemId));
+        await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(action.ListId, action.ItemId));
 
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
 

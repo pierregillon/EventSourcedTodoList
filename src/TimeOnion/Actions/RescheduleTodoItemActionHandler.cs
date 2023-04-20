@@ -25,6 +25,7 @@ public class RescheduleTodoItemActionHandler : ActionHandler<TodoListState.Resch
 
         var command =
             new RescheduleTodoItemCommand(
+                action.ListId,
                 action.ItemId,
                 action.Temporality
             );

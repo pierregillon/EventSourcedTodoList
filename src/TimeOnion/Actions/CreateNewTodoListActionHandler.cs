@@ -1,15 +1,16 @@
 using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
+using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Actions;
 
-public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
+public class CreateNewTodoListActionHandler : ActionHandler<TodoListState.CreateNewTodoList>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public DeleteItemActionHandler(
+    public CreateNewTodoListActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -19,11 +20,11 @@ public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
         _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.DeleteItem action, CancellationToken aCancellationToken)
+    public override async Task Handle(TodoListState.CreateNewTodoList aAction, CancellationToken aCancellationToken)
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+        await _commandDispatcher.Dispatch(new CreateNewTodoListCommand(new TodoListName("Nouvelle todo liste")));
 
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
     }

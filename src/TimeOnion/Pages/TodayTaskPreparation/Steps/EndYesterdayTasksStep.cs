@@ -31,7 +31,7 @@ public class EndYesterdayTasksStep : ITodayTaskPreparationStep
 
         foreach (var item in itemToMarkAsDone)
         {
-            await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(item.ItemId));
+            await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(item.ListId, item.ItemId));
         }
     }
 }

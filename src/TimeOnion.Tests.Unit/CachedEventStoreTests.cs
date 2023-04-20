@@ -45,7 +45,7 @@ public class CachedEventStoreTests
     {
         await _cache.Save(new[]
         {
-            new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisMonth)
+            new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new ItemDescription("test"), Temporality.ThisMonth)
         });
 
         await _decorated
@@ -56,7 +56,8 @@ public class CachedEventStoreTests
     [Fact]
     public async Task Saving_uncommitted_events_calls_decorated()
     {
-        var todoItemAdded = new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisMonth);
+        var todoItemAdded = new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new ItemDescription("test"),
+            Temporality.ThisMonth);
 
         await _decorated.Save(new[]
         {

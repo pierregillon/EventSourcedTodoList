@@ -3,20 +3,23 @@ As a user
 I want to delete a todo item
 In order to stop seeing it because it is no longer a item to do
 
+Background:
+    Given a personal todo list has been created
+
 @ErrorHandling
 Scenario: Cannot delete an unknown item
-    When I delete the item "call dad"
+    When I delete the item "call dad" on my personal list
     Then an error occurred with the message "Cannot delete the item: unknown item"
 
 Scenario: Deleted item are not listed anymore
-    Given the item "call dad" has been added to do this day
-    When I delete the item "call dad"
-    Then the todo list of this day is
+    Given the item "call dad" has been added to do this day in my personal list
+    When I delete the item "call dad" on my personal list
+    Then my personal todo list of this day is
       | Description |
 
 @ErrorHandling
 Scenario: Cannot delete an already deleted item
-    Given the item "call dad" has been added to do this day
-    And the item "call dad" has been deleted
-    When I delete the item "call dad"
+    Given the item "call dad" has been added to do this day in my personal list
+    And the item "call dad" has been deleted on my personal list
+    When I delete the item "call dad" on my personal list
     Then an error occurred with the message "Cannot delete the item: unknown item"

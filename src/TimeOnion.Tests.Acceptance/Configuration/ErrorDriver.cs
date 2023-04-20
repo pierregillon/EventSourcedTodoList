@@ -1,3 +1,4 @@
+using FluentAssertions;
 using TechTalk.SpecFlow;
 
 namespace TimeOnion.Tests.Acceptance.Configuration;
@@ -47,12 +48,12 @@ public class ErrorDriver
 
     public void AssertErrorOccurredWithMessage(string errorMessage)
     {
-        Assert.NotEmpty(_errors);
+        _errors.Should().NotBeEmpty();
 
         var lastException = _errors.Dequeue();
 
-        Assert.NotNull(lastException);
-        Assert.Equal(errorMessage, lastException.Message);
+        lastException.Should().NotBeNull();
+        lastException.Message.Should().Be(errorMessage);
     }
 
     public void AssertNoErrorOccurred() => Assert.Empty(_errors);

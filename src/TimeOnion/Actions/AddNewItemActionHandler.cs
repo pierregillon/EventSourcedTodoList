@@ -2,6 +2,7 @@ using BlazorState;
 using MediatR;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
+using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Actions;
 
@@ -24,7 +25,8 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.Text, state.CurrentTemporality));
+        await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.ListId, new ItemDescription(action.Text),
+            state.CurrentTemporality));
 
         state.NewTodoItemDescription = string.Empty;
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));

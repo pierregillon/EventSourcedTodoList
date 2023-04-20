@@ -26,6 +26,7 @@ public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixIt
 
         var command =
             new FixItemDescriptionCommand(
+                action.ListId,
                 action.ItemId,
                 new ItemDescription(action.NewDescription)
             );

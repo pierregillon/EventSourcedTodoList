@@ -3,7 +3,7 @@ using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Domain.Todo;
 
-public record DeleteTodoItemCommand(TodoItemId ItemId) : ICommand;
+public record DeleteTodoItemCommand(TodoListId TodoListId, TodoItemId ItemId) : ICommand;
 
 public class DeleteTodoItemCommandHandler : ICommandHandler<DeleteTodoItemCommand>
 {
@@ -13,7 +13,7 @@ public class DeleteTodoItemCommandHandler : ICommandHandler<DeleteTodoItemComman
 
     public async Task Handle(DeleteTodoItemCommand command)
     {
-        var todoList = await _repository.Get();
+        var todoList = await _repository.Get(command.TodoListId);
 
         todoList.Delete(command.ItemId);
 

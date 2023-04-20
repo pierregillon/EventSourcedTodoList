@@ -76,6 +76,15 @@ namespace TimeOnion.Tests.Acceptance.Features
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 6
+#line hidden
+#line 7
+    await testRunner.GivenAsync("a personal todo list has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+        }
+        
         async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
         {
             await this.TestInitializeAsync();
@@ -96,7 +105,7 @@ namespace TimeOnion.Tests.Acceptance.Features
                     "ErrorHandling"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot mark an unknown item as to do", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 7
+#line 10
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -106,10 +115,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 8
-    await testRunner.WhenAsync("I mark the item \"call dad\" as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 9
+#line 11
+    await testRunner.WhenAsync("I mark the item \"call dad\" in my personal list as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 12
     await testRunner.ThenAsync("an error occurred with the message \"Cannot mark the item as to do: unknown item\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -124,7 +136,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Item marked as to do are listed as not done", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 11
+#line 14
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -134,23 +146,26 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 12
-    await testRunner.GivenAsync("the item \"call dad\" has been added to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 13
-    await testRunner.WhenAsync("I mark the item \"call dad\" as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 15
+    await testRunner.GivenAsync("the item \"call dad\" has been added to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 14
-    await testRunner.AndAsync("I mark the item \"call dad\" as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 16
+    await testRunner.WhenAsync("I mark the item \"call dad\" in my personal list as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+#line 17
+    await testRunner.AndAsync("I mark the item \"call dad\" in my personal list as to do", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
                             "Is done?"});
-                table13.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "call dad",
                             "false"});
-#line 15
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table13, "Then ");
+#line 18
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table14, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

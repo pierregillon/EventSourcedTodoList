@@ -12,56 +12,86 @@ public class TodoItemSteps
 
     public TodoItemSteps(TestApplication application) => _application = application;
 
-    [Given(@"the item ""(.*)"" has been added to do (.*)")]
-    [When(@"I add the item ""(.*)"" to do (.*)")]
-    public async Task WhenIAddTheItemToDo(string description, Temporality temporality) =>
-        await _application.Dispatch(new AddItemToDoCommand(description, temporality));
-
-    [When(@"I mark the item ""(.*)"" as done")]
-    public async Task WhenIMarkTheItemAsCompleted(string itemDescription)
+    [Given(@"the item ""(.*)"" has been added to do (.*) in my (.*) list")]
+    [When(@"I add the item ""(.*)"" to do (.*) in my (.*) list")]
+    public async Task WhenIAddTheItemToDo(string description, Temporality temporality, string todoListName)
     {
-        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(temporality));
 
-        await _application.Dispatch(new MarkItemAsDoneCommand(itemId));
+        var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
+
+        await _application.Dispatch(() =>
+            new AddItemToDoCommand(todoListId, new ItemDescription(description), temporality));
     }
 
-    [When(@"I mark the item ""(.*)"" as to do")]
-    public async Task WhenIMarkTheItemAsToDo(string itemDescription)
+    [When(@"I mark the item ""(.*)"" in my (.*) list as done")]
+    public async Task WhenIMarkTheItemAsCompleted(string itemDescription, string listName)
     {
-        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+        var listId = await FindListId(listName) ?? TodoListId.New();
+        var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
-        await _application.Dispatch(new MarkItemAsToDoCommand(itemId));
+        var command = new MarkItemAsDoneCommand(listId, itemId);
+
+        await _application.Dispatch(command);
     }
 
-    [When(@"I fix description of the item ""(.*)"" to ""(.*)""")]
-    public async Task WhenIFixDescriptionOfTheItemTo(string itemDescription, string newItemDescription)
+    [When(@"I mark the item ""(.*)"" in my (.*) list as to do")]
+    public async Task WhenIMarkTheItemAsToDo(string itemDescription, string listName)
     {
-        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+        var listId = await FindListId(listName) ?? TodoListId.New();
+        var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
-        await _application.Dispatch(new FixItemDescriptionCommand(itemId, new ItemDescription(newItemDescription)));
+        var command = new MarkItemAsToDoCommand(listId, itemId);
+
+        await _application.Dispatch(command);
     }
 
-    [When(@"I reschedule the item ""(.*)"" to (.*)")]
-    public async Task WhenIRescheduleTheItemToThisDay(string itemDescription, Temporality temporality)
+    [When(@"I fix description of the item ""(.*)"" to ""(.*)"" in my (.*) list")]
+    public async Task WhenIFixDescriptionOfTheItemTo(string itemDescription, string newItemDescription, string listName)
     {
-        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+        var listId = await FindListId(listName) ?? TodoListId.New();
+        var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
-        await _application.Dispatch(new RescheduleTodoItemCommand(itemId, temporality));
+        await _application.Dispatch(() =>
+            new FixItemDescriptionCommand(listId, itemId, new ItemDescription(newItemDescription)));
     }
 
-    [Given(@"the item ""(.*)"" has been deleted")]
-    [When(@"I delete the item ""(.*)""")]
-    public async Task WhenIDeleteTheItem(string itemDescription)
+    [When(@"I reschedule the item ""(.*)"" in my (.*) list to (.*)")]
+    public async Task WhenIRescheduleTheItemToThisDay(string itemDescription, string listName, Temporality temporality)
     {
-        var itemId = await FindItemId(itemDescription) ?? TodoItemId.New();
+        var listId = await FindListId(listName) ?? TodoListId.New();
+        var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
-        await _application.Dispatch(new DeleteTodoItemCommand(itemId));
+        var command = new RescheduleTodoItemCommand(
+            listId,
+            itemId,
+            temporality
+        );
+
+        await _application.Dispatch(command);
     }
 
-    [Then(@"the todo list of (.*) is")]
-    public async Task ThenTheTodoListIs(Temporality temporality, Table table)
+    [Given(@"the item ""(.*)"" has been deleted on my (.*) list")]
+    [When(@"I delete the item ""(.*)"" on my (.*) list")]
+    public async Task WhenIDeleteTheItem(string itemDescription, string listName)
     {
-        var items = (await _application.Dispatch(new ListTodoListsQuery(temporality)))?.SelectMany(x => x.Items)
+        var listId = await FindListId(listName) ?? TodoListId.New();
+        var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
+
+        var command = new DeleteTodoItemCommand(
+            listId,
+            itemId
+        );
+
+        await _application.Dispatch(command);
+    }
+
+    [Then(@"my (.*) todo list of (.*) is")]
+    public async Task ThenTheTodoListIs(string todoListName, Temporality temporality, Table table)
+    {
+        var items = (await _application.Dispatch(new ListTodoListsQuery(temporality)))?
+            .Where(x => x.Name == todoListName)
+            .SelectMany(x => x.Items)
             .ToList()
             ?? throw new InvalidOperationException("Specflow: unable to load items");
 
@@ -113,7 +143,7 @@ public class TodoItemSteps
     [Then(@"the undone tasks from (.*) are")]
     public async Task ThenTheUndoneTasksFromThisWeekAre(Temporality temporality, Table table)
     {
-        var tasks = await _application.Dispatch(new ListUndoneTasksFromTemporalityCommand(temporality))
+        var tasks = await _application.Dispatch(new ListUndoneTasksFromTemporalityQuery(temporality))
             ?? throw new InvalidOperationException("Specflow: unable to load items");
 
         var expectedTasks = table.Rows.Select(x => x["Description"]).ToArray();
@@ -124,24 +154,36 @@ public class TodoItemSteps
         );
     }
 
-    private async Task<TodoItemId?> FindItemId(string itemDescription)
+    private async Task<TodoListId?> FindListId(string todoListName)
     {
-        var items = (await Task.WhenAll(
-                Enum.GetValues<Temporality>()
-                    .Select(x => _application.Dispatch(new ListTodoListsQuery(x)))
-            ))
-            .SelectMany(x =>
-                x?.SelectMany(items => items.Items).ToList()
-                ?? throw new InvalidOperationException("Specflow: null list"))
-            .ToArray();
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(Temporality.ThisDay));
 
-        var id = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+        return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
+    }
 
-        if (id is null)
+    private async Task<TodoItemId?> FindItemId(TodoListId todoListId, string itemDescription)
+    {
+        var data = await Task.WhenAll(
+            Enum
+                .GetValues<Temporality>()
+                .Select(x => _application.Dispatch(new ListTodoListsQuery(x)))
+        );
+
+        var todoLists = data
+            .SelectMany(x => x)
+            .GroupBy(x => x.Id)
+            .ToDictionary(
+                x => x.Key,
+                x => x
+                    .SelectMany(g => g.Items)
+                    .ToArray()
+            );
+
+        if (!todoLists.TryGetValue(todoListId, out var items))
         {
-            return null;
+            throw new InvalidOperationException($"Unknown todo list {todoListId.Value}");
         }
 
-        return new TodoItemId(id.Value);
+        return items.FirstOrDefault(x => x.Description == itemDescription)?.Id;
     }
 }

@@ -1,10 +1,20 @@
 ﻿@page "/"
+@using TimeOnion.Domain.Todo.List
 @using TimeOnion.Actions
 @inherits BlazorState.BlazorStateComponent
 
 <PageTitle>Ma todo liste</PageTitle>
 
 <TimeHorizonSelector></TimeHorizonSelector>
+
+<MudText Typo="Typo.h2">
+    @State.CurrentTemporality.ToText()
+</MudText>
+
+<MudIconButton
+    Icon="@Icons.Material.Outlined.Add"
+    OnClick="CreateNewTodoList">
+</MudIconButton>
 
 @foreach (var todoList in State.TodoLists)
 {
@@ -17,5 +27,7 @@
 
     protected override async Task OnInitializedAsync()
         => await Mediator.Send(new TodoListState.LoadData());
+
+    private async Task CreateNewTodoList() => await Mediator.Send(new TodoListState.CreateNewTodoList());
 
 }

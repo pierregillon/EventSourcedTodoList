@@ -3,7 +3,11 @@ using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Domain.Todo;
 
-public record RescheduleTodoItemCommand(TodoItemId TodoItemId, Temporality AnotherTemporality) : ICommand;
+public record RescheduleTodoItemCommand(
+    TodoListId TodoListId,
+    TodoItemId TodoItemId,
+    Temporality AnotherTemporality
+) : ICommand;
 
 internal class RescheduleTodoItemCommandHandler : ICommandHandler<RescheduleTodoItemCommand>
 {
@@ -13,7 +17,7 @@ internal class RescheduleTodoItemCommandHandler : ICommandHandler<RescheduleTodo
 
     public async Task Handle(RescheduleTodoItemCommand command)
     {
-        var todoList = await _repository.Get();
+        var todoList = await _repository.Get(command.TodoListId);
 
         todoList.Reschedule(command.TodoItemId, command.AnotherTemporality);
 

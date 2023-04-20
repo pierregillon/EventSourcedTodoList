@@ -14,10 +14,15 @@ public class TodoListRepository : ITodoListRepository
         _domainEventPublisher = domainEventPublisher;
     }
 
-    public async Task<TodoList> Get()
+    public async Task<TodoList> Get(TodoListId id)
     {
-        var eventHistory = await _eventStore.GetAll();
-        return TodoList.Rehydrate(eventHistory);
+        var eventHistory = await _eventStore.GetAll(id.Value);
+        if (eventHistory.Count == 0)
+        {
+            throw new InvalidOperationException("The todo list could not be found.");
+        }
+
+        return TodoList.Rehydrate(id, eventHistory);
     }
 
     public async Task Save(TodoList aggregate)

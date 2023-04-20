@@ -10,10 +10,39 @@
 
         <MudDivider Class="medium"/>
 
-        <TodoListItemsComponent Items="@TodoList.Items"></TodoListItemsComponent>
+        <div>
+            @foreach (var item in TodoList.Items)
+            {
+                <TodoListItemComponent Item="@item"></TodoListItemComponent>
+            }
+    
+            <div class="d-flex">
+                <MudCheckBox
+                    Class="compact fake"
+                    Checked="@(false)"
+                    Color="Color.Secondary">
+                </MudCheckBox>
+    
+                <MudTextField
+                    T="string"
+                    InputMode="InputMode.text"
+                    Text="@State.NewTodoItemDescription"
+                    TextChanged="itemDescription => AddItemToDo(TodoList.Id, itemDescription)"
+                    TextUpdateSuppression="false"
+                    Class="compact"
+                    DisableUnderLine="true">
+                </MudTextField>
+            </div>
+        </div>
 
     </MudContainer>
 }
+
+<style>
+    .fake.mud-input-control.mud-input-control-boolean-input {
+        margin-left: 26px;
+    }
+</style>
 
 @code {
 
@@ -21,4 +50,7 @@
     public TodoListReadModel? TodoList { get; set; }
 
     TodoListState State => GetState<TodoListState>();
+
+    private async Task AddItemToDo(TodoListId listId, string itemDescription)
+        => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
 }

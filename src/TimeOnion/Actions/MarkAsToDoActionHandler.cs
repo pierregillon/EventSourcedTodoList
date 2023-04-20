@@ -24,7 +24,7 @@ public class MarkAsToDoActionHandler : ActionHandler<TodoListState.MarkItemAsToD
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new MarkItemAsToDoCommand(action.ItemId));
+        await _commandDispatcher.Dispatch(new MarkItemAsToDoCommand(action.ListId, action.ItemId));
 
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
 

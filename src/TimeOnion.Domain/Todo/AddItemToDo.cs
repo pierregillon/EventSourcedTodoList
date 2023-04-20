@@ -3,7 +3,11 @@ using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Domain.Todo;
 
-public record AddItemToDoCommand(string? Description, Temporality Temporality) : ICommand;
+public record AddItemToDoCommand(
+    TodoListId TodoListId,
+    ItemDescription Description,
+    Temporality Temporality
+) : ICommand;
 
 internal class AddItemToDoCommandHandler : ICommandHandler<AddItemToDoCommand>
 {
@@ -13,9 +17,9 @@ internal class AddItemToDoCommandHandler : ICommandHandler<AddItemToDoCommand>
 
     public async Task Handle(AddItemToDoCommand command)
     {
-        var todoList = await _repository.Get();
+        var todoList = await _repository.Get(command.TodoListId);
 
-        todoList.AddItem(new ItemDescription(command.Description), command.Temporality);
+        todoList.AddItem(command.Description, command.Temporality);
 
         await _repository.Save(todoList);
     }

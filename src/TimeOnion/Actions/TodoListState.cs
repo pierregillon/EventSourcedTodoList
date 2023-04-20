@@ -15,17 +15,19 @@ public class TodoListState : State<TodoListState>
 
     public record LoadData : IAction;
 
-    public record AddNewItem(string? Text) : IAction;
+    public record CreateNewTodoList : IAction;
 
-    public record MarkItemAsDone(TodoItemId ItemId) : IAction;
+    public record AddNewItem(TodoListId ListId, string? Text) : IAction;
 
-    public record MarkItemAsToDo(TodoItemId ItemId) : IAction;
+    public record MarkItemAsDone(TodoListId ListId, TodoItemId ItemId) : IAction;
 
-    public record FixItemDescription(TodoItemId ItemId, string NewDescription) : IAction;
+    public record MarkItemAsToDo(TodoListId ListId, TodoItemId ItemId) : IAction;
 
-    public record RescheduleTodoItem(TodoItemId ItemId, Temporality Temporality) : IAction;
+    public record FixItemDescription(TodoListId ListId, TodoItemId ItemId, string NewDescription) : IAction;
+
+    public record RescheduleTodoItem(TodoListId ListId, TodoItemId ItemId, Temporality Temporality) : IAction;
 
     public record ChangeCurrentTemporality(Temporality Temporality) : IAction;
 
-    public record DeleteItem(TodoItemId ItemId) : IAction;
+    public record DeleteItem(TodoListId ListId, TodoItemId ItemId) : IAction;
 }

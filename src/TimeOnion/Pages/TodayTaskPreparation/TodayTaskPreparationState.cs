@@ -27,13 +27,13 @@ public class TodayTaskPreparationState : State<TodayTaskPreparationState>
     public record MoveToNextPreparationStep : IAction;
 }
 
-public record SelectableTodoItem(TodoItemId ItemId, string Description, bool IsSelected)
+public record SelectableTodoItem(TodoListId ListId, TodoItemId ItemId, string Description, bool IsSelected)
 {
     public bool IsSelected { get; set; } = IsSelected;
 
     public static SelectableTodoItem From(YesterdayUndoneTodoItem item) =>
-        new(item.ItemId, item.Description, false);
+        new(item.ListId, item.ItemId, item.Description, false);
 
     public static SelectableTodoItem From(ThisWeekUndoneTodoItem item) =>
-        new(item.ItemId, item.Description, false);
+        new(item.ListId, item.ItemId, item.Description, false);
 }

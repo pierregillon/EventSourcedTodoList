@@ -3,7 +3,11 @@ using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Domain.Todo;
 
-public record FixItemDescriptionCommand(TodoItemId TodoItemId, ItemDescription NewItemDescription) : ICommand;
+public record FixItemDescriptionCommand(
+    TodoListId TodoListId,
+    TodoItemId TodoItemId,
+    ItemDescription NewItemDescription
+) : ICommand;
 
 public class FixItemDescriptionCommandHandler : ICommandHandler<FixItemDescriptionCommand>
 {
@@ -13,7 +17,7 @@ public class FixItemDescriptionCommandHandler : ICommandHandler<FixItemDescripti
 
     public async Task Handle(FixItemDescriptionCommand command)
     {
-        var todoList = await _repository.Get();
+        var todoList = await _repository.Get(command.TodoListId);
 
         todoList.FixItemDescription(command.TodoItemId, command.NewItemDescription);
 

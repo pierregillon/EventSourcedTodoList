@@ -77,6 +77,15 @@ namespace TimeOnion.Tests.Acceptance.Features
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 6
+#line hidden
+#line 7
+    await testRunner.GivenAsync("a personal todo list has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+        }
+        
         async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
         {
             await this.TestInitializeAsync();
@@ -85,6 +94,39 @@ namespace TimeOnion.Tests.Acceptance.Features
         async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
         {
             await this.TestTearDownAsync();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Cannot add an item on unknown todo list")]
+        [Xunit.TraitAttribute("FeatureTitle", "Add an item to do")]
+        [Xunit.TraitAttribute("Description", "Cannot add an item on unknown todo list")]
+        [Xunit.TraitAttribute("Category", "ErrorHandling")]
+        public async System.Threading.Tasks.Task CannotAddAnItemOnUnknownTodoList()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "ErrorHandling"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot add an item on unknown todo list", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 10
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 11
+    await testRunner.WhenAsync("I add the item \"test\" to do this day in my professional list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 12
+    await testRunner.ThenAsync("an error occurred with the message \"The todo list could not be found.\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Cannot add an item to do with no description specified")]
@@ -97,7 +139,7 @@ namespace TimeOnion.Tests.Acceptance.Features
                     "ErrorHandling"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cannot add an item to do with no description specified", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 7
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -107,10 +149,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 8
-    await testRunner.WhenAsync("I add the item \"    \" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 9
+#line 16
+    await testRunner.WhenAsync("I add the item \"    \" to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 17
     await testRunner.ThenAsync("an error occurred with the message \"An item to do must have a description\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -125,7 +170,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("By default, there is nothing to do", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 11
+#line 19
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -135,10 +180,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-#line 12
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table1, "Then ");
+#line 20
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table1, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -152,7 +200,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Listed items are filtered by their temporality", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 15
+#line 23
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -162,11 +210,14 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 16
-    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 17
-    await testRunner.AndAsync("I add the item \"prepare job interview\" to do this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 24
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 25
+    await testRunner.AndAsync("I add the item \"prepare job interview\" to do this week in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
@@ -174,8 +225,8 @@ this.ScenarioInitialize(scenarioInfo);
                 table2.AddRow(new string[] {
                             "call daddy",
                             "this day"});
-#line 18
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table2, "Then ");
+#line 26
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table2, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
@@ -183,8 +234,8 @@ this.ScenarioInitialize(scenarioInfo);
                 table3.AddRow(new string[] {
                             "prepare job interview",
                             "this week"});
-#line 21
-    await testRunner.AndAsync("the todo list of this week is", ((string)(null)), table3, "And ");
+#line 29
+    await testRunner.AndAsync("my personal todo list of this week is", ((string)(null)), table3, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -198,7 +249,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("By default, items are to do", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 25
+#line 33
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -208,11 +259,14 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 26
-    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 27
-    await testRunner.AndAsync("I add the item \"prepare job interview\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 34
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 35
+    await testRunner.AndAsync("I add the item \"prepare job interview\" to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
@@ -223,8 +277,8 @@ this.ScenarioInitialize(scenarioInfo);
                 table4.AddRow(new string[] {
                             "prepare job interview",
                             "false"});
-#line 28
-    await testRunner.ThenAsync("the todo list of this day is", ((string)(null)), table4, "Then ");
+#line 36
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table4, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

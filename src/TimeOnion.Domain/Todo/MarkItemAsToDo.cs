@@ -3,7 +3,7 @@ using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Domain.Todo;
 
-public record MarkItemAsToDoCommand(TodoItemId ItemId) : ICommand;
+public record MarkItemAsToDoCommand(TodoListId TodoListId, TodoItemId ItemId) : ICommand;
 
 public class MarkItemAsToDoCommandHandler : ICommandHandler<MarkItemAsToDoCommand>
 {
@@ -13,7 +13,7 @@ public class MarkItemAsToDoCommandHandler : ICommandHandler<MarkItemAsToDoComman
 
     public async Task Handle(MarkItemAsToDoCommand command)
     {
-        var todoList = await _repository.Get();
+        var todoList = await _repository.Get(command.TodoListId);
 
         todoList.MarkItemAsToDo(command.ItemId);
 

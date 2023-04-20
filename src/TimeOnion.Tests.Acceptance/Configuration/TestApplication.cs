@@ -31,6 +31,13 @@ public class TestApplication
         await _errorDriver.TryExecute(() => dispatcher.Dispatch(command));
     }
 
+    public async Task Dispatch<TCommand>(Func<TCommand> commandBuilder) where TCommand : ICommand
+    {
+        var dispatcher = GetService<ICommandDispatcher>();
+
+        await _errorDriver.TryExecute(() => dispatcher.Dispatch(commandBuilder()));
+    }
+
     public async Task<TResult?> Dispatch<TResult>(IQuery<TResult> query)
     {
         var dispatcher = GetService<IQueryDispatcher>();

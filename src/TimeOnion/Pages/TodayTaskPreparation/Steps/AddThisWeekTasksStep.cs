@@ -20,8 +20,8 @@ public class AddThisWeekTasksStep : ITodayTaskPreparationStep
     public ITodayTaskPreparationStep? Next() => new FinalizeTodayTasksStep(_queryDispatcher, _commandDispatcher);
 
     public async Task Initialize(TodayTaskPreparationState state) => state.ThisWeekUndoneTasks =
-        (await _queryDispatcher.Dispatch(new ListUndoneTasksFromTemporalityCommand(Temporality.ThisWeek)))
-        .Select(item => new SelectableTodoItem(item.ItemId, item.Description, false))
+        (await _queryDispatcher.Dispatch(new ListUndoneTasksFromTemporalityQuery(Temporality.ThisWeek)))
+        .Select(item => new SelectableTodoItem(item.ListId, item.ItemId, item.Description, false))
         .ToArray();
 
     public async Task Save(TodayTaskPreparationState state)
@@ -32,7 +32,7 @@ public class AddThisWeekTasksStep : ITodayTaskPreparationStep
 
         foreach (var item in itemToTake)
         {
-            var command = new RescheduleTodoItemCommand(item.ItemId, Temporality.ThisDay);
+            var command = new RescheduleTodoItemCommand(item.ListId, item.ItemId, Temporality.ThisDay);
             await _commandDispatcher.Dispatch(command);
         }
     }

@@ -77,6 +77,15 @@ namespace TimeOnion.Tests.Acceptance.Features
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 6
+#line hidden
+#line 7
+    await testRunner.GivenAsync("a personal todo list has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+        }
+        
         async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
         {
             await this.TestInitializeAsync();
@@ -95,7 +104,7 @@ namespace TimeOnion.Tests.Acceptance.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Undone tasks from temporality are listed", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 6
+#line 9
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -105,15 +114,18 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 7
-    await testRunner.WhenAsync("I add the item \"call daddy\" to do this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+#line 10
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this week in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-                table7.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "call daddy"});
-#line 8
-    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table7, "Then ");
+#line 11
+    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table8, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -127,7 +139,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Done tasks from temporality are not listed", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 12
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -137,16 +149,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 13
-    await testRunner.WhenAsync("I add the item \"call daddy\" to do this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 14
-    await testRunner.AndAsync("I mark the item \"call daddy\" as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 16
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this week in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+#line 17
+    await testRunner.AndAsync("I mark the item \"call daddy\" in my personal list as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-#line 15
-    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table8, "Then ");
+#line 18
+    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table9, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -160,7 +175,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Undone tasks from another temporality are not listed", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 18
+#line 21
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -170,13 +185,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 19
-    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+#line 22
+    await testRunner.WhenAsync("I add the item \"call daddy\" to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-#line 20
-    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table9, "Then ");
+#line 23
+    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table10, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

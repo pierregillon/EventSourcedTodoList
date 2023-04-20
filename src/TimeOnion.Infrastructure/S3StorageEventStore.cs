@@ -21,7 +21,34 @@ public class S3StorageEventStore : IEventStore
         _configuration = configuration.Value;
     }
 
-    public async Task<IReadOnlyCollection<IDomainEvent>> GetAll()
+    public async Task<IReadOnlyCollection<IDomainEvent>> GetAll(Guid aggregateId) => (await GetAllStoredEvents())
+        .Where(x => x.AggregateId == aggregateId)
+        .Select(RehydrateEvent)
+        .ToArray();
+
+    public async Task<IReadOnlyCollection<IDomainEvent>> GetAll() => (await GetAllStoredEvents())
+        .Select(RehydrateEvent)
+        .ToArray();
+
+    public async Task Save(IEnumerable<IDomainEvent> domainEvents)
+    {
+        var storedEvents = domainEvents
+            .Select(StoredEvent.From)
+            .ToArray();
+
+        var allEvents = (await GetAllStoredEvents()).Concat(storedEvents).ToArray();
+
+        var json = JsonSerializer.Serialize(allEvents);
+
+        var args = new PutObjectArgs()
+            .InitializeFrom(_configuration)
+            .WithObjectSize(json.Length)
+            .WithStreamData(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+
+        await _client.PutObjectAsync(args);
+    }
+
+    private async Task<IReadOnlyCollection<StoredEvent>> GetAllStoredEvents()
     {
         try
         {
@@ -33,34 +60,16 @@ public class S3StorageEventStore : IEventStore
         }
         catch (ObjectNotFoundException)
         {
-            return Array.Empty<IDomainEvent>();
+            return Array.Empty<StoredEvent>();
         }
 
         var json = await File.ReadAllTextAsync(TemporaryFilePath);
 
-        var events = JsonSerializer.Deserialize<IEnumerable<StoredEvent>>(json)
+        return JsonSerializer.Deserialize<IReadOnlyCollection<StoredEvent>>(json)
             ?? throw new InvalidOperationException("Unable to deserialize the event list");
-
-        return events.Select(RehydrateEvent).ToArray();
     }
 
-    public async Task Save(IEnumerable<IDomainEvent> domainEvents)
-    {
-        var allEvents = (await GetAll()).Concat(domainEvents);
-
-        var storedEvents = allEvents.Select(StoredEvent.From).ToArray();
-
-        var json = JsonSerializer.Serialize(storedEvents);
-
-        var args = new PutObjectArgs()
-            .InitializeFrom(_configuration)
-            .WithObjectSize(json.Length)
-            .WithStreamData(new MemoryStream(Encoding.UTF8.GetBytes(json)));
-
-        await _client.PutObjectAsync(args);
-    }
-
-    private IDomainEvent RehydrateEvent(StoredEvent storedEvent)
+    private static IDomainEvent RehydrateEvent(StoredEvent storedEvent)
     {
         var type = typeof(IDomainEvent).Assembly
             .GetTypes()
@@ -75,9 +84,10 @@ public class S3StorageEventStore : IEventStore
             ?? throw new InvalidOperationException($"Unable to deserialize the event {storedEvent.Type}"));
     }
 
-    public record StoredEvent(string Type, JsonElement JsonData)
+    public record StoredEvent(Guid AggregateId, string Type, JsonElement JsonData)
     {
         public static StoredEvent From(IDomainEvent domainEvent) => new(
+            domainEvent.AggregateId,
             domainEvent.GetType().Name,
             JsonSerializer.SerializeToElement(domainEvent, domainEvent.GetType())
         );

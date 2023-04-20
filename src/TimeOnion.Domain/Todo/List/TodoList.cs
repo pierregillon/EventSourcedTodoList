@@ -6,14 +6,26 @@ public class TodoList : EventSourcedAggregate<TodoListId>
 {
     private readonly List<TodoListItem> _items = new();
 
-    private TodoList(TodoListId id) : base(id)
+    private TodoList(TodoListId id, IEnumerable<IDomainEvent> eventHistory) : base(id)
     {
+        foreach (var domainEvent in eventHistory)
+        {
+            Apply(domainEvent);
+        }
     }
 
-    public static TodoList Empty => new(TodoListId.Unique);
+    public static TodoList New(TodoListName name)
+    {
+        var todoListId = TodoListId.New();
+        var todoList = new TodoList(todoListId, Enumerable.Empty<IDomainEvent>());
+        todoList.StoreEvent(new TodoListCreated(todoListId, name));
+        return todoList;
+    }
+
+    public static TodoList Rehydrate(TodoListId id, IEnumerable<IDomainEvent> eventHistory) => new(id, eventHistory);
 
     public void AddItem(ItemDescription description, Temporality temporality) =>
-        StoreEvent(new TodoItemAdded(TodoItemId.New(), description, temporality));
+        StoreEvent(new TodoItemAdded(Id, TodoItemId.New(), description, temporality));
 
     public void MarkItemAsDone(TodoItemId itemId)
     {
@@ -75,22 +87,10 @@ public class TodoList : EventSourcedAggregate<TodoListId>
             throw new InvalidOperationException("Cannot delete the item: unknown item");
         }
 
-        StoreEvent(new TodoItemDeleted(itemId));
+        StoreEvent(new TodoItemDeleted(Id, itemId));
     }
 
-    public static TodoList Rehydrate(IEnumerable<IDomainEvent> eventHistory)
-    {
-        var todoList = Empty;
-
-        foreach (var domainEvent in eventHistory)
-        {
-            todoList.Apply(domainEvent);
-        }
-
-        return todoList;
-    }
-
-    protected override void Apply(IDomainEvent domainEvent)
+    protected sealed override void Apply(IDomainEvent domainEvent)
     {
         TodoListItem item;
 
@@ -120,14 +120,18 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     private record TodoListItem(TodoItemId Id, ItemDescription Description, Temporality Temporality);
 }
 
-public record TodoItemDeleted(TodoItemId ItemId) : IDomainEvent;
+public record TodoListName(string Value);
+
+public record TodoListCreated(TodoListId Id, TodoListName Name) : TodoListDomainEvent(Id);
+
+public record TodoItemDeleted(TodoListId Id, TodoItemId ItemId) : TodoListDomainEvent(Id);
 
 public record TodoItemRescheduled(
     TodoListId Id,
     TodoItemId ItemId,
     Temporality PreviousTemporality,
     Temporality NewTemporality
-) : IDomainEvent;
+) : TodoListDomainEvent(Id);
 
 public enum Temporality
 {
@@ -172,18 +176,28 @@ public record TodoItemDescriptionFixed(
     TodoItemId ItemId,
     ItemDescription PreviousItemDescription,
     ItemDescription NewItemDescription
-) : IDomainEvent;
+) : TodoListDomainEvent(Id);
 
-public record ItemReadyTodo(TodoListId Id, TodoItemId ItemId) : IDomainEvent;
+public record ItemReadyTodo(TodoListId Id, TodoItemId ItemId) : TodoListDomainEvent(Id);
 
 public record TodoItemId(Guid Value)
 {
     public static TodoItemId New() => new(Guid.NewGuid());
 }
 
-public record TodoItemAdded(TodoItemId ItemId, ItemDescription Description, Temporality Temporality) : IDomainEvent;
+public record TodoItemAdded(
+    TodoListId TodoListId,
+    TodoItemId ItemId,
+    ItemDescription Description,
+    Temporality Temporality
+) : TodoListDomainEvent(TodoListId);
 
-public record TodoItemCompleted(TodoListId TodoListId, TodoItemId TodoItemId) : IDomainEvent;
+public record TodoListDomainEvent(TodoListId TodoListId) : IDomainEvent
+{
+    public Guid AggregateId => TodoListId.Value;
+}
+
+public record TodoItemCompleted(TodoListId TodoListId, TodoItemId TodoItemId) : TodoListDomainEvent(TodoListId);
 
 public static class ListExtensions
 {

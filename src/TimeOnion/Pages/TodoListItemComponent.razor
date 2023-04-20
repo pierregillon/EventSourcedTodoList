@@ -17,7 +17,7 @@
                 {
                     <MudMenuItem
                         Icon="@Icons.Material.Filled.Redo"
-                        OnClick="() => Reschedule(Item.Id, NextTemporality)">
+                        OnClick="() => Reschedule(Item.ListId, Item.Id, NextTemporality)">
                         Reporter à @NextTemporality.ToText().ToLower()
                     </MudMenuItem>
                 }
@@ -26,7 +26,7 @@
                 {
                     <MudMenuItem
                         Icon="@Icons.Material.Filled.Undo"
-                        OnClick="() => Reschedule(Item.Id, PreviousTemporality)">
+                        OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTemporality)">
                         Avancer à @PreviousTemporality.ToText().ToLower()
                     </MudMenuItem>
                 }
@@ -34,7 +34,7 @@
                 <MudMenuItem
                     Icon="@Icons.Material.Filled.Delete"
                     IconColor="Color.Warning"
-                    OnClick="() => Delete(Item.Id)">
+                    OnClick="() => Delete(Item.ListId, Item.Id)">
                     Supprimer
                 </MudMenuItem>
 
@@ -43,7 +43,7 @@
             <MudCheckBox
                 T="bool"
                 Checked="Item.IsDone"
-                CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.Id) : MarkAsToDo(Item.Id)"
+                CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.ListId, Item.Id) : MarkAsToDo(Item.ListId, Item.Id)"
                 Class="compact"
                 Color="Color.Primary">
             </MudCheckBox>
@@ -53,7 +53,7 @@
                 Class="@(Item.IsDone ? "compact done" : "compact")"
                 InputMode="InputMode.text"
                 Text="@Item.Description"
-                TextChanged="text => FixItemDescription(Item.Id, text)"
+                TextChanged="text => FixItemDescription(Item.ListId, Item.Id, text)"
                 DisableUnderLine="true">
             </MudTextField>
         </div>
@@ -87,14 +87,14 @@
 
     private Temporality CurrentTemporality => GetState<TodoListState>().CurrentTemporality;
 
-    private async Task FixItemDescription(TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(itemId, newValue));
+    private async Task FixItemDescription(TodoListId listId, TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(listId, itemId, newValue));
 
-    private async Task MarkItemAsDone(TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
+    private async Task MarkItemAsDone(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(listId, itemId));
 
-    private async Task MarkAsToDo(TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
+    private async Task MarkAsToDo(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(listId, itemId));
 
-    private async Task Reschedule(TodoItemId itemId, Temporality temporality) => await Mediator.Send(new TodoListState.RescheduleTodoItem(itemId, temporality));
+    private async Task Reschedule(TodoListId listId, TodoItemId itemId, Temporality temporality) => await Mediator.Send(new TodoListState.RescheduleTodoItem(listId, itemId, temporality));
 
-    private async Task Delete(TodoItemId itemId) => await Mediator.Send(new TodoListState.DeleteItem(itemId));
+    private async Task Delete(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.DeleteItem(listId, itemId));
 
 }
