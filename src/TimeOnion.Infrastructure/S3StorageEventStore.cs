@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Infrastructure;
 
@@ -13,11 +14,13 @@ public class S3StorageEventStore : IEventStore
     private static readonly string TemporaryFilePath = Path.GetTempFileName();
 
     private readonly MinioClient _client;
+    private readonly IClock _clock;
     private readonly S3StorageConfiguration _configuration;
 
-    public S3StorageEventStore(MinioClient client, IOptions<S3StorageConfiguration> configuration)
+    public S3StorageEventStore(MinioClient client, IOptions<S3StorageConfiguration> configuration, IClock clock)
     {
         _client = client;
+        _clock = clock;
         _configuration = configuration.Value;
     }
 
@@ -33,7 +36,7 @@ public class S3StorageEventStore : IEventStore
     public async Task Save(IEnumerable<IDomainEvent> domainEvents)
     {
         var storedEvents = domainEvents
-            .Select(StoredEvent.From)
+            .Select(x => StoredEvent.From(x, _clock))
             .ToArray();
 
         var allEvents = (await GetAllStoredEvents()).Concat(storedEvents).ToArray();
@@ -84,11 +87,12 @@ public class S3StorageEventStore : IEventStore
             ?? throw new InvalidOperationException($"Unable to deserialize the event {storedEvent.Type}"));
     }
 
-    public record StoredEvent(Guid AggregateId, string Type, JsonElement JsonData)
+    public record StoredEvent(Guid AggregateId, string Type, DateTime Date, JsonElement JsonData)
     {
-        public static StoredEvent From(IDomainEvent domainEvent) => new(
+        public static StoredEvent From(IDomainEvent domainEvent, IClock clock) => new(
             domainEvent.AggregateId,
             domainEvent.GetType().Name,
+            clock.Now(),
             JsonSerializer.SerializeToElement(domainEvent, domainEvent.GetType())
         );
     }
