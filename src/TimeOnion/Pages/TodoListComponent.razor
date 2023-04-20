@@ -6,7 +6,7 @@
 {
     <div class="todolist">
 
-        <div class="title-actions">
+        <div class="todolist-actions">
             <MudTextField
                 T="string"
                 InputMode="InputMode.text"
@@ -65,25 +65,25 @@
     
     .todolist {
         flex-grow: 1;
+        max-width: 600px;
     }
     
     .title .mud-input > input {
         font-size: 30px;
     }
     
-    .title-actions {
+    .todolist-actions {
          display: flex;
          align-items: self-end;
          justify-content: center;
          gap: 20px;
-         margin-bottom: 30px;
      }
      
      .delete-button {
         opacity: 0;
      }
      
-     .title-actions:hover .delete-button {
+     .todolist-actions:hover .delete-button {
         opacity: 1;
      }
 </style>
