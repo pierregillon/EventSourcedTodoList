@@ -25,11 +25,11 @@ public class S3StorageEventStore : IEventStore
     {
         try
         {
-            await _client.GetObjectAsync(new GetObjectArgs()
-                .WithBucket(_configuration.BucketName)
-                .WithObject(_configuration.ObjectName)
-                .WithFile(TemporaryFilePath)
-            );
+            var args = new GetObjectArgs()
+                .InitializeFrom(_configuration)
+                .WithFile(TemporaryFilePath);
+
+            await _client.GetObjectAsync(args);
         }
         catch (ObjectNotFoundException)
         {
@@ -52,12 +52,12 @@ public class S3StorageEventStore : IEventStore
 
         var json = JsonSerializer.Serialize(storedEvents);
 
-        await _client.PutObjectAsync(new PutObjectArgs()
-            .WithBucket(_configuration.BucketName)
-            .WithObject(_configuration.ObjectName)
+        var args = new PutObjectArgs()
+            .InitializeFrom(_configuration)
             .WithObjectSize(json.Length)
-            .WithStreamData(new MemoryStream(Encoding.UTF8.GetBytes(json)))
-        );
+            .WithStreamData(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+
+        await _client.PutObjectAsync(args);
     }
 
     private IDomainEvent RehydrateEvent(StoredEvent storedEvent)
@@ -98,4 +98,21 @@ public class S3StorageConfiguration
 
     [Required] public string SecretKey { get; set; } = default!;
     [Required] public string Region { get; set; } = default!;
+    [Required] public bool UseSSL { get; set; } = true;
+}
+
+public static class BucketArgsExtensions
+{
+    public static T InitializeFrom<T>(this T args, S3StorageConfiguration configuration) where T : ObjectArgs<T> => args
+        .WithBucket(configuration.BucketName)
+        .WithObject(configuration.ObjectName);
+}
+
+public static class MinioExtensions
+{
+    public static MinioClient InitializeFrom(this MinioClient client, S3StorageConfiguration configuration) => client
+        .WithEndpoint(configuration.EndPoint)
+        .WithCredentials(configuration.AccessKey, configuration.SecretKey)
+        .WithRegion(configuration.Region)
+        .WithSSL(configuration.UseSSL);
 }

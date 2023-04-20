@@ -7,8 +7,8 @@
       "applicationUrl": "http://localhost:5140",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "S3StorageConfiguration__AccessKey": "SCWFZCK0CB6ZCFJJ6NS5",
-        "S3StorageConfiguration__SecretKey": "dd53bc39-19ea-401f-998e-7e71801dc8e7",
+        "S3StorageConfiguration__AccessKey": "SCWHY87947QAY8NX35V0",
+        "S3StorageConfiguration__SecretKey": "e4a17633-0f05-442f-a7de-95999193b822",
         "S3StorageConfiguration__ObjectName": "dev-domain-events.json"
       }
     }

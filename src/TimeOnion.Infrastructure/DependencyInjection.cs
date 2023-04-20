@@ -21,10 +21,7 @@ public static class DependencyInjection
                 var configuration = x.GetRequiredService<IOptions<S3StorageConfiguration>>().Value;
 
                 return new MinioClient()
-                    .WithEndpoint(configuration.EndPoint)
-                    .WithCredentials(configuration.AccessKey, configuration.SecretKey)
-                    .WithRegion(configuration.Region)
-                    .WithSSL()
+                    .InitializeFrom(configuration)
                     .Build();
             });
 

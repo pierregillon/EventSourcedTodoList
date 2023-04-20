@@ -23,6 +23,7 @@ public class S3StorageEventStoreTests
             .Configure<S3StorageConfiguration>(configuration =>
             {
                 configuration.EndPoint = "s3.fr-par.scw.cloud";
+                configuration.UseSSL = true;
                 configuration.Region = "fr-par";
                 configuration.AccessKey = "";
                 configuration.SecretKey = "";
@@ -54,20 +55,13 @@ public class S3StorageEventStoreTests
                 new TodoItemAdded(TodoItemId.New(), new ItemDescription("test"), Temporality.ThisDay)
             });
 
-            var stat = await _minio.StatObjectAsync(new StatObjectArgs()
-                .WithBucket(_configuration.BucketName)
-                .WithObject(_configuration.ObjectName)
-            );
+            var stat = await _minio.StatObjectAsync(new StatObjectArgs().InitializeFrom(_configuration));
 
             stat.Should().NotBeNull();
         }
         finally
         {
-            await _minio
-                .RemoveObjectAsync(new RemoveObjectArgs()
-                    .WithBucket(_configuration.BucketName)
-                    .WithObject(_configuration.ObjectName)
-                );
+            await _minio.RemoveObjectAsync(new RemoveObjectArgs().InitializeFrom(_configuration));
         }
     }
 
@@ -92,11 +86,7 @@ public class S3StorageEventStoreTests
         }
         finally
         {
-            await _minio
-                .RemoveObjectAsync(new RemoveObjectArgs()
-                    .WithBucket(_configuration.BucketName)
-                    .WithObject(_configuration.ObjectName)
-                );
+            await _minio.RemoveObjectAsync(new RemoveObjectArgs().InitializeFrom(_configuration));
         }
     }
 }

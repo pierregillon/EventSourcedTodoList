@@ -20,10 +20,7 @@ public static class ReplayAllDomainEventsExtensions
         Console.WriteLine(JsonSerializer.Serialize(configuration));
 
         var client = new MinioClient()
-            .WithEndpoint(configuration.EndPoint)
-            .WithCredentials(configuration.AccessKey, configuration.SecretKey)
-            .WithRegion(configuration.Region)
-            .WithSSL()
+            .InitializeFrom(configuration)
             .Build();
 
         var buckets = await client.ListBucketsAsync();
