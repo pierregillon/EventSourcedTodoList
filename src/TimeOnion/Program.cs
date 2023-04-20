@@ -2,6 +2,7 @@ using System.Reflection;
 using BlazorState;
 using MudBlazor.Services;
 using TimeOnion.Configuration;
+using TimeOnion.Configuration.HostedServices;
 using TimeOnion.Domain;
 using TimeOnion.Infrastructure;
 
@@ -24,7 +25,7 @@ builder.Services
     .AddDomain()
     .AddInfrastructure();
 
-builder.Services.AddHostedService<SaveUncommittedEventsHostedService>();
+builder.Services.AddCommitterHostedService();
 
 var app = builder.Build();
 

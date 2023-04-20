@@ -4,7 +4,7 @@ using Minio;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Infrastructure;
 
-namespace TimeOnion.Configuration;
+namespace TimeOnion.Configuration.HostedServices;
 
 public static class ReplayAllDomainEventsExtensions
 {

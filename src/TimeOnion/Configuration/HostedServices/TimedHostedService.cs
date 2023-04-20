@@ -1,4 +1,4 @@
-namespace TimeOnion.Configuration;
+namespace TimeOnion.Configuration.HostedServices;
 
 public abstract class TimedHostedService : IHostedService, IDisposable
 {
