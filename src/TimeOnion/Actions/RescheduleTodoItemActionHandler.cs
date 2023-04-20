@@ -27,11 +27,11 @@ public class RescheduleTodoItemActionHandler : ActionHandler<TodoListState.Resch
             new RescheduleTodoItemCommand(
                 action.ListId,
                 action.ItemId,
-                action.Temporality
+                action.TimeHorizons
             );
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
     }
 }

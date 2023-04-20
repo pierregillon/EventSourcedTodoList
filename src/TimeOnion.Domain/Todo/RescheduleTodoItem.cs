@@ -6,7 +6,7 @@ namespace TimeOnion.Domain.Todo;
 public record RescheduleTodoItemCommand(
     TodoListId TodoListId,
     TodoItemId TodoItemId,
-    Temporality AnotherTemporality
+    TimeHorizons AnotherTimeHorizons
 ) : ICommand;
 
 internal class RescheduleTodoItemCommandHandler : ICommandHandler<RescheduleTodoItemCommand>
@@ -19,7 +19,7 @@ internal class RescheduleTodoItemCommandHandler : ICommandHandler<RescheduleTodo
     {
         var todoList = await _repository.Get(command.TodoListId);
 
-        todoList.Reschedule(command.TodoItemId, command.AnotherTemporality);
+        todoList.Reschedule(command.TodoItemId, command.AnotherTimeHorizons);
 
         await _repository.Save(todoList);
     }

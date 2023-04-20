@@ -4,7 +4,7 @@ using TimeOnion.Domain.Todo.List;
 namespace TimeOnion.Domain.Todo;
 
 public record ListUndoneTasksFromTemporalityQuery
-    (Temporality Temporality) : IQuery<IReadOnlyCollection<ThisWeekUndoneTodoItem>>;
+    (TimeHorizons TimeHorizons) : IQuery<IReadOnlyCollection<ThisWeekUndoneTodoItem>>;
 
 public record ThisWeekUndoneTodoItem(TodoListId ListId, TodoItemId ItemId, string Description);
 
@@ -21,7 +21,7 @@ internal class ListUndoneTasksFromTemporalityQueryHandler : IQueryHandler<ListUn
 
         return items
             .SelectMany(x => x.Items)
-            .Where(x => x.Temporality == query.Temporality)
+            .Where(x => x.TimeHorizons == query.TimeHorizons)
             .Where(x => !x.IsDone)
             .Select(x => new ThisWeekUndoneTodoItem(x.ListId, x.Id, x.Description))
             .ToArray();

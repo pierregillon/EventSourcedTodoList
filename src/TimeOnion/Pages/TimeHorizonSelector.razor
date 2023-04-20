@@ -7,9 +7,9 @@
     TimelineOrientation="TimelineOrientation.Horizontal"
     TimelinePosition="TimelinePosition.Bottom">
 
-    @foreach (var temporality in Enum.GetValues<Temporality>())
+    @foreach (var temporality in Enum.GetValues<TimeHorizons>())
     {
-        var isCurrent = State.CurrentTemporality == temporality;
+        var isCurrent = State.CurrentTimeHorizons == temporality;
 
         <MudTimelineItem
             Class="timeline-item"
@@ -50,7 +50,7 @@
 @code {
     TodoListState State => GetState<TodoListState>();
 
-    private async Task ChangeCurrentTemporality(Temporality temporality)
-        => await Mediator.Send(new TodoListState.ChangeCurrentTemporality(temporality));
+    private async Task ChangeCurrentTemporality(TimeHorizons timeHorizons)
+        => await Mediator.Send(new TodoListState.ChangeCurrentTemporality(timeHorizons));
 
 }

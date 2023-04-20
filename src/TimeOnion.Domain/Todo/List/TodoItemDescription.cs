@@ -1,6 +1,6 @@
 namespace TimeOnion.Domain.Todo.List;
 
-public record ItemDescription(string? Value)
+public record TodoItemDescription(string? Value)
 {
     public string Value { get; } = !string.IsNullOrWhiteSpace(Value)
         ? Value

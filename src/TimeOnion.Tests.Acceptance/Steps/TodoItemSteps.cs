@@ -14,14 +14,14 @@ public class TodoItemSteps
 
     [Given(@"the item ""(.*)"" has been added to do (.*) in my (.*) list")]
     [When(@"I add the item ""(.*)"" to do (.*) in my (.*) list")]
-    public async Task WhenIAddTheItemToDo(string description, Temporality temporality, string todoListName)
+    public async Task WhenIAddTheItemToDo(string description, TimeHorizons timeHorizons, string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(temporality));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(timeHorizons));
 
         var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
 
         await _application.Dispatch(() =>
-            new AddItemToDoCommand(todoListId, new ItemDescription(description), temporality));
+            new AddItemToDoCommand(todoListId, new TodoItemDescription(description), timeHorizons));
     }
 
     [When(@"I mark the item ""(.*)"" in my (.*) list as done")]
@@ -53,11 +53,11 @@ public class TodoItemSteps
         var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
         await _application.Dispatch(() =>
-            new FixItemDescriptionCommand(listId, itemId, new ItemDescription(newItemDescription)));
+            new FixItemDescriptionCommand(listId, itemId, new TodoItemDescription(newItemDescription)));
     }
 
     [When(@"I reschedule the item ""(.*)"" in my (.*) list to (.*)")]
-    public async Task WhenIRescheduleTheItemToThisDay(string itemDescription, string listName, Temporality temporality)
+    public async Task WhenIRescheduleTheItemToThisDay(string itemDescription, string listName, TimeHorizons timeHorizons)
     {
         var listId = await FindListId(listName) ?? TodoListId.New();
         var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
@@ -65,7 +65,7 @@ public class TodoItemSteps
         var command = new RescheduleTodoItemCommand(
             listId,
             itemId,
-            temporality
+            timeHorizons
         );
 
         await _application.Dispatch(command);
@@ -87,9 +87,9 @@ public class TodoItemSteps
     }
 
     [Then(@"my (.*) todo list of (.*) is")]
-    public async Task ThenTheTodoListIs(string todoListName, Temporality temporality, Table table)
+    public async Task ThenTheTodoListIs(string todoListName, TimeHorizons timeHorizons, Table table)
     {
-        var items = (await _application.Dispatch(new ListTodoListsQuery(temporality)))?
+        var items = (await _application.Dispatch(new ListTodoListsQuery(timeHorizons)))?
             .Where(x => x.Name == todoListName)
             .SelectMany(x => x.Items)
             .ToList()
@@ -116,7 +116,7 @@ public class TodoItemSteps
                     var normalized = cell.Value
                         .Replace(" ", string.Empty)
                         .Trim();
-                    Assert.Equal(Enum.Parse<Temporality>(normalized, true), item.Temporality);
+                    Assert.Equal(Enum.Parse<TimeHorizons>(normalized, true), item.TimeHorizons);
                 }
                 else
                 {
@@ -141,9 +141,9 @@ public class TodoItemSteps
     }
 
     [Then(@"the undone tasks from (.*) are")]
-    public async Task ThenTheUndoneTasksFromThisWeekAre(Temporality temporality, Table table)
+    public async Task ThenTheUndoneTasksFromThisWeekAre(TimeHorizons timeHorizons, Table table)
     {
-        var tasks = await _application.Dispatch(new ListUndoneTasksFromTemporalityQuery(temporality))
+        var tasks = await _application.Dispatch(new ListUndoneTasksFromTemporalityQuery(timeHorizons))
             ?? throw new InvalidOperationException("Specflow: unable to load items");
 
         var expectedTasks = table.Rows.Select(x => x["Description"]).ToArray();
@@ -156,7 +156,7 @@ public class TodoItemSteps
 
     private async Task<TodoListId?> FindListId(string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(Temporality.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
 
         return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
     }
@@ -165,7 +165,7 @@ public class TodoItemSteps
     {
         var data = await Task.WhenAll(
             Enum
-                .GetValues<Temporality>()
+                .GetValues<TimeHorizons>()
                 .Select(x => _application.Dispatch(new ListTodoListsQuery(x)))
         );
 

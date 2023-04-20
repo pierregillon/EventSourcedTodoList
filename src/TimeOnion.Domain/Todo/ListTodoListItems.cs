@@ -1,9 +1,11 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.List.Events;
+using TimeOnion.Domain.Todo.List.Events.Items;
 
 namespace TimeOnion.Domain.Todo;
 
-public record ListTodoListsQuery(Temporality Temporality) : IQuery<IReadOnlyCollection<TodoListReadModel>>;
+public record ListTodoListsQuery(TimeHorizons TimeHorizons) : IQuery<IReadOnlyCollection<TodoListReadModel>>;
 
 internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IReadOnlyCollection<TodoListReadModel>>,
     IDomainEventListener<TodoListCreated>,
@@ -39,25 +41,25 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
     {
         var newItem = new TodoListItemReadModel(
             domainEvent.ItemId,
-            domainEvent.TodoListId,
+            domainEvent.Id,
             domainEvent.Description.Value,
             false,
-            domainEvent.Temporality
+            domainEvent.TimeHorizon
         );
 
         await _database.Update<TodoListReadModel>(
-            x => x.Id == domainEvent.TodoListId,
+            x => x.Id == domainEvent.Id,
             list => list with { Items = list.Items.Append(newItem).ToArray() }
         );
     }
 
     public async Task On(TodoItemCompleted domainEvent) => await _database.Update(
-        x => x.Id == domainEvent.TodoListId,
-        UpdateItem(domainEvent.TodoItemId, item => item with { IsDone = true })
+        x => x.Id == domainEvent.Id,
+        UpdateItem(domainEvent.ItemId, item => item with { IsDone = true })
     );
 
     public async Task On(ItemReadyTodo domainEvent) => await _database.Update(
-        x => x.Id == domainEvent.TodoListId,
+        x => x.Id == domainEvent.Id,
         UpdateItem(domainEvent.ItemId, item => item with { IsDone = false })
     );
 
@@ -73,7 +75,7 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
 
     public async Task On(TodoItemRescheduled domainEvent) => await _database.Update(
         x => x.Id == domainEvent.Id,
-        UpdateItem(domainEvent.ItemId, item => item with { Temporality = domainEvent.NewTemporality })
+        UpdateItem(domainEvent.ItemId, item => item with { TimeHorizons = domainEvent.NewTimeHorizon })
     );
 
     public async Task<IReadOnlyCollection<TodoListReadModel>> Handle(ListTodoListsQuery query)
@@ -83,7 +85,7 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
         return list.Select(x => x with
         {
             Items = x.Items
-                .Where(item => item.Temporality == query.Temporality).ToArray()
+                .Where(item => item.TimeHorizons == query.TimeHorizons).ToArray()
         }).ToArray();
     }
 

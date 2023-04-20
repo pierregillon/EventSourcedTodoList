@@ -18,7 +18,7 @@ public class ChangeCurrentTemporalityActionHandler : ActionHandler<TodoListState
     {
         var state = Store.GetState<TodoListState>();
 
-        state.CurrentTemporality = action.Temporality;
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
+        state.CurrentTimeHorizons = action.TimeHorizons;
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
     }
 }

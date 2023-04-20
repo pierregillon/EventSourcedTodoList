@@ -2,6 +2,7 @@ using FluentAssertions;
 using TechTalk.SpecFlow;
 using TimeOnion.Domain.Todo;
 using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.List.Events;
 using TimeOnion.Tests.Acceptance.Configuration;
 
 namespace TimeOnion.Tests.Acceptance.Steps;
@@ -38,7 +39,7 @@ public class TodoListSteps
     public async Task ThenTheTodoListAre(Table table)
     {
         var expectedNames = table.Rows.Select(x => x["Name"]);
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(Temporality.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
 
         todoLists!
             .Select(x => x.Name)
@@ -48,7 +49,7 @@ public class TodoListSteps
 
     private async Task<TodoListId?> FindListId(string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(Temporality.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
 
         return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
     }

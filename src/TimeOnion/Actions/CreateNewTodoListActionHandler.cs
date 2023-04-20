@@ -2,6 +2,7 @@ using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
 using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.List.Events;
 
 namespace TimeOnion.Actions;
 
@@ -26,6 +27,6 @@ public class CreateNewTodoListActionHandler : ActionHandler<TodoListState.Create
 
         await _commandDispatcher.Dispatch(new CreateNewTodoListCommand(new TodoListName("Nouvelle todo liste")));
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
     }
 }

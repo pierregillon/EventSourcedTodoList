@@ -28,11 +28,11 @@ public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixIt
             new FixItemDescriptionCommand(
                 action.ListId,
                 action.ItemId,
-                new ItemDescription(action.NewDescription)
+                new TodoItemDescription(action.NewDescription)
             );
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
     }
 }

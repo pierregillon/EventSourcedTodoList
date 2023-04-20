@@ -5,8 +5,8 @@ namespace TimeOnion.Domain.Todo;
 
 public record AddItemToDoCommand(
     TodoListId TodoListId,
-    ItemDescription Description,
-    Temporality Temporality
+    TodoItemDescription Description,
+    TimeHorizons TimeHorizons
 ) : ICommand;
 
 internal class AddItemToDoCommandHandler : ICommandHandler<AddItemToDoCommand>
@@ -19,7 +19,7 @@ internal class AddItemToDoCommandHandler : ICommandHandler<AddItemToDoCommand>
     {
         var todoList = await _repository.Get(command.TodoListId);
 
-        todoList.AddItem(command.Description, command.Temporality);
+        todoList.AddItem(command.Description, command.TimeHorizons);
 
         await _repository.Save(todoList);
     }

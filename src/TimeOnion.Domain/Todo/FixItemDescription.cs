@@ -6,7 +6,7 @@ namespace TimeOnion.Domain.Todo;
 public record FixItemDescriptionCommand(
     TodoListId TodoListId,
     TodoItemId TodoItemId,
-    ItemDescription NewItemDescription
+    TodoItemDescription NewItemDescription
 ) : ICommand;
 
 public class FixItemDescriptionCommandHandler : ICommandHandler<FixItemDescriptionCommand>

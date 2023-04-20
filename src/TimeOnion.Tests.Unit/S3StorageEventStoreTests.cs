@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using Minio;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.List.Events;
+using TimeOnion.Domain.Todo.List.Events.Items;
 using TimeOnion.Infrastructure;
 
 namespace TimeOnion.Tests.Unit;
@@ -52,7 +54,7 @@ public class S3StorageEventStoreTests
         {
             await _eventStore.Save(new IDomainEvent[]
             {
-                new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new ItemDescription("test"), Temporality.ThisDay)
+                new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"), TimeHorizons.ThisDay)
             });
 
             var stat = await _minio.StatObjectAsync(new StatObjectArgs().InitializeFrom(_configuration));
@@ -70,8 +72,8 @@ public class S3StorageEventStoreTests
     {
         try
         {
-            var todoItemAdded = new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new ItemDescription("test"),
-                Temporality.ThisWeek);
+            var todoItemAdded = new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"),
+                TimeHorizons.ThisWeek);
 
             await _eventStore.Save(new IDomainEvent[]
             {

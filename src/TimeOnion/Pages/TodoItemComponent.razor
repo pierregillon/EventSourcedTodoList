@@ -13,21 +13,21 @@
                 AnchorOrigin="Origin.BottomLeft"
                 TransformOrigin="Origin.TopRight">
 
-                @if (NextTemporality != CurrentTemporality)
+                @if (NextTimeHorizons != CurrentTimeHorizons)
                 {
                     <MudMenuItem
                         Icon="@Icons.Material.Filled.Redo"
-                        OnClick="() => Reschedule(Item.ListId, Item.Id, NextTemporality)">
-                        Reporter à @NextTemporality.ToText().ToLower()
+                        OnClick="() => Reschedule(Item.ListId, Item.Id, NextTimeHorizons)">
+                        Reporter à @NextTimeHorizons.ToText().ToLower()
                     </MudMenuItem>
                 }
 
-                @if (PreviousTemporality != CurrentTemporality)
+                @if (PreviousTimeHorizons != CurrentTimeHorizons)
                 {
                     <MudMenuItem
                         Icon="@Icons.Material.Filled.Undo"
-                        OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTemporality)">
-                        Avancer à @PreviousTemporality.ToText().ToLower()
+                        OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTimeHorizons)">
+                        Avancer à @PreviousTimeHorizons.ToText().ToLower()
                     </MudMenuItem>
                 }
 
@@ -81,11 +81,11 @@
     [Parameter]
     public TodoListItemReadModel? Item { get; set; }
 
-    private Temporality NextTemporality => CurrentTemporality.Next();
+    private TimeHorizons NextTimeHorizons => CurrentTimeHorizons.Next();
 
-    private Temporality PreviousTemporality => CurrentTemporality.Previous();
+    private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
 
-    private Temporality CurrentTemporality => GetState<TodoListState>().CurrentTemporality;
+    private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizons;
 
     private async Task FixItemDescription(TodoListId listId, TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(listId, itemId, newValue));
 
@@ -93,7 +93,7 @@
 
     private async Task MarkAsToDo(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(listId, itemId));
 
-    private async Task Reschedule(TodoListId listId, TodoItemId itemId, Temporality temporality) => await Mediator.Send(new TodoListState.RescheduleTodoItem(listId, itemId, temporality));
+    private async Task Reschedule(TodoListId listId, TodoItemId itemId, TimeHorizons timeHorizons) => await Mediator.Send(new TodoListState.RescheduleTodoItem(listId, itemId, timeHorizons));
 
     private async Task Delete(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.DeleteItem(listId, itemId));
 

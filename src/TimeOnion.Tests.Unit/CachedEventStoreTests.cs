@@ -1,6 +1,8 @@
 using NSubstitute;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.List.Events;
+using TimeOnion.Domain.Todo.List.Events.Items;
 using TimeOnion.Infrastructure;
 
 namespace TimeOnion.Tests.Unit;
@@ -45,7 +47,7 @@ public class CachedEventStoreTests
     {
         await _cache.Save(new[]
         {
-            new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new ItemDescription("test"), Temporality.ThisMonth)
+            new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"), TimeHorizons.ThisMonth)
         });
 
         await _decorated
@@ -56,8 +58,8 @@ public class CachedEventStoreTests
     [Fact]
     public async Task Saving_uncommitted_events_calls_decorated()
     {
-        var todoItemAdded = new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new ItemDescription("test"),
-            Temporality.ThisMonth);
+        var todoItemAdded = new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"),
+            TimeHorizons.ThisMonth);
 
         await _decorated.Save(new[]
         {
