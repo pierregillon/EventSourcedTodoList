@@ -42,8 +42,7 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
             domainEvent.TodoListId,
             domainEvent.Description.Value,
             false,
-            domainEvent.Temporality,
-            false
+            domainEvent.Temporality
         );
 
         await _database.Update<TodoListReadModel>(
@@ -62,9 +61,9 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
         UpdateItem(domainEvent.ItemId, item => item with { IsDone = false })
     );
 
-    public async Task On(TodoItemDeleted domainEvent) => await _database.Update(
+    public async Task On(TodoItemDeleted domainEvent) => await _database.Update<TodoListReadModel>(
         x => x.Id == domainEvent.Id,
-        UpdateItem(domainEvent.ItemId, item => item with { IsDeleted = true })
+        list => list with { Items = list.Items.Where(x => x.Id != domainEvent.ItemId).ToArray()}
     );
 
     public async Task On(TodoItemDescriptionFixed domainEvent) => await _database.Update(
@@ -84,7 +83,6 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
         return list.Select(x => x with
         {
             Items = x.Items
-                .Where(item => !item.IsDeleted)
                 .Where(item => item.Temporality == query.Temporality).ToArray()
         }).ToArray();
     }

@@ -5,8 +5,7 @@ public record TodoListItemReadModel(
     TodoListId ListId,
     string Description,
     bool IsDone,
-    Temporality Temporality,
-    bool IsDeleted
+    Temporality Temporality
 );
 
 public record TodoListReadModel(TodoListId Id, string Name, IReadOnlyCollection<TodoListItemReadModel> Items);
