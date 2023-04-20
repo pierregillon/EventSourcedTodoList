@@ -61,8 +61,9 @@ public class TodoItemSteps
     [Then(@"the todo list of (.*) is")]
     public async Task ThenTheTodoListIs(Temporality temporality, Table table)
     {
-        var items = await _application.Dispatch(new ListTodoListItemsQuery(temporality))
-                    ?? throw new InvalidOperationException("Specflow: unable to load items");
+        var items = (await _application.Dispatch(new ListTodoListsQuery(temporality)))?.SelectMany(x => x.Items)
+            .ToList()
+            ?? throw new InvalidOperationException("Specflow: unable to load items");
 
         Assert.Equal(table.RowCount, items.Count);
 
@@ -99,7 +100,7 @@ public class TodoItemSteps
     public async Task ThenTheYesterdayUndoneTasksAre(Table table)
     {
         var tasks = await _application.Dispatch(new ListYesterdayUndoneTasksQuery())
-                    ?? throw new InvalidOperationException("Specflow: unable to load items");
+            ?? throw new InvalidOperationException("Specflow: unable to load items");
 
         var expectedTasks = table.Rows.Select(x => x["Description"]).ToArray();
 
@@ -113,7 +114,7 @@ public class TodoItemSteps
     public async Task ThenTheUndoneTasksFromThisWeekAre(Temporality temporality, Table table)
     {
         var tasks = await _application.Dispatch(new ListUndoneTasksFromTemporalityCommand(temporality))
-                    ?? throw new InvalidOperationException("Specflow: unable to load items");
+            ?? throw new InvalidOperationException("Specflow: unable to load items");
 
         var expectedTasks = table.Rows.Select(x => x["Description"]).ToArray();
 
@@ -127,9 +128,11 @@ public class TodoItemSteps
     {
         var items = (await Task.WhenAll(
                 Enum.GetValues<Temporality>()
-                    .Select(x => _application.Dispatch(new ListTodoListItemsQuery(x)))
+                    .Select(x => _application.Dispatch(new ListTodoListsQuery(x)))
             ))
-            .SelectMany(x => x ?? throw new InvalidOperationException("Specflow: null list"))
+            .SelectMany(x =>
+                x?.SelectMany(items => items.Items).ToList()
+                ?? throw new InvalidOperationException("Specflow: null list"))
             .ToArray();
 
         var id = items!.FirstOrDefault(x => x.Description == itemDescription)?.Id;

@@ -5,7 +5,7 @@ namespace TimeOnion.Domain.Todo;
 
 public record ListYesterdayUndoneTasksQuery : IQuery<IReadOnlyCollection<YesterdayUndoneTodoItem>>;
 
-public record YesterdayUndoneTodoItem(Guid ItemId, string Description);
+public record YesterdayUndoneTodoItem(TodoItemId ItemId, string Description);
 
 internal class ListYesterdayUndoneTasksQueryHandler : IQueryHandler<ListYesterdayUndoneTasksQuery,
     IReadOnlyCollection<YesterdayUndoneTodoItem>>
@@ -16,7 +16,7 @@ internal class ListYesterdayUndoneTasksQueryHandler : IQueryHandler<ListYesterda
 
     public async Task<IReadOnlyCollection<YesterdayUndoneTodoItem>> Handle(ListYesterdayUndoneTasksQuery query)
     {
-        var items = await _database.GetAll<TodoListItem>();
+        var items = await _database.GetAll<TodoListItemReadModel>();
 
         return items
             .Where(x => x.Temporality == Temporality.ThisDay)

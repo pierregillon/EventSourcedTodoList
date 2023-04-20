@@ -11,12 +11,14 @@ public class ChangeCurrentTemporalityActionHandler : ActionHandler<TodoListState
     public ChangeCurrentTemporalityActionHandler(IStore aStore, IQueryDispatcher queryDispatcher) : base(aStore) =>
         _queryDispatcher = queryDispatcher;
 
-    public override async Task Handle(TodoListState.ChangeCurrentTemporality action,
-        CancellationToken aCancellationToken)
+    public override async Task Handle(
+        TodoListState.ChangeCurrentTemporality action,
+        CancellationToken aCancellationToken
+    )
     {
         var state = Store.GetState<TodoListState>();
 
         state.CurrentTemporality = action.Temporality;
-        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(action.Temporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
     }
 }

@@ -32,7 +32,7 @@ public class AddThisWeekTasksStep : ITodayTaskPreparationStep
 
         foreach (var item in itemToTake)
         {
-            var command = new RescheduleTodoItemCommand(new TodoItemId(item.ItemId), Temporality.ThisDay);
+            var command = new RescheduleTodoItemCommand(item.ItemId, Temporality.ThisDay);
             await _commandDispatcher.Dispatch(command);
         }
     }

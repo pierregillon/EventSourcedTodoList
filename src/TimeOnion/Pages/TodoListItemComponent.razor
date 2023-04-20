@@ -79,7 +79,7 @@
 @code {
 
     [Parameter]
-    public TodoListItem? Item { get; set; }
+    public TodoListItemReadModel? Item { get; set; }
 
     private Temporality NextTemporality => CurrentTemporality.Next();
 
@@ -87,14 +87,14 @@
 
     private Temporality CurrentTemporality => GetState<TodoListState>().CurrentTemporality;
 
-    private async Task FixItemDescription(Guid itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(itemId, newValue));
+    private async Task FixItemDescription(TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(itemId, newValue));
 
-    private async Task MarkItemAsDone(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
+    private async Task MarkItemAsDone(TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(itemId));
 
-    private async Task MarkAsToDo(Guid itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
+    private async Task MarkAsToDo(TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(itemId));
 
-    private async Task Reschedule(Guid itemId, Temporality temporality) => await Mediator.Send(new TodoListState.RescheduleTodoItem(itemId, temporality));
+    private async Task Reschedule(TodoItemId itemId, Temporality temporality) => await Mediator.Send(new TodoListState.RescheduleTodoItem(itemId, temporality));
 
-    private async Task Delete(Guid itemId) => await Mediator.Send(new TodoListState.DeleteItem(itemId));
+    private async Task Delete(TodoItemId itemId) => await Mediator.Send(new TodoListState.DeleteItem(itemId));
 
 }

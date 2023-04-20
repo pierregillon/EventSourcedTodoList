@@ -1,10 +1,11 @@
+@using TimeOnion.Domain.Todo.List
 @using TimeOnion.Actions
 @inherits BlazorState.BlazorStateComponent
 
 <div>
-    @foreach (var item in State.Items)
+    @foreach (var item in Items)
     {
-        <TodoItem Item="@item"></TodoItem>
+        <TodoListItemComponent Item="@item"></TodoListItemComponent>
     }
 
     <div class="d-flex">
@@ -33,6 +34,9 @@
 </style>
 
 @code {
+
+    [Parameter]
+    public IEnumerable<TodoListItemReadModel> Items { get; set; } = Enumerable.Empty<TodoListItemReadModel>();
 
     TodoListState State => GetState<TodoListState>();
 

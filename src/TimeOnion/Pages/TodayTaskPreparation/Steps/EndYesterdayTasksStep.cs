@@ -1,6 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
-using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Steps;
 
@@ -32,7 +31,7 @@ public class EndYesterdayTasksStep : ITodayTaskPreparationStep
 
         foreach (var item in itemToMarkAsDone)
         {
-            await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(new TodoItemId(item.ItemId)));
+            await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(item.ItemId));
         }
     }
 }

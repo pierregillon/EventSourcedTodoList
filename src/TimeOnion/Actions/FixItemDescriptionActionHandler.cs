@@ -10,8 +10,11 @@ public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixIt
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public FixItemDescriptionActionHandler(IStore aStore, ICommandDispatcher commandDispatcher,
-        IQueryDispatcher queryDispatcher) : base(aStore)
+    public FixItemDescriptionActionHandler(
+        IStore aStore,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(aStore)
     {
         _commandDispatcher = commandDispatcher;
         _queryDispatcher = queryDispatcher;
@@ -23,12 +26,12 @@ public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixIt
 
         var command =
             new FixItemDescriptionCommand(
-                new TodoItemId(action.ItemId),
+                action.ItemId,
                 new ItemDescription(action.NewDescription)
             );
 
         await _commandDispatcher.Dispatch(command);
 
-        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(state.CurrentTemporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
     }
 }

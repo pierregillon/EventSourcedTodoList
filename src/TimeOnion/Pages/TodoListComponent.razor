@@ -1,0 +1,24 @@
+@using TimeOnion.Domain.Todo.List
+@using TimeOnion.Actions
+@inherits BlazorState.BlazorStateComponent
+
+@if (TodoList is not null)
+{
+    <MudContainer MaxWidth="MaxWidth.Small">
+
+        <MudText Typo="Typo.h4">@TodoList.Name</MudText>
+
+        <MudDivider Class="medium"/>
+
+        <TodoListItemsComponent Items="@TodoList.Items"></TodoListItemsComponent>
+
+    </MudContainer>
+}
+
+@code {
+
+    [Parameter]
+    public TodoListReadModel? TodoList { get; set; }
+
+    TodoListState State => GetState<TodoListState>();
+}

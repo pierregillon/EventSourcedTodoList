@@ -6,7 +6,7 @@ namespace TimeOnion.Domain.Todo;
 public record ListUndoneTasksFromTemporalityCommand
     (Temporality Temporality) : IQuery<IReadOnlyCollection<ThisWeekUndoneTodoItem>>;
 
-public record ThisWeekUndoneTodoItem(Guid ItemId, string Description);
+public record ThisWeekUndoneTodoItem(TodoItemId ItemId, string Description);
 
 internal class ListUndoneTasksFromTemporalityCommandHandler : IQueryHandler<ListUndoneTasksFromTemporalityCommand,
     IReadOnlyCollection<ThisWeekUndoneTodoItem>>
@@ -17,7 +17,7 @@ internal class ListUndoneTasksFromTemporalityCommandHandler : IQueryHandler<List
 
     public async Task<IReadOnlyCollection<ThisWeekUndoneTodoItem>> Handle(ListUndoneTasksFromTemporalityCommand query)
     {
-        var items = await _database.GetAll<TodoListItem>();
+        var items = await _database.GetAll<TodoListItemReadModel>();
 
         return items
             .Where(x => x.Temporality == query.Temporality)

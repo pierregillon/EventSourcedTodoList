@@ -1,5 +1,6 @@
 using BlazorState;
 using TimeOnion.Domain.Todo;
+using TimeOnion.Domain.Todo.List;
 using TimeOnion.Pages.TodayTaskPreparation.Steps;
 
 namespace TimeOnion.Pages.TodayTaskPreparation;
@@ -26,7 +27,7 @@ public class TodayTaskPreparationState : State<TodayTaskPreparationState>
     public record MoveToNextPreparationStep : IAction;
 }
 
-public record SelectableTodoItem(Guid ItemId, string Description, bool IsSelected)
+public record SelectableTodoItem(TodoItemId ItemId, string Description, bool IsSelected)
 {
     public bool IsSelected { get; set; } = IsSelected;
 

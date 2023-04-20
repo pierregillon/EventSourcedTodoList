@@ -1,7 +1,6 @@
 using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
-using TimeOnion.Domain.Todo.List;
 
 namespace TimeOnion.Actions;
 
@@ -10,8 +9,11 @@ public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public DeleteItemActionHandler(IStore aStore, ICommandDispatcher commandDispatcher,
-        IQueryDispatcher queryDispatcher) : base(aStore)
+    public DeleteItemActionHandler(
+        IStore aStore,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(aStore)
     {
         _commandDispatcher = commandDispatcher;
         _queryDispatcher = queryDispatcher;
@@ -21,8 +23,8 @@ public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(new TodoItemId(action.ItemId)));
+        await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ItemId));
 
-        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(state.CurrentTemporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
     }
 }

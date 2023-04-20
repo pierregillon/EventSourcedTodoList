@@ -5,9 +5,9 @@ namespace TimeOnion.Actions;
 
 public class TodoListState : State<TodoListState>
 {
-    public IReadOnlyCollection<TodoListItem> Items { get; set; } = Array.Empty<TodoListItem>();
     public string NewTodoItemDescription { get; set; } = string.Empty;
     public Temporality CurrentTemporality { get; set; } = Temporality.ThisDay;
+    public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
 
     public override void Initialize()
     {
@@ -17,15 +17,15 @@ public class TodoListState : State<TodoListState>
 
     public record AddNewItem(string? Text) : IAction;
 
-    public record MarkItemAsDone(Guid ItemId) : IAction;
+    public record MarkItemAsDone(TodoItemId ItemId) : IAction;
 
-    public record MarkItemAsToDo(Guid ItemId) : IAction;
+    public record MarkItemAsToDo(TodoItemId ItemId) : IAction;
 
-    public record FixItemDescription(Guid ItemId, string NewDescription) : IAction;
+    public record FixItemDescription(TodoItemId ItemId, string NewDescription) : IAction;
 
-    public record RescheduleTodoItem(Guid ItemId, Temporality Temporality) : IAction;
+    public record RescheduleTodoItem(TodoItemId ItemId, Temporality Temporality) : IAction;
 
     public record ChangeCurrentTemporality(Temporality Temporality) : IAction;
 
-    public record DeleteItem(Guid ItemId) : IAction;
+    public record DeleteItem(TodoItemId ItemId) : IAction;
 }

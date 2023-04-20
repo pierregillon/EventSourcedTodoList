@@ -10,8 +10,11 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public AddNewItemActionHandler(IStore aStore, ICommandDispatcher commandDispatcher,
-        IQueryDispatcher queryDispatcher) : base(aStore)
+    public AddNewItemActionHandler(
+        IStore aStore,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(aStore)
     {
         _commandDispatcher = commandDispatcher;
         _queryDispatcher = queryDispatcher;
@@ -24,7 +27,7 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
         await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.Text, state.CurrentTemporality));
 
         state.NewTodoItemDescription = string.Empty;
-        state.Items = await _queryDispatcher.Dispatch(new ListTodoListItemsQuery(state.CurrentTemporality));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTemporality));
 
         return Unit.Value;
     }

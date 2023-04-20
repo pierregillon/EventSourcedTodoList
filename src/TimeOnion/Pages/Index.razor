@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using TimeOnion.Domain.Todo.List
 @using TimeOnion.Actions
 @inherits BlazorState.BlazorStateComponent
 
@@ -7,15 +6,10 @@
 
 <TimeHorizonSelector></TimeHorizonSelector>
 
-<MudContainer MaxWidth="MaxWidth.Small">
-
-    <h1>@State.CurrentTemporality.ToText()</h1>
-
-    <MudDivider Class="medium"/>
-
-    <TodoItems></TodoItems>
-
-</MudContainer>
+@foreach (var todoList in State.TodoLists)
+{
+    <TodoListComponent TodoList="@todoList"></TodoListComponent>
+}
 
 @code {
 
