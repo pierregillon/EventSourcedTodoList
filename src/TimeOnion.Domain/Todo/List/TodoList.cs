@@ -5,6 +5,7 @@ namespace TimeOnion.Domain.Todo.List;
 public class TodoList : EventSourcedAggregate<TodoListId>
 {
     private readonly List<TodoListItem> _items = new();
+    private TodoListName _name = default!;
 
     private TodoList(TodoListId id, IEnumerable<IDomainEvent> eventHistory) : base(id)
     {
@@ -96,6 +97,14 @@ public class TodoList : EventSourcedAggregate<TodoListId>
 
         switch (domainEvent)
         {
+            case TodoListCreated created:
+                _name = created.Name;
+                break;
+
+            case TodoListRenamed renamed:
+                _name = renamed.NewName;
+                break;
+
             case TodoItemAdded added:
                 _items.Add(new TodoListItem(added.ItemId, added.Description, added.Temporality));
                 break;
@@ -118,9 +127,24 @@ public class TodoList : EventSourcedAggregate<TodoListId>
     }
 
     private record TodoListItem(TodoItemId Id, ItemDescription Description, Temporality Temporality);
+
+    public void Rename(TodoListName newName)
+    {
+        if (_name != newName)
+        {
+            StoreEvent(new TodoListRenamed(Id, _name, newName));
+        }
+    }
 }
 
-public record TodoListName(string Value);
+public record TodoListRenamed(TodoListId Id, TodoListName PreviousName, TodoListName NewName) : TodoListDomainEvent(Id);
+
+public record TodoListName(string Value)
+{
+    public string Value { get; } = string.IsNullOrWhiteSpace(Value)
+        ? throw new ArgumentException("A todo list name cannot be null or empty")
+        : Value;
+}
 
 public record TodoListCreated(TodoListId Id, TodoListName Name) : TodoListDomainEvent(Id);
 
@@ -194,7 +218,7 @@ public record TodoItemAdded(
 
 public record TodoListDomainEvent(TodoListId TodoListId) : IDomainEvent
 {
-    public Guid AggregateId => TodoListId.Value;
+    Guid IDomainEvent.AggregateId => TodoListId.Value;
 }
 
 public record TodoItemCompleted(TodoListId TodoListId, TodoItemId TodoItemId) : TodoListDomainEvent(TodoListId);

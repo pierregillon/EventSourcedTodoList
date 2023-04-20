@@ -6,14 +6,25 @@
 {
     <div class="todolist">
 
-        <MudText Typo="Typo.h4">@TodoList.Name</MudText>
+        @* <MudText Typo="Typo.h4">@TodoList.Name</MudText> *@
+
+        <MudTextField
+            T="string"
+            InputMode="InputMode.text"
+            Text="@TodoList.Name"
+            TextChanged="newName => Rename(TodoList.Id, newName)"
+            TextUpdateSuppression="false"
+            DebounceInterval="1000"
+            Class="compact title"
+            DisableUnderLine="true">
+        </MudTextField>
 
         <MudDivider Class="medium"/>
 
         <div>
             @foreach (var item in TodoList.Items)
             {
-                <TodoListItemComponent Item="@item"></TodoListItemComponent>
+                <TodoItemComponent Item="@item"></TodoItemComponent>
             }
 
             <div class="d-flex">
@@ -46,6 +57,10 @@
     .todolist {
         flex-grow: 1;
     }
+    
+    .title .mud-input > input {
+        font-size: 30px;
+    }
 </style>
 
 @code {
@@ -57,5 +72,8 @@
 
     private async Task AddItemToDo(TodoListId listId, string itemDescription)
         => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
+
+    private async Task Rename(TodoListId todoListId, string newName)
+        => await Mediator.Send(new TodoListState.RenameTodoList(todoListId, newName));
 
 }

@@ -7,6 +7,7 @@ public record ListTodoListsQuery(Temporality Temporality) : IQuery<IReadOnlyColl
 
 internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IReadOnlyCollection<TodoListReadModel>>,
     IDomainEventListener<TodoListCreated>,
+    IDomainEventListener<TodoListRenamed>,
     IDomainEventListener<TodoItemAdded>,
     IDomainEventListener<TodoItemCompleted>,
     IDomainEventListener<ItemReadyTodo>,
@@ -18,9 +19,16 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
 
     public ListTodoListsQueryHandler(IReadModelDatabase database) => _database = database;
 
-    public async Task On(ItemReadyTodo domainEvent) => await _database.Update(
-        x => x.Id == domainEvent.TodoListId,
-        UpdateItem(domainEvent.ItemId, item => item with { IsDone = false })
+    public async Task On(TodoListCreated domainEvent)
+    {
+        var readModel =
+            new TodoListReadModel(domainEvent.Id, domainEvent.Name.Value, Array.Empty<TodoListItemReadModel>());
+        await _database.Add(readModel);
+    }
+
+    public async Task On(TodoListRenamed domainEvent) => await _database.Update<TodoListReadModel>(
+        x => x.Id == domainEvent.Id,
+        x => x with { Name = domainEvent.NewName.Value }
     );
 
     public async Task On(TodoItemAdded domainEvent)
@@ -43,6 +51,11 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
     public async Task On(TodoItemCompleted domainEvent) => await _database.Update(
         x => x.Id == domainEvent.TodoListId,
         UpdateItem(domainEvent.TodoItemId, item => item with { IsDone = true })
+    );
+
+    public async Task On(ItemReadyTodo domainEvent) => await _database.Update(
+        x => x.Id == domainEvent.TodoListId,
+        UpdateItem(domainEvent.ItemId, item => item with { IsDone = false })
     );
 
     public async Task On(TodoItemDeleted domainEvent) => await _database.Update(
@@ -71,14 +84,6 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
                 .Where(item => item.Temporality == query.Temporality).ToArray()
         }).ToArray();
     }
-
-    public async Task On(TodoListCreated domainEvent)
-    {
-        var readModel =
-            new TodoListReadModel(domainEvent.Id, domainEvent.Name.Value, Array.Empty<TodoListItemReadModel>());
-        await _database.Add(readModel);
-    }
-
 
     private static Func<TodoListReadModel, TodoListReadModel> UpdateItem(
         TodoItemId todoItemId,

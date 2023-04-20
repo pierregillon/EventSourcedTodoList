@@ -30,4 +30,6 @@ public class TodoListState : State<TodoListState>
     public record ChangeCurrentTemporality(Temporality Temporality) : IAction;
 
     public record DeleteItem(TodoListId ListId, TodoItemId ItemId) : IAction;
+
+    public record RenameTodoList(TodoListId ListId, string NewName) : IAction;
 }
