@@ -51,6 +51,7 @@
             <TextEditor
                 Text="@Item.Description"
                 TextChanged="text => FixItemDescription(Item.ListId, Item.Id, text)"
+                DeletionTriggered="() => Delete(Item.ListId, Item.Id)"
                 IsStrikeThrough="@Item.IsDone">
             </TextEditor>
         </div>

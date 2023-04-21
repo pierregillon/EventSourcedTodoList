@@ -1,9 +1,13 @@
 <MudTextField
+    @ref="_textField"
     T="string"
     Class="@(IsStrikeThrough ? "compact strikeThrough" : "compact")"
     InputMode="InputMode.text"
-    Text="@Text"
-    TextChanged="async text => await TextChanged.InvokeAsync(text)"
+    @bind-Text="@_boundedText"
+    OnKeyDown="ChallengeKeyDown"
+    OnBlur="ChallengeBlur"
+    Immediate="true"
+    TextUpdateSuppression="false"
     DisableUnderLine="true">
 </MudTextField>
 
@@ -21,9 +25,53 @@
     public EventCallback<string> TextChanged { get; set; }
 
     [Parameter]
+    public EventCallback DeletionTriggered { get; set; }
+
+    [Parameter]
     public string Text { get; set; } = string.Empty;
 
     [Parameter]
     public bool IsStrikeThrough { get; set; }
 
+    string _boundedText = string.Empty;
+    
+    MudTextField<string> _textField = default!;
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        if (parameters.TryGetValue<string>(nameof(Text), out var value))
+        {
+            _boundedText = value;
+        }
+        
+        return base.SetParametersAsync(parameters);
+    }
+
+    private async Task ChallengeKeyDown(KeyboardEventArgs obj)
+    {
+        if (obj.Key == "Backspace" && string.IsNullOrEmpty(_boundedText))
+        {
+            await DeletionTriggered.InvokeAsync();
+        }
+        else if (obj.Key == "Enter")
+        {
+            await AcceptChanges();
+        }
+    }
+
+    private async Task ChallengeBlur(FocusEventArgs obj)
+    {
+        if (_boundedText != Text)
+        {
+            await AcceptChanges();
+        }
+    }
+
+    private async Task AcceptChanges()
+    {
+        if (_boundedText != Text)
+        {
+            await TextChanged.InvokeAsync(_boundedText);
+        }
+    }
 }
