@@ -7,7 +7,7 @@
 }
 
 .mud-input-control.compact .mud-input > input.mud-input-root {
-    padding: 1px 0 1px 0px;
+    padding: 0px 0px 0px 0px;
 }
 
 .mud-input-control.compact > .mud-input-control-input-container > div.mud-input.mud-input-text {
