@@ -1,17 +1,17 @@
 using BlazorState;
+using MediatR;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
 using TimeOnion.Domain.Todo.List;
-using TimeOnion.Domain.Todo.List.Events;
 
-namespace TimeOnion.Actions;
+namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
-public class RenameTodoListActionHandler : ActionHandler<TodoListState.RenameTodoList>
+public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public RenameTodoListActionHandler(
+    public AddNewItemActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -21,18 +21,16 @@ public class RenameTodoListActionHandler : ActionHandler<TodoListState.RenameTod
         _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.RenameTodoList aAction, CancellationToken aCancellationToken)
+    public override async Task<Unit> Handle(TodoListState.AddNewItem action, CancellationToken cancellationToken)
     {
         var state = Store.GetState<TodoListState>();
 
-        var command =
-            new RenameTodoListCommand(
-                aAction.ListId,
-                new TodoListName(aAction.NewName)
-            );
+        await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.ListId, new TodoItemDescription(action.Text),
+            state.CurrentTimeHorizons));
 
-        await _commandDispatcher.Dispatch(command);
-
+        state.NewTodoItemDescription = string.Empty;
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
+
+        return Unit.Value;
     }
 }

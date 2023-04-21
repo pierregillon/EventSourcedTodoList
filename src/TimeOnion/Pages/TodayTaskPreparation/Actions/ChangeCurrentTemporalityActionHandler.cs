@@ -2,7 +2,7 @@ using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
 
-namespace TimeOnion.Actions;
+namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
 public class ChangeCurrentTemporalityActionHandler : ActionHandler<TodoListState.ChangeCurrentTemporality>
 {

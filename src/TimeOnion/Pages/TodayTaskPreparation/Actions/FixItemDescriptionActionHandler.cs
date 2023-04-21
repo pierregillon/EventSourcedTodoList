@@ -3,7 +3,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
 using TimeOnion.Domain.Todo.List;
 
-namespace TimeOnion.Actions;
+namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
 public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixItemDescription>
 {

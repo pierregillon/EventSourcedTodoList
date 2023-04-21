@@ -1,7 +1,7 @@
 using BlazorState;
 using TimeOnion.Domain.Todo.List;
 
-namespace TimeOnion.Actions;
+namespace TimeOnion.Pages.TodayTaskPreparation;
 
 public class TodoListState : State<TodoListState>
 {

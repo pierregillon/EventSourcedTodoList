@@ -2,9 +2,8 @@ using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
 using TimeOnion.Domain.Todo.List;
-using TimeOnion.Domain.Todo.List.Events;
 
-namespace TimeOnion.Actions;
+namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
 public class CreateNewTodoListActionHandler : ActionHandler<TodoListState.CreateNewTodoList>
 {

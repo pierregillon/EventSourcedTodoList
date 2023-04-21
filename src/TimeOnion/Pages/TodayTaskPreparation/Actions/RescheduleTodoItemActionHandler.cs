@@ -2,14 +2,14 @@ using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo;
 
-namespace TimeOnion.Actions;
+namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
-public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
+public class RescheduleTodoItemActionHandler : ActionHandler<TodoListState.RescheduleTodoItem>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public DeleteItemActionHandler(
+    public RescheduleTodoItemActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -19,11 +19,18 @@ public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
         _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.DeleteItem action, CancellationToken aCancellationToken)
+    public override async Task Handle(TodoListState.RescheduleTodoItem action, CancellationToken token)
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+        var command =
+            new RescheduleTodoItemCommand(
+                action.ListId,
+                action.ItemId,
+                action.TimeHorizons
+            );
+
+        await _commandDispatcher.Dispatch(command);
 
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
     }
