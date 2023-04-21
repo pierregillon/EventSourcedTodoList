@@ -48,24 +48,16 @@
                 Color="Color.Primary">
             </MudCheckBox>
 
-            <MudTextField
-                T="string"
-                Class="@(Item.IsDone ? "compact done" : "compact")"
-                InputMode="InputMode.text"
+            <TextEditor
                 Text="@Item.Description"
                 TextChanged="text => FixItemDescription(Item.ListId, Item.Id, text)"
-                DisableUnderLine="true">
-            </MudTextField>
+                IsStrikeThrough="@Item.IsDone">
+            </TextEditor>
         </div>
     </div>
 }
 
 <style>
-    .done .mud-input input {
-        text-decoration: line-through;
-        color: #B4B4B4;
-        font-style: italic;
-    }
     
     .overlay-menu {
         opacity: 0;

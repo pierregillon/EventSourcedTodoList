@@ -1,0 +1,29 @@
+<MudTextField
+    T="string"
+    Class="@(IsStrikeThrough ? "compact strikeThrough" : "compact")"
+    InputMode="InputMode.text"
+    Text="@Text"
+    TextChanged="async text => await TextChanged.InvokeAsync(text)"
+    DisableUnderLine="true">
+</MudTextField>
+
+<style>
+    .strikeThrough .mud-input input {
+        text-decoration: line-through;
+        color: #B4B4B4;
+        font-style: italic;
+    }
+</style>
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsStrikeThrough { get; set; }
+
+}
