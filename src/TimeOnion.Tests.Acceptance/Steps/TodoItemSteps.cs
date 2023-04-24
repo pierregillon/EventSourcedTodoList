@@ -1,3 +1,4 @@
+using FluentAssertions;
 using TechTalk.SpecFlow;
 using TimeOnion.Domain.Todo;
 using TimeOnion.Domain.Todo.List;
@@ -147,6 +148,38 @@ public class TodoItemSteps
         }
     }
 
+    [Given(@"""(.*)"" has been categorized to (.*) category on my (.*) list")]
+    [When(@"I categorize ""(.*)"" to (.*) category on my (.*) list")]
+    public async Task WhenICategorizeToFamilyCategoryOnMyProfessionalList(
+        string itemDescription,
+        string categoryName,
+        string listName
+    )
+    {
+        var listId = await FindListId(listName);
+        if (listId is null)
+        {
+            await _application.Dispatch(
+                new CategorizeTodoItemCommand(TodoListId.New(), TodoItemId.New(), CategoryId.New()));
+        }
+        else
+        {
+            var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
+            var categoryId = await FindCategoryId(categoryName) ?? CategoryId.New();
+
+            await _application.Dispatch(new CategorizeTodoItemCommand(listId, itemId, categoryId));
+        }
+    }
+
+    [When(@"I decategorize ""(.*)"" in my (.*) list")]
+    public async Task WhenIDecategorizeInMyPersonalList(string itemDescription, string listName)
+    {
+        var listId = await FindListId(listName);
+        var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
+
+        await _application.Dispatch(new DecategorizeTodoItemCommand(listId, itemId));
+    }
+
     [Then(@"my (.*) todo list of (.*) is")]
     public async Task ThenTheTodoListIs(string todoListName, TimeHorizons timeHorizons, Table table)
     {
@@ -178,6 +211,20 @@ public class TodoItemSteps
                         .Replace(" ", string.Empty)
                         .Trim();
                     Assert.Equal(Enum.Parse<TimeHorizons>(normalized, true), item.TimeHorizons);
+                }
+                else if (cell.Key == "Category")
+                {
+                    var categoryName = cell.Value;
+                    if (string.IsNullOrWhiteSpace(categoryName))
+                    {
+                        item.CategoryId.Should().BeNull();
+                    }
+                    else
+                    {
+                        var categoryId = await FindCategoryId(categoryName)
+                            ?? throw new InvalidOperationException("Specflow: unknown category");
+                        item.CategoryId.Should().Be(categoryId);
+                    }
                 }
                 else
                 {
@@ -246,5 +293,12 @@ public class TodoItemSteps
         }
 
         return items.FirstOrDefault(x => x.Description == itemDescription)?.Id;
+    }
+
+    private async Task<CategoryId?> FindCategoryId(string categoryName)
+    {
+        var categories = await _application.Dispatch(new ListCategoriesQuery());
+
+        return categories?.FirstOrDefault(x => x.Name == categoryName)?.Id;
     }
 }

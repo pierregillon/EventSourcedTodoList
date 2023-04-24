@@ -18,7 +18,9 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
     IDomainEventListener<TodoItemRescheduled>,
     IDomainEventListener<TodoItemDeleted>,
     IDomainEventListener<TodoItemRepositionedAboveAnother>,
-    IDomainEventListener<TodoItemRepositionedAtTheEnd>
+    IDomainEventListener<TodoItemRepositionedAtTheEnd>,
+    IDomainEventListener<TodoItemCategorized>,
+    IDomainEventListener<TodoItemDecategorized>
 {
     private readonly IReadModelDatabase _database;
 
@@ -46,7 +48,8 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
             domainEvent.Id,
             domainEvent.Description.Value,
             false,
-            domainEvent.TimeHorizon
+            domainEvent.TimeHorizon,
+            CategoryId.None
         );
 
         await _database.Update<TodoListReadModel>(
@@ -120,10 +123,21 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
             {
                 return todoList;
             }
+
             newList.Remove(item);
             newList.Add(item);
             return todoList with { Items = newList };
         }
+    );
+
+    public async Task On(TodoItemCategorized domainEvent) => await _database.Update(
+        x => x.Id == domainEvent.Id,
+        UpdateItem(domainEvent.ItemId, item => item with { CategoryId = domainEvent.NewCategoryId })
+    );
+
+    public async Task On(TodoItemDecategorized domainEvent) => await _database.Update(
+        x => x.Id == domainEvent.Id,
+        UpdateItem(domainEvent.ItemId, item => item with { CategoryId = null })
     );
 
     public async Task<IReadOnlyCollection<TodoListReadModel>> Handle(ListTodoListsQuery query)

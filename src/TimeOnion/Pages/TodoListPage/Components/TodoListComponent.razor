@@ -18,9 +18,18 @@
                 DisableUnderLine="true">
             </MudTextField>
 
+            <MudTooltip Text="Créer une catégorie">
+                <MudIconButton
+                    Class="action-button"
+                    Icon="@Icons.Material.Filled.CreateNewFolder"
+                    Color="Color.Primary"
+                    OnClick="() => CreateNewCategory()">
+                </MudIconButton>
+            </MudTooltip>
+
             <MudTooltip Text="Supprimer la liste">
                 <MudIconButton
-                    Class="delete-button"
+                    Class="action-button"
                     Icon="@Icons.Material.Filled.Delete"
                     Color="Color.Error"
                     OnClick="() => Delete(TodoList.Id)">
@@ -36,12 +45,32 @@
                 T="TodoListItemReadModel"
                 Items="TodoList.Items"
                 ItemsSelector="@((item, dropzone) => true)"
-                ItemDropped="info => info.Item is not null ? Reposition(info.Item.ListId, info.Item.Id, info.IndexInZone) : Task.CompletedTask">
+                ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask">
                 <ChildContent>
+                    @foreach (var category in State.Categories)
+                    {
+                        <MudDropZone
+                            T="TodoListItemReadModel"
+                            Identifier="@category.Id.Value.ToString()"
+                            AllowReorder="true"
+                            ItemsSelector="model => model.CategoryId == category.Id">
+                            <div class="d-flex gap-1 align-center" style="margin-left: 22px">
+                                <MudIcon
+                                    Icon="@Icons.Material.Outlined.Folder"
+                                    Color="Color.Secondary"
+                                    Size="Size.Large">
+                                </MudIcon>
+                                <MudText>@category.Name</MudText>
+                            </div>
+                        </MudDropZone>
+                    }
+
                     <MudDropZone
                         T="TodoListItemReadModel"
-                        Identifier="myid"
-                        AllowReorder="true"/>
+                        Identifier=""
+                        AllowReorder="true"
+                        ItemsSelector="model => model.CategoryId is null"/>
+
                 </ChildContent>
                 <ItemRenderer>
                     <TodoItemComponent Item="@context"></TodoItemComponent>
@@ -91,11 +120,11 @@
          gap: 20px;
      }
      
-     .delete-button {
+     .action-button {
         opacity: 0;
      }
      
-     .todolist-actions:hover .delete-button {
+     .todolist-actions:hover .action-button {
         opacity: 1;
      }
      
@@ -129,19 +158,64 @@
     private async Task Rename(TodoListId listId, string newName)
         => await Mediator.Send(new TodoListState.RenameTodoList(listId, newName));
 
-    private async Task Reposition(TodoListId listId, TodoItemId itemId, int index)
-    {
-        var currentItemIndex = TodoList?.Items
-            .Where(x => x.Id == itemId)
-            .Select((_, i) => i)
-            .FirstOrDefault();
+    private async Task CreateNewCategory()
+        => await Mediator.Send(new TodoListState.CreateNewCategory("Nouvelle catégorie"));
 
-        if (currentItemIndex < index)
+    private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
+    {
+        if (TodoList is null)
         {
-            index++;
+            return;
         }
-        
-        var referenceItem = TodoList?.Items.Where((_, i) => i == index).FirstOrDefault();
+
+        var todoListItems = TodoList.Items.ToList();
+        var currentItem = todoListItems.First(x => x.Id == itemId);
+
+        await UpdateItemCategory(listId, itemId, targetCategoryIdString, currentItem);
+        await UpdateItemPosition(listId, itemId, indexInCategory, todoListItems, currentItem);
+    }
+
+    private async Task UpdateItemCategory(
+        TodoListId listId,
+        TodoItemId itemId,
+        string targetCategoryIdString,
+        TodoListItemReadModel currentItem
+        )
+    {
+        if (!string.IsNullOrWhiteSpace(targetCategoryIdString))
+        {
+            var targetIdCategory = CategoryId.From(targetCategoryIdString);
+
+            if (currentItem.CategoryId != targetIdCategory)
+            {
+                await Mediator.Send(new TodoListState.CategorizeItem(listId, itemId, targetIdCategory));
+            }
+        }
+        else
+        {
+            if (currentItem.CategoryId is not null)
+            {
+                await Mediator.Send(new TodoListState.DecategorizeItem(listId, itemId));
+            }
+        }
+    }
+
+    private async Task UpdateItemPosition(
+        TodoListId listId,
+        TodoItemId itemId,
+        int indexInCategory,
+        List<TodoListItemReadModel> todoListItems,
+        TodoListItemReadModel currentItem
+        )
+    {
+        var currentItemIndex = todoListItems.IndexOf(currentItem);
+
+        if (currentItemIndex < indexInCategory)
+        {
+            indexInCategory++;
+        }
+
+        var referenceItem = TodoList?.Items.Where((_, i) => i == indexInCategory).FirstOrDefault();
         if (referenceItem is not null && referenceItem.Id != itemId)
         {
             await Mediator.Send(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));

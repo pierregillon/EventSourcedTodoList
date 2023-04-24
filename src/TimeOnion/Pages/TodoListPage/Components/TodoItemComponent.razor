@@ -4,7 +4,7 @@
 
 @if (Item is not null)
 {
-    <div class="task">
+    <div class="@(Item.CategoryId is not null ? "task under-category" : "task")">
         <div class="d-flex">
             <MudMenu
                 Class="overlay-menu"
@@ -66,6 +66,10 @@
     
     .task:hover .overlay-menu {
         opacity: 0.7;
+    }
+    
+    .task.under-category {
+        margin-left: 20px;
     }
 </style>
 

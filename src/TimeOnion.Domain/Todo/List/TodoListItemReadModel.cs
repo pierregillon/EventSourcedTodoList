@@ -5,9 +5,6 @@ public record TodoListItemReadModel(
     TodoListId ListId,
     string Description,
     bool IsDone,
-    TimeHorizons TimeHorizons
-)
-{
-    public string Selector { get; set; } = "myid";
-    public string Identifier { get; set; } = "myid";
-}
+    TimeHorizons TimeHorizons,
+    CategoryId? CategoryId
+);

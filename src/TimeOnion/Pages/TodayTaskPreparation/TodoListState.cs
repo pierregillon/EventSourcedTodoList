@@ -8,6 +8,7 @@ public class TodoListState : State<TodoListState>
     public string NewTodoItemDescription { get; set; } = string.Empty;
     public TimeHorizons CurrentTimeHorizons { get; set; } = TimeHorizons.ThisDay;
     public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
+    public IEnumerable<CategoryReadModel> Categories { get; set; } = Array.Empty<CategoryReadModel>();
 
     public override void Initialize()
     {
@@ -36,6 +37,21 @@ public class TodoListState : State<TodoListState>
     ) : IAction;
 
     public record RepositionItemAtTheEnd(
+        TodoListId ListId,
+        TodoItemId ItemId
+    ) : IAction;
+
+    public record CreateNewCategory(
+        string Name
+    ) : IAction;
+
+    public record CategorizeItem(
+        TodoListId ListId,
+        TodoItemId ItemId,
+        CategoryId CategoryId
+    ) : IAction;
+
+    public record DecategorizeItem(
         TodoListId ListId,
         TodoItemId ItemId
     ) : IAction;

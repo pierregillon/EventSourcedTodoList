@@ -137,6 +137,36 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         StoreEvent(new TodoItemRepositionedAtTheEnd(Id, item.Id));
     }
 
+    public void CategorizeItem(TodoItemId itemId, Category category)
+    {
+        var item = _items.FirstOrDefault(x => x.Id == itemId);
+
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot categorize: unknown item");
+        }
+
+        if (item.CategoryId != category.Id)
+        {
+            StoreEvent(new TodoItemCategorized(Id, item.Id, item.CategoryId, category.Id));
+        }
+    }
+
+    public void DecategorizeItem(TodoItemId itemId)
+    {
+        var item = _items.FirstOrDefault(x => x.Id == itemId);
+
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot decategorize: unknown item");
+        }
+
+        if (item.CategoryId is not null)
+        {
+            StoreEvent(new TodoItemDecategorized(Id, item.Id));
+        }
+    }
+
     protected sealed override void Apply(IDomainEvent domainEvent)
     {
         TodoListItem item;
@@ -152,7 +182,7 @@ public class TodoList : EventSourcedAggregate<TodoListId>
                 break;
 
             case TodoItemAdded added:
-                _items.Add(new TodoListItem(added.ItemId, added.Description, added.TimeHorizon));
+                _items.Add(new TodoListItem(added.ItemId, added.Description, added.TimeHorizon, CategoryId.None));
                 break;
 
             case TodoItemDescriptionFixed descriptionFixed:
@@ -165,6 +195,16 @@ public class TodoList : EventSourcedAggregate<TodoListId>
                 _items.Replace(item, item with { TimeHorizons = rescheduled.NewTimeHorizon });
                 break;
 
+            case TodoItemCategorized categorized:
+                item = _items.Single(x => x.Id == categorized.ItemId);
+                _items.Replace(item, item with { CategoryId = categorized.NewCategoryId });
+                break;
+
+            case TodoItemDecategorized decategorized:
+                item = _items.Single(x => x.Id == decategorized.ItemId);
+                _items.Replace(item, item with { CategoryId = null });
+                break;
+
             case TodoItemDeleted deleted:
                 item = _items.Single(x => x.Id == deleted.ItemId);
                 _items.Remove(item);
@@ -172,5 +212,10 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         }
     }
 
-    private record TodoListItem(TodoItemId Id, TodoItemDescription Description, TimeHorizons TimeHorizons);
+    private record TodoListItem(
+        TodoItemId Id,
+        TodoItemDescription Description,
+        TimeHorizons TimeHorizons,
+        CategoryId? CategoryId
+    );
 }

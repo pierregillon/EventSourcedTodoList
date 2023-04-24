@@ -9,7 +9,7 @@ public abstract class EventSourcedAggregate<TId>
 
     public IEnumerable<IDomainEvent> UncommittedChanges => _uncommittedDomainEvents;
 
-    protected TId Id { get; }
+    protected internal TId Id { get; }
 
     protected void StoreEvent(IDomainEvent domainEvent)
     {

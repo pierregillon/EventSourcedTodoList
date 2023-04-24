@@ -31,23 +31,65 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Features\AddAnItemToDo.feature.cs">
-            <DependentUpon>AddAnItemToDo.feature</DependentUpon>
-            <AutoGen>true</AutoGen>
-            <DesignTime>true</DesignTime>
-            <Visible>true</Visible>
+        <Compile Update="Features\TodoItemFeatures\AddAnItemToDo.feature.cs">
+          <DependentUpon>AddAnItemToDo.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
         </Compile>
-        <Compile Update="Features\MarkDoneItemAsToDo.feature.cs">
-            <DependentUpon>MarkDoneItemAsToDo.feature</DependentUpon>
-            <AutoGen>true</AutoGen>
-            <DesignTime>true</DesignTime>
-            <Visible>true</Visible>
+        <Compile Update="Features\TodoListFeatures\CreateNewTodoList.feature.cs">
+          <DependentUpon>CreateNewTodoList.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
         </Compile>
-        <Compile Update="Features\MarkTodoItemAsDone.feature.cs">
-            <DependentUpon>MarkTodoItemAsDone.feature</DependentUpon>
-            <AutoGen>true</AutoGen>
-            <DesignTime>true</DesignTime>
-            <Visible>true</Visible>
+        <Compile Update="Features\TodoItemFeatures\DeleteTodoItem.feature.cs">
+          <DependentUpon>DeleteTodoItem.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoListFeatures\DeleteTodoList.feature.cs">
+          <DependentUpon>DeleteTodoList.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoItemFeatures\FixItemDescription.feature.cs">
+          <DependentUpon>FixItemDescription.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoItemFeatures\MarkDoneItemAsToDo.feature.cs">
+          <DependentUpon>MarkDoneItemAsToDo.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoListFeatures\RenameTodoList.feature.cs">
+          <DependentUpon>RenameTodoList.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoItemFeatures\MarkTodoItemAsDone.feature.cs">
+          <DependentUpon>MarkTodoItemAsDone.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoItemFeatures\RepositionItemInList.feature.cs">
+          <DependentUpon>RepositionItemInList.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
+        </Compile>
+        <Compile Update="Features\TodoItemFeatures\RescheduleTodoItem.feature.cs">
+          <DependentUpon>RescheduleTodoItem.feature</DependentUpon>
+          <AutoGen>true</AutoGen>
+          <DesignTime>true</DesignTime>
+          <Visible>true</Visible>
         </Compile>
     </ItemGroup>
 

@@ -12,6 +12,7 @@ public static class DependencyInjection
     {
         services
             .AddScoped<ITodoListRepository, TodoListRepository>()
+            .AddScoped<ICategoryRepository, CategoryRepository>()
             .AddScoped<IClock, SystemClock>()
             .AddSingleton<IReadModelDatabase, InMemoryReadModelDatabase>()
             .AddSingleton<DomainEventsCache>()
