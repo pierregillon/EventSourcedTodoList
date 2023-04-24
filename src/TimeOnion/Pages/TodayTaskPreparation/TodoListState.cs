@@ -29,6 +29,17 @@ public class TodoListState : State<TodoListState>
 
     public record ChangeCurrentTemporality(TimeHorizons TimeHorizons) : IAction;
 
+    public record RepositionItemAboveAnother(
+        TodoListId ListId,
+        TodoItemId ItemId,
+        TodoItemId ReferenceItemId
+    ) : IAction;
+
+    public record RepositionItemAtTheEnd(
+        TodoListId ListId,
+        TodoItemId ItemId
+    ) : IAction;
+
     public record DeleteItem(TodoListId ListId, TodoItemId ItemId) : IAction;
 
     public record RenameTodoList(TodoListId ListId, string NewName) : IAction;

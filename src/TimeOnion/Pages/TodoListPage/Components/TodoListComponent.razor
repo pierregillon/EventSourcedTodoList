@@ -31,10 +31,22 @@
         <MudDivider Class="medium"/>
 
         <div>
-            @foreach (var item in TodoList.Items)
-            {
-                <TodoItemComponent Item="@item"></TodoItemComponent>
-            }
+            <MudDropContainer
+                @ref="_container"
+                T="TodoListItemReadModel"
+                Items="TodoList.Items"
+                ItemsSelector="@((item, dropzone) => true)"
+                ItemDropped="info => info.Item is not null ? Reposition(info.Item.ListId, info.Item.Id, info.IndexInZone) : Task.CompletedTask">
+                <ChildContent>
+                    <MudDropZone
+                        T="TodoListItemReadModel"
+                        Identifier="myid"
+                        AllowReorder="true"/>
+                </ChildContent>
+                <ItemRenderer>
+                    <TodoItemComponent Item="@context"></TodoItemComponent>
+                </ItemRenderer>
+            </MudDropContainer>
 
             <div class="d-flex">
                 <MudCheckBox
@@ -86,6 +98,10 @@
      .todolist-actions:hover .delete-button {
         opacity: 1;
      }
+     
+     .mud-drop-item-preview-start{
+        top: -20px;
+     }
 </style>
 
 @code {
@@ -95,13 +111,48 @@
 
     TodoListState State => GetState<TodoListState>();
 
+    private MudDropContainer<TodoListItemReadModel>? _container;
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
+
+        if (parameters.TryGetValue<TodoListReadModel?>(nameof(TodoList), out _))
+        {
+            _container?.Refresh();
+        }
+    }
+
     private async Task AddItemToDo(TodoListId listId, string itemDescription)
         => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
 
-    private async Task Rename(TodoListId todoListId, string newName)
-        => await Mediator.Send(new TodoListState.RenameTodoList(todoListId, newName));
+    private async Task Rename(TodoListId listId, string newName)
+        => await Mediator.Send(new TodoListState.RenameTodoList(listId, newName));
 
-    private async Task Delete(TodoListId todoListId)
-        => await Mediator.Send(new TodoListState.DeleteTodoList(todoListId));
+    private async Task Reposition(TodoListId listId, TodoItemId itemId, int index)
+    {
+        var currentItemIndex = TodoList?.Items
+            .Where(x => x.Id == itemId)
+            .Select((_, i) => i)
+            .FirstOrDefault();
+
+        if (currentItemIndex < index)
+        {
+            index++;
+        }
+        
+        var referenceItem = TodoList?.Items.Where((_, i) => i == index).FirstOrDefault();
+        if (referenceItem is not null && referenceItem.Id != itemId)
+        {
+            await Mediator.Send(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));
+        }
+        else if (referenceItem is null)
+        {
+            await Mediator.Send(new TodoListState.RepositionItemAtTheEnd(listId, itemId));
+        }
+    }
+
+    private async Task Delete(TodoListId listId)
+        => await Mediator.Send(new TodoListState.DeleteTodoList(listId));
 
 }

@@ -190,17 +190,17 @@ await this.FeatureBackgroundAsync();
 #line 21
     await testRunner.WhenAsync("I reschedule the item \"call dad\" in my personal list to this week", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
 #line 22
-    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table19, "Then ");
+    await testRunner.ThenAsync("my personal todo list of this day is", ((string)(null)), table25, "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-                table20.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "call dad"});
 #line 24
-    await testRunner.ThenAsync("my personal todo list of this week is", ((string)(null)), table20, "Then ");
+    await testRunner.ThenAsync("my personal todo list of this week is", ((string)(null)), table26, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

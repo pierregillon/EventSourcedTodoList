@@ -16,7 +16,9 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
     IDomainEventListener<ItemReadyTodo>,
     IDomainEventListener<TodoItemDescriptionFixed>,
     IDomainEventListener<TodoItemRescheduled>,
-    IDomainEventListener<TodoItemDeleted>
+    IDomainEventListener<TodoItemDeleted>,
+    IDomainEventListener<TodoItemRepositionedAboveAnother>,
+    IDomainEventListener<TodoItemRepositionedAtTheEnd>
 {
     private readonly IReadModelDatabase _database;
 
@@ -65,7 +67,7 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
 
     public async Task On(TodoItemDeleted domainEvent) => await _database.Update<TodoListReadModel>(
         x => x.Id == domainEvent.Id,
-        list => list with { Items = list.Items.Where(x => x.Id != domainEvent.ItemId).ToArray()}
+        list => list with { Items = list.Items.Where(x => x.Id != domainEvent.ItemId).ToArray() }
     );
 
     public async Task On(TodoItemDescriptionFixed domainEvent) => await _database.Update(
@@ -76,6 +78,43 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
     public async Task On(TodoItemRescheduled domainEvent) => await _database.Update(
         x => x.Id == domainEvent.Id,
         UpdateItem(domainEvent.ItemId, item => item with { TimeHorizons = domainEvent.NewTimeHorizon })
+    );
+
+    public async Task On(TodoItemRepositionedAboveAnother domainEvent) => await _database.Update<TodoListReadModel>(
+        x => x.Id == domainEvent.Id,
+        todoList =>
+        {
+            var newList = todoList.Items.ToList();
+            var item = newList.First(x => x.Id == domainEvent.ItemId);
+            var initialItemIndex = newList.IndexOf(item);
+            var referenceItem = newList.First(x => x.Id == domainEvent.ReferenceItemId);
+            var referenceItemIndex = newList.IndexOf(referenceItem);
+            if (initialItemIndex == referenceItemIndex)
+            {
+                return todoList;
+            }
+
+            newList.Insert(referenceItemIndex, item);
+
+            var oldItemIndex = referenceItemIndex < initialItemIndex
+                ? newList.FindLastIndex(x => x == item)
+                : newList.FindIndex(x => x == item);
+
+            newList.RemoveAt(oldItemIndex);
+            return todoList with { Items = newList };
+        }
+    );
+
+    public async Task On(TodoItemRepositionedAtTheEnd domainEvent) => await _database.Update<TodoListReadModel>(
+        x => x.Id == domainEvent.Id,
+        todoList =>
+        {
+            var newList = todoList.Items.ToList();
+            var item = newList.First(x => x.Id == domainEvent.ItemId);
+            newList.Remove(item);
+            newList.Add(item);
+            return todoList with { Items = newList };
+        }
     );
 
     public async Task<IReadOnlyCollection<TodoListReadModel>> Handle(ListTodoListsQuery query)

@@ -106,6 +106,37 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         StoreEvent(new TodoItemDeleted(Id, itemId));
     }
 
+    public void RepositionItemAboveAnother(TodoItemId itemId, TodoItemId referenceItemId)
+    {
+        var item = _items.FirstOrDefault(x => x.Id == itemId);
+
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot reposition the item: unknown item");
+        }
+
+        var referenceItem = _items.FirstOrDefault(x => x.Id == referenceItemId);
+
+        if (referenceItem is null)
+        {
+            throw new InvalidOperationException("Cannot reposition the item: unknown reference item");
+        }
+
+        StoreEvent(new TodoItemRepositionedAboveAnother(Id, item.Id, referenceItemId));
+    }
+
+    public void RepositionItemAtTheEnd(TodoItemId itemId)
+    {
+        var item = _items.FirstOrDefault(x => x.Id == itemId);
+
+        if (item is null)
+        {
+            throw new InvalidOperationException("Cannot reposition the item at the end: unknown item");
+        }
+
+        StoreEvent(new TodoItemRepositionedAtTheEnd(Id, item.Id));
+    }
+
     protected sealed override void Apply(IDomainEvent domainEvent)
     {
         TodoListItem item;

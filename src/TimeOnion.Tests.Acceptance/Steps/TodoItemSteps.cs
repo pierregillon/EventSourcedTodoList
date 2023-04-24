@@ -24,6 +24,24 @@ public class TodoItemSteps
             new AddItemToDoCommand(todoListId, new TodoItemDescription(description), timeHorizons));
     }
 
+    [Given(@"the following items have been added to do (.*) in my (.*) list")]
+    public async Task GivenTheFollowingItemsHaveBeenAddedToDoThisDayInMyPersonalList(
+        TimeHorizons timeHorizons,
+        string todoListName,
+        Table table
+    )
+    {
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery(timeHorizons));
+
+        var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
+
+        foreach (var description in table.Rows.Select(x => x["Description"]))
+        {
+            await _application.Dispatch(() =>
+                new AddItemToDoCommand(todoListId, new TodoItemDescription(description), timeHorizons));
+        }
+    }
+
     [When(@"I mark the item ""(.*)"" in my (.*) list as done")]
     public async Task WhenIMarkTheItemAsCompleted(string itemDescription, string listName)
     {
@@ -57,7 +75,11 @@ public class TodoItemSteps
     }
 
     [When(@"I reschedule the item ""(.*)"" in my (.*) list to (.*)")]
-    public async Task WhenIRescheduleTheItemToThisDay(string itemDescription, string listName, TimeHorizons timeHorizons)
+    public async Task WhenIRescheduleTheItemToThisDay(
+        string itemDescription,
+        string listName,
+        TimeHorizons timeHorizons
+    )
     {
         var listId = await FindListId(listName) ?? TodoListId.New();
         var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
@@ -84,6 +106,45 @@ public class TodoItemSteps
         );
 
         await _application.Dispatch(command);
+    }
+
+    [When(@"I reposition ""(.*)"" above ""(.*)"" on my (.*) list")]
+    public async Task WhenIRepositionAboveOnMyProfessionalList(
+        string itemDescription,
+        string referenceItemDescription,
+        string listName
+    )
+    {
+        var listId = await FindListId(listName);
+        if (listId is null)
+        {
+            await _application.Dispatch(
+                new RepositionItemAboveAnotherCommand(TodoListId.New(), TodoItemId.New(), TodoItemId.New()));
+        }
+        else
+        {
+            var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
+            var referenceId = await FindItemId(listId, referenceItemDescription) ?? TodoItemId.New();
+
+            await _application.Dispatch(new RepositionItemAboveAnotherCommand(listId, itemId, referenceId));
+        }
+    }
+
+    [When(@"I reposition ""(.*)"" at the end of my (.*) list")]
+    public async Task WhenIRepositionAtTheEndOfMyPersonalList(string itemDescription, string listName)
+    {
+        var listId = await FindListId(listName);
+        if (listId is null)
+        {
+            await _application.Dispatch(
+                new RepositionItemAtTheEndCommand(TodoListId.New(), TodoItemId.New()));
+        }
+        else
+        {
+            var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
+
+            await _application.Dispatch(new RepositionItemAtTheEndCommand(listId, itemId));
+        }
     }
 
     [Then(@"my (.*) todo list of (.*) is")]
