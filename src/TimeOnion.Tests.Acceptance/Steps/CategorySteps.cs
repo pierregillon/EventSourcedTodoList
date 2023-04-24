@@ -1,6 +1,7 @@
 using FluentAssertions;
 using TechTalk.SpecFlow;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Tests.Acceptance.Configuration;
 
 namespace TimeOnion.Tests.Acceptance.Steps;
@@ -16,7 +17,7 @@ public class CategorySteps
     [When(@"I create the (.*) category")]
     [Given(@"the (.*) category has been created")]
     public async Task WhenICreateTheCategory(string categoryName) =>
-        await _application.Dispatch(() => new CreateNewCategoryCommand(new CategoryName(categoryName)));
+        await _application.Dispatch(() => new CreateNewCategory(new CategoryName(categoryName)));
 
     [Then(@"the categories are")]
     public async Task ThenTheCategoriesAre(Table table)

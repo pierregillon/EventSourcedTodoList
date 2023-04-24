@@ -1,6 +1,6 @@
 using BlazorState;
-using TimeOnion.Domain.Todo;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Pages.TodayTaskPreparation.Steps;
 
 namespace TimeOnion.Pages.TodayTaskPreparation;

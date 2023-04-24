@@ -1,7 +1,10 @@
 using FluentAssertions;
 using TechTalk.SpecFlow;
-using TimeOnion.Domain.Todo;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Domain.Todo.UseCases.Categorization;
+using TimeOnion.Domain.Todo.UseCases.Positionning;
 using TimeOnion.Tests.Acceptance.Configuration;
 
 namespace TimeOnion.Tests.Acceptance.Steps;

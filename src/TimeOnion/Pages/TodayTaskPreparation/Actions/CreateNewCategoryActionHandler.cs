@@ -1,6 +1,7 @@
 using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
@@ -23,7 +24,7 @@ public class CreateNewCategoryActionHandler : ActionHandler<TodoListState.Create
     {
         var state = Store.GetState<TodoListState>();
 
-        var command = new CreateNewCategoryCommand(new CategoryName(aAction.Name));
+        var command = new CreateNewCategory(new CategoryName(aAction.Name));
 
         await _commandDispatcher.Dispatch(command);
 

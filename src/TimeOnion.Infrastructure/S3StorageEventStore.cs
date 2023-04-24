@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Infrastructure;
 

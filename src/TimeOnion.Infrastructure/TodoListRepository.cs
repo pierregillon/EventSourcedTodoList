@@ -1,5 +1,7 @@
 ﻿using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Infrastructure;
 

@@ -4,9 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Minio;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo.List;
-using TimeOnion.Domain.Todo.List.Events;
-using TimeOnion.Domain.Todo.List.Events.Items;
+using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.Todo.Core.Events.Items;
 using TimeOnion.Infrastructure;
 
 namespace TimeOnion.Tests.Unit;

@@ -1,7 +1,7 @@
 using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo;
-using TimeOnion.Domain.Todo.List;
+using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Domain.Todo.UseCases.Categorization;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 

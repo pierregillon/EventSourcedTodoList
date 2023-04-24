@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo.List;
-using TimeOnion.Domain.Todo.List.Events;
+using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.Todo.Core.Events;
 
 namespace TimeOnion.Tests.Unit;
 
