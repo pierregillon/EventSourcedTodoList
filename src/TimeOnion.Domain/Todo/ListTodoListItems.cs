@@ -85,9 +85,14 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
         todoList =>
         {
             var newList = todoList.Items.ToList();
-            var item = newList.First(x => x.Id == domainEvent.ItemId);
+            var item = newList.FirstOrDefault(x => x.Id == domainEvent.ItemId);
+            var referenceItem = newList.FirstOrDefault(x => x.Id == domainEvent.ReferenceItemId);
+            if (item is null || referenceItem is null)
+            {
+                return todoList;
+            }
+
             var initialItemIndex = newList.IndexOf(item);
-            var referenceItem = newList.First(x => x.Id == domainEvent.ReferenceItemId);
             var referenceItemIndex = newList.IndexOf(referenceItem);
             if (initialItemIndex == referenceItemIndex)
             {
@@ -110,7 +115,11 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
         todoList =>
         {
             var newList = todoList.Items.ToList();
-            var item = newList.First(x => x.Id == domainEvent.ItemId);
+            var item = newList.FirstOrDefault(x => x.Id == domainEvent.ItemId);
+            if (item is null)
+            {
+                return todoList;
+            }
             newList.Remove(item);
             newList.Add(item);
             return todoList with { Items = newList };
@@ -134,11 +143,11 @@ internal class ListTodoListsQueryHandler : IQueryHandler<ListTodoListsQuery, IRe
     ) => list =>
     {
         var item = list.Items.FirstOrDefault(x => x.Id == todoItemId);
-        if (item is null)
+        if (item is not null)
         {
-            throw new InvalidOperationException($"Unable to find item with id {todoItemId.Value}");
+            return list with { Items = list.Items.Replace(item, update(item)).ToArray() };
         }
 
-        return list with { Items = list.Items.Replace(item, update(item)).ToArray() };
+        return list;
     };
 }
