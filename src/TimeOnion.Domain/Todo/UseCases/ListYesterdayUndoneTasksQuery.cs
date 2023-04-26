@@ -16,7 +16,7 @@ internal class ListYesterdayUndoneTasksQueryHandler : IQueryHandler<ListYesterda
 
     public async Task<IReadOnlyCollection<YesterdayUndoneTodoItem>> Handle(ListYesterdayUndoneTasksQuery query)
     {
-        var items = await _database.GetAll<TodoListReadModel>();
+        var items = await _database.GetAll<TodoListEntry>();
 
         return items
             .SelectMany(x => x.Items)

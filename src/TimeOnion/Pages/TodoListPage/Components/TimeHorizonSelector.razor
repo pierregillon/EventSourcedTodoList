@@ -1,5 +1,5 @@
-@using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Domain.Todo.Core
+@using TimeOnion.Pages.TodayTaskPreparation
 @inherits BlazorState.BlazorStateComponent
 
 <MudTimeline
@@ -9,7 +9,7 @@
 
     @foreach (var temporality in Enum.GetValues<TimeHorizons>())
     {
-        var isCurrent = State.CurrentTimeHorizons == temporality;
+        var isCurrent = State.CurrentTimeHorizon == temporality;
 
         <MudTimelineItem
             Class="timeline-item"

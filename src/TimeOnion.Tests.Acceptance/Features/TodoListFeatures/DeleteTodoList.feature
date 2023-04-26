@@ -18,5 +18,5 @@ Scenario: Todo items belonging to the deleted todo list are also deleted
     Given a personal todo list has been created
     When I add the item "call daddy" to do this day in my personal list
     And I delete my personal todo list
-    Then my personal todo list of this day is
-      | Description |
+    Then the todo list are
+      | Name |

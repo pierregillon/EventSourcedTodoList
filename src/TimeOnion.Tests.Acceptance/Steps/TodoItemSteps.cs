@@ -186,13 +186,13 @@ public class TodoItemSteps
     [Then(@"my (.*) todo list of (.*) is")]
     public async Task ThenTheTodoListIs(string todoListName, TimeHorizons timeHorizons, Table table)
     {
-        var items = (await _application.Dispatch(new ListTodoListsQuery(timeHorizons)))?
-            .Where(x => x.Name == todoListName)
-            .SelectMany(x => x.Items)
-            .ToList()
+        var listId = await FindListId(todoListName)
+            ?? throw new InvalidOperationException($"Specflow: unable to find the todo list with name {todoListName}");
+
+        var items = await _application.Dispatch(new ListTodoItemsQuery(listId, timeHorizons))
             ?? throw new InvalidOperationException("Specflow: unable to load items");
 
-        Assert.Equal(table.RowCount, items.Count);
+        items.Should().HaveCount(table.RowCount);
 
         for (var index = 0; index < table.Rows.Count; index++)
         {
@@ -277,23 +277,12 @@ public class TodoItemSteps
         var data = await Task.WhenAll(
             Enum
                 .GetValues<TimeHorizons>()
-                .Select(x => _application.Dispatch(new ListTodoListsQuery(x)))
+                .Select(x => _application.Dispatch(new ListTodoItemsQuery(todoListId, x)))
         );
 
-        var todoLists = data
+        var items = data
             .SelectMany(x => x)
-            .GroupBy(x => x.Id)
-            .ToDictionary(
-                x => x.Key,
-                x => x
-                    .SelectMany(g => g.Items)
-                    .ToArray()
-            );
-
-        if (!todoLists.TryGetValue(todoListId, out var items))
-        {
-            throw new InvalidOperationException($"Unknown todo list {todoListId.Value}");
-        }
+            .ToArray();
 
         return items.FirstOrDefault(x => x.Description == itemDescription)?.Id;
     }

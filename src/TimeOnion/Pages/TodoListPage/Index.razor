@@ -1,7 +1,7 @@
 ﻿@page "/"
+@using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Pages.TodoListPage.Components
-@using TimeOnion.Domain.Todo.Core
 @inherits BlazorState.BlazorStateComponent
 
 <PageTitle>Time Onion</PageTitle>
@@ -10,7 +10,7 @@
 
 <div class="title-actions">
     <MudText Typo="Typo.h3">
-        @State.CurrentTimeHorizons.ToText()
+        @State.CurrentTimeHorizon.ToText()
     </MudText>
 
     <MudTooltip Text="Ajouter une nouvelle liste">

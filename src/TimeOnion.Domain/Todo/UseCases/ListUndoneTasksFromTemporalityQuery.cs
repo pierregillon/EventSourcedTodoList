@@ -17,7 +17,7 @@ internal class ListUndoneTasksFromTemporalityQueryHandler : IQueryHandler<ListUn
 
     public async Task<IReadOnlyCollection<ThisWeekUndoneTodoItem>> Handle(ListUndoneTasksFromTemporalityQuery query)
     {
-        var items = await _database.GetAll<TodoListReadModel>();
+        var items = await _database.GetAll<TodoListEntry>();
 
         return items
             .SelectMany(x => x.Items)

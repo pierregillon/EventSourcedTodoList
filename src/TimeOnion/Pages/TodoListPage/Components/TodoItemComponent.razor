@@ -1,6 +1,6 @@
-@using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodayTaskPreparation
 @inherits BlazorState.BlazorStateComponent
 
 @if (Item is not null)
@@ -83,7 +83,7 @@
 
     private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
 
-    private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizons;
+    private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
 
     private async Task FixItemDescription(TodoListId listId, TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(listId, itemId, newValue));
 

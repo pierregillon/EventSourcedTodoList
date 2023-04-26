@@ -1,7 +1,6 @@
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Domain.Todo.Core
-@using TimeOnion.Domain.Categories
 @inherits BlazorState.BlazorStateComponent
 
 @if (TodoList is not null)
@@ -41,63 +40,7 @@
 
         <MudDivider Class="medium"/>
 
-        <div>
-            <MudDropContainer
-                @ref="_container"
-                T="TodoListItemReadModel"
-                Items="TodoList.Items"
-                ItemsSelector="@((item, dropzone) => true)"
-                ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask">
-                <ChildContent>
-                    @foreach (var category in State.Categories[TodoList.Id])
-                    {
-                        <MudDropZone
-                            T="TodoListItemReadModel"
-                            Identifier="@category.Id.Value.ToString()"
-                            AllowReorder="true"
-                            ItemsSelector="model => model.CategoryId == category.Id">
-                            <div class="d-flex gap-1 align-center" style="margin-left: 22px">
-                                <MudIcon
-                                    Icon="@Icons.Material.Outlined.Folder"
-                                    Color="Color.Secondary"
-                                    Size="Size.Large">
-                                </MudIcon>
-                                <MudText>@category.Name</MudText>
-                            </div>
-                        </MudDropZone>
-                    }
-
-                    <MudDropZone
-                        T="TodoListItemReadModel"
-                        Identifier=""
-                        AllowReorder="true"
-                        ItemsSelector="model => model.CategoryId is null"/>
-
-                </ChildContent>
-                <ItemRenderer>
-                    <TodoItemComponent Item="@context"></TodoItemComponent>
-                </ItemRenderer>
-            </MudDropContainer>
-
-            <div class="d-flex">
-                <MudCheckBox
-                    Class="compact fake"
-                    Checked="@(false)"
-                    Color="Color.Secondary">
-                </MudCheckBox>
-
-                <MudTextField
-                    T="string"
-                    InputMode="InputMode.text"
-                    Text="@State.NewTodoItemDescription"
-                    TextChanged="itemDescription => AddItemToDo(TodoList.Id, itemDescription)"
-                    TextUpdateSuppression="false"
-                    Class="compact"
-                    DisableUnderLine="true">
-                </MudTextField>
-            </div>
-        </div>
-
+        <TodoItemsComponent TodoListId="@TodoList.Id"></TodoItemsComponent>
     </div>
 }
 
@@ -129,40 +72,12 @@
      .todolist-actions:hover .action-button {
         opacity: 1;
      }
-     
-     .mud-drop-item-preview-start{
-        top: -20px;
-     }
 </style>
 
 @code {
 
     [Parameter]
     public TodoListReadModel? TodoList { get; set; }
-
-    TodoListState State => GetState<TodoListState>();
-
-    private MudDropContainer<TodoListItemReadModel>? _container;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (TodoList is null)
-        {
-            return;
-        }
-        await Mediator.Send(new TodoListState.LoadCategories(TodoList.Id));
-        await base.OnInitializedAsync();
-    }
-
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        await base.SetParametersAsync(parameters);
-
-        if (parameters.TryGetValue<TodoListReadModel?>(nameof(TodoList), out _))
-        {
-            _container?.Refresh();
-        }
-    }
 
     private async Task AddItemToDo(TodoListId listId, string itemDescription)
         => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
@@ -172,71 +87,6 @@
 
     private async Task CreateNewCategory(TodoListId listId)
         => await Mediator.Send(new TodoListState.CreateNewCategory(listId, "Nouvelle catégorie"));
-
-    private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
-    {
-        if (TodoList is null)
-        {
-            return;
-        }
-
-        var todoListItems = TodoList.Items.ToList();
-        var currentItem = todoListItems.First(x => x.Id == itemId);
-
-        await UpdateItemCategory(listId, itemId, targetCategoryIdString, currentItem);
-        await UpdateItemPosition(listId, itemId, indexInCategory, todoListItems, currentItem);
-    }
-
-    private async Task UpdateItemCategory(
-        TodoListId listId,
-        TodoItemId itemId,
-        string targetCategoryIdString,
-        TodoListItemReadModel currentItem
-        )
-    {
-        if (!string.IsNullOrWhiteSpace(targetCategoryIdString))
-        {
-            var targetIdCategory = CategoryId.From(targetCategoryIdString);
-
-            if (currentItem.CategoryId != targetIdCategory)
-            {
-                await Mediator.Send(new TodoListState.CategorizeItem(listId, itemId, targetIdCategory));
-            }
-        }
-        else
-        {
-            if (currentItem.CategoryId is not null)
-            {
-                await Mediator.Send(new TodoListState.DecategorizeItem(listId, itemId));
-            }
-        }
-    }
-
-    private async Task UpdateItemPosition(
-        TodoListId listId,
-        TodoItemId itemId,
-        int indexInCategory,
-        List<TodoListItemReadModel> todoListItems,
-        TodoListItemReadModel currentItem
-        )
-    {
-        var currentItemIndex = todoListItems.IndexOf(currentItem);
-
-        if (currentItemIndex < indexInCategory)
-        {
-            indexInCategory++;
-        }
-
-        var referenceItem = TodoList?.Items.Where((_, i) => i == indexInCategory).FirstOrDefault();
-        if (referenceItem is not null && referenceItem.Id != itemId)
-        {
-            await Mediator.Send(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));
-        }
-        else if (referenceItem is null)
-        {
-            await Mediator.Send(new TodoListState.RepositionItemAtTheEnd(listId, itemId));
-        }
-    }
 
     private async Task Delete(TodoListId listId)
         => await Mediator.Send(new TodoListState.DeleteTodoList(listId));

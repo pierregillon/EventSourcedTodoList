@@ -8,9 +8,10 @@ namespace TimeOnion.Pages.TodayTaskPreparation;
 public class TodoListState : State<TodoListState>
 {
     public string NewTodoItemDescription { get; set; } = string.Empty;
-    public TimeHorizons CurrentTimeHorizons { get; set; } = TimeHorizons.ThisDay;
+    public TimeHorizons CurrentTimeHorizon { get; set; } = TimeHorizons.ThisDay;
     public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
     public Dictionary<TodoListId, IReadOnlyCollection<CategoryReadModel>> Categories { get; set; } = new();
+    public Dictionary<TodoListId, IReadOnlyCollection<TodoListItemReadModel>> TodoListItems { get; set; } = new();
 
     public override void Initialize()
     {
@@ -44,6 +45,10 @@ public class TodoListState : State<TodoListState>
     ) : IAction;
 
     public record LoadCategories(
+        TodoListId ListId
+    ) : IAction;
+
+    public record LoadTodoListItems(
         TodoListId ListId
     ) : IAction;
 

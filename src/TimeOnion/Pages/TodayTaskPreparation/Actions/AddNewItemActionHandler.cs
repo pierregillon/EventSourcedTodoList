@@ -26,10 +26,12 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
         var state = Store.GetState<TodoListState>();
 
         await _commandDispatcher.Dispatch(new AddItemToDoCommand(action.ListId, new TodoItemDescription(action.Text),
-            state.CurrentTimeHorizons));
+            state.CurrentTimeHorizon));
 
         state.NewTodoItemDescription = string.Empty;
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
+
+        state.TodoListItems[action.ListId] =
+            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
         return Unit.Value;
     }

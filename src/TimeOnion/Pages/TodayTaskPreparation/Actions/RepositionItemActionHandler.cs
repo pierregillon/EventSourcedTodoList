@@ -36,6 +36,7 @@ public class RepositionItemActionHandler : ActionHandler<TodoListState.Repositio
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
+        state.TodoListItems[aAction.ListId] =
+            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
     }
 }

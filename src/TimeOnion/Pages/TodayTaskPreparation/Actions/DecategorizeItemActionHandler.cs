@@ -32,6 +32,7 @@ public class DecategorizeItemActionHandler : ActionHandler<TodoListState.Decateg
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
+        state.TodoListItems[aAction.ListId] =
+            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
     }
 }

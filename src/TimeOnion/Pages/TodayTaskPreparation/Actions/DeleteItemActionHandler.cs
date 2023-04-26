@@ -25,6 +25,7 @@ public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
 
         await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizons));
+        state.TodoListItems[action.ListId] =
+            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
     }
 }
