@@ -168,7 +168,7 @@ public class TodoItemSteps
         else
         {
             var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
-            var categoryId = await FindCategoryId(categoryName) ?? CategoryId.New();
+            var categoryId = await FindCategoryId(listId, categoryName) ?? CategoryId.New();
 
             await _application.Dispatch(new CategorizeTodoItemCommand(listId, itemId, categoryId));
         }
@@ -224,7 +224,7 @@ public class TodoItemSteps
                     }
                     else
                     {
-                        var categoryId = await FindCategoryId(categoryName)
+                        var categoryId = await FindCategoryId(item.ListId, categoryName)
                             ?? throw new InvalidOperationException("Specflow: unknown category");
                         item.CategoryId.Should().Be(categoryId);
                     }
@@ -298,9 +298,9 @@ public class TodoItemSteps
         return items.FirstOrDefault(x => x.Description == itemDescription)?.Id;
     }
 
-    private async Task<CategoryId?> FindCategoryId(string categoryName)
+    private async Task<CategoryId?> FindCategoryId(TodoListId listId, string categoryName)
     {
-        var categories = await _application.Dispatch(new ListCategoriesQuery());
+        var categories = await _application.Dispatch(new ListCategoriesQuery(listId));
 
         return categories?.FirstOrDefault(x => x.Name == categoryName)?.Id;
     }

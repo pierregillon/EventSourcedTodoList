@@ -19,7 +19,7 @@ Scenario: Cannot categorize to an unknown category
 
 @ErrorHandling
 Scenario: Cannot categorize an unknown item
-    Given the family category has been created
+    Given the family category has been created in my personal list
     When I categorize "call dad" to family category on my personal list
     Then an error occurred with the message "Cannot categorize: unknown item"
 
@@ -30,7 +30,7 @@ Scenario: By default, an item has no category
       | call dad    |          |
 
 Scenario: Categorized todo item is listed
-    Given the family category has been created
+    Given the family category has been created in my personal list
     And the item "call dad" has been added to do this day in my personal list
     When I categorize "call dad" to family category on my personal list
     Then my personal todo list of this day is
@@ -38,7 +38,7 @@ Scenario: Categorized todo item is listed
       | call dad    | family   |
 
 Scenario: De categorizing a todo item updates the list
-    Given the family category has been created
+    Given the family category has been created in my personal list
     And the item "call dad" has been added to do this day in my personal list
     And "call dad" has been categorized to family category on my personal list
     When I decategorize "call dad" in my personal list

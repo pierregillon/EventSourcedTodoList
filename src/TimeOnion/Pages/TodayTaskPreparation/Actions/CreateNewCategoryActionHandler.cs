@@ -24,10 +24,10 @@ public class CreateNewCategoryActionHandler : ActionHandler<TodoListState.Create
     {
         var state = Store.GetState<TodoListState>();
 
-        var command = new CreateNewCategory(new CategoryName(aAction.Name));
+        var command = new CreateNewCategory(new CategoryName(aAction.Name), aAction.ListId);
 
         await _commandDispatcher.Dispatch(command);
 
-        state.Categories = await _queryDispatcher.Dispatch(new ListCategoriesQuery());
+        state.Categories[aAction.ListId] = await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
     }
 }

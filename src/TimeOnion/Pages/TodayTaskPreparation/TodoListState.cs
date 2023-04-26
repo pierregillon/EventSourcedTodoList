@@ -10,7 +10,7 @@ public class TodoListState : State<TodoListState>
     public string NewTodoItemDescription { get; set; } = string.Empty;
     public TimeHorizons CurrentTimeHorizons { get; set; } = TimeHorizons.ThisDay;
     public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
-    public IEnumerable<CategoryReadModel> Categories { get; set; } = Array.Empty<CategoryReadModel>();
+    public Dictionary<TodoListId, IReadOnlyCollection<CategoryReadModel>> Categories { get; set; } = new();
 
     public override void Initialize()
     {
@@ -43,7 +43,12 @@ public class TodoListState : State<TodoListState>
         TodoItemId ItemId
     ) : IAction;
 
+    public record LoadCategories(
+        TodoListId ListId
+    ) : IAction;
+
     public record CreateNewCategory(
+        TodoListId ListId,
         string Name
     ) : IAction;
 

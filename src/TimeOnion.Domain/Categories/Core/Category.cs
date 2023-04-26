@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Categories.Core;
 
@@ -12,10 +13,10 @@ public class Category : EventSourcedAggregate<CategoryId>
     {
     }
 
-    public static Category New(CategoryName name)
+    public static Category New(TodoListId listId, CategoryName name)
     {
         var category = new Category(CategoryId.New());
-        category.StoreEvent(new CategoryCreated(category.Id, name));
+        category.StoreEvent(new CategoryCreated(category.Id, name, listId));
         return category;
     }
 

@@ -1,7 +1,7 @@
+@using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Categories
-@using TimeOnion.Domain.Todo.UseCases
 @inherits BlazorState.BlazorStateComponent
 
 @if (TodoList is not null)
@@ -25,7 +25,7 @@
                     Class="action-button"
                     Icon="@Icons.Material.Filled.CreateNewFolder"
                     Color="Color.Primary"
-                    OnClick="() => CreateNewCategory()">
+                    OnClick="() => CreateNewCategory(TodoList.Id)">
                 </MudIconButton>
             </MudTooltip>
 
@@ -49,7 +49,7 @@
                 ItemsSelector="@((item, dropzone) => true)"
                 ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask">
                 <ChildContent>
-                    @foreach (var category in State.Categories)
+                    @foreach (var category in State.Categories[TodoList.Id])
                     {
                         <MudDropZone
                             T="TodoListItemReadModel"
@@ -144,6 +144,16 @@
 
     private MudDropContainer<TodoListItemReadModel>? _container;
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (TodoList is null)
+        {
+            return;
+        }
+        await Mediator.Send(new TodoListState.LoadCategories(TodoList.Id));
+        await base.OnInitializedAsync();
+    }
+
     public override async Task SetParametersAsync(ParameterView parameters)
     {
         await base.SetParametersAsync(parameters);
@@ -160,8 +170,8 @@
     private async Task Rename(TodoListId listId, string newName)
         => await Mediator.Send(new TodoListState.RenameTodoList(listId, newName));
 
-    private async Task CreateNewCategory()
-        => await Mediator.Send(new TodoListState.CreateNewCategory("Nouvelle catégorie"));
+    private async Task CreateNewCategory(TodoListId listId)
+        => await Mediator.Send(new TodoListState.CreateNewCategory(listId, "Nouvelle catégorie"));
 
     private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
     {

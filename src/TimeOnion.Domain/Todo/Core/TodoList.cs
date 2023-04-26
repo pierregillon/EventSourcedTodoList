@@ -139,6 +139,8 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         StoreEvent(new TodoItemRepositionedAtTheEnd(Id, item.Id));
     }
 
+    public Category NewCategory(CategoryName categoryName) => Category.New(Id, categoryName);
+
     public void CategorizeItem(TodoItemId itemId, Category category)
     {
         var item = _items.FirstOrDefault(x => x.Id == itemId);
