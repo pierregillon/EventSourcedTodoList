@@ -1,6 +1,7 @@
 using FluentAssertions;
 using TechTalk.SpecFlow;
 using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Categorization;

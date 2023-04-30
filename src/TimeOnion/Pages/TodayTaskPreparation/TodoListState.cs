@@ -1,5 +1,6 @@
 using BlazorState;
 using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 
@@ -55,6 +56,12 @@ public class TodoListState : State<TodoListState>
     public record CreateNewCategory(
         TodoListId ListId,
         string Name
+    ) : IAction;
+
+    public record RenameCategory(
+        CategoryId Id,
+        string Name,
+        TodoListId ListId
     ) : IAction;
 
     public record CategorizeItem(

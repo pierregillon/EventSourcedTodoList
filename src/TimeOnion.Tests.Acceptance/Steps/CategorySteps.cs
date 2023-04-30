@@ -27,6 +27,20 @@ public class CategorySteps
         await _application.Dispatch(() => new CreateNewCategory(new CategoryName(categoryName), listId));
     }
 
+    [When(@"I rename the (.*) category in my (.*) list to (.*)")]
+    public async Task WhenIRenameTheHealthCategoryToHealthCare(
+        string categoryName,
+        string listName,
+        string newCategoryName
+    )
+    {
+        var listId = await FindListId(listName)
+            ?? throw new InvalidOperationException($"Specflow: unable to find the list {listName}.");
+        var categoryId = await FindCategoryId(listId, categoryName) ?? CategoryId.New();
+        var newName = newCategoryName.Replace("\"", string.Empty);
+        await _application.Dispatch(() => new RenameCategoryCommand(categoryId, new CategoryName(newName)));
+    }
+
     [Then(@"my (.*) list categories are")]
     public async Task ThenTheCategoriesAre(string listName, Table table)
     {
@@ -46,5 +60,12 @@ public class CategorySteps
         var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
 
         return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
+    }
+
+    private async Task<CategoryId?> FindCategoryId(TodoListId listId, string categoryName)
+    {
+        var categories = await _application.Dispatch(new ListCategoriesQuery(listId));
+
+        return categories?.FirstOrDefault(x => x.Name == categoryName)?.Id;
     }
 }

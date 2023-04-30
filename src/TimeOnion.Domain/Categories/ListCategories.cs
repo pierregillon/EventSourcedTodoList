@@ -1,5 +1,6 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Categories.Core.Events;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Categories;
@@ -9,7 +10,8 @@ public record ListCategoriesQuery(TodoListId ListId) : IQuery<IReadOnlyCollectio
 public record CategoryReadModel(CategoryId Id, string Name, TodoListId ListId);
 
 internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, IReadOnlyCollection<CategoryReadModel>>,
-    IDomainEventListener<CategoryCreated>
+    IDomainEventListener<CategoryCreated>,
+    IDomainEventListener<CategoryRenamed>
 {
     private readonly IReadModelDatabase _database;
 
@@ -20,12 +22,9 @@ internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, I
 
     public async Task On(CategoryCreated domainEvent) =>
         await _database.Add(new CategoryReadModel(domainEvent.Id, domainEvent.Name.Value, domainEvent.ListId));
-}
 
-public record CategoryId(Guid Value)
-{
-    public static CategoryId New() => new(Guid.NewGuid());
-    public static CategoryId? None => null;
-
-    public static CategoryId From(string value) => new(Guid.Parse(value));
+    public async Task On(CategoryRenamed domainEvent) => await _database.Update<CategoryReadModel>(
+        category => category.Id == domainEvent.Id,
+        category => category with { Name = domainEvent.NewName.Value }
+    );
 }

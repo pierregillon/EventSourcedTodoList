@@ -1,4 +1,5 @@
 using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
 
 namespace TimeOnion.Domain.Todo.Core.Events;
 

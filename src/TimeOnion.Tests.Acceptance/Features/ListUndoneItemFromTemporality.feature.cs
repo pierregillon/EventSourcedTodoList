@@ -120,12 +120,12 @@ await this.FeatureBackgroundAsync();
 #line 10
     await testRunner.WhenAsync("I add the item \"call daddy\" to do this week in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-                table3.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "call daddy"});
 #line 11
-    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table3, "Then ");
+    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table4, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -158,10 +158,10 @@ await this.FeatureBackgroundAsync();
 #line 17
     await testRunner.AndAsync("I mark the item \"call daddy\" in my personal list as done", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
 #line 18
-    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table4, "Then ");
+    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table5, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -191,10 +191,10 @@ await this.FeatureBackgroundAsync();
 #line 22
     await testRunner.WhenAsync("I add the item \"call daddy\" to do this day in my personal list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
 #line 23
-    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table5, "Then ");
+    await testRunner.ThenAsync("the undone tasks from this week are", ((string)(null)), table6, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

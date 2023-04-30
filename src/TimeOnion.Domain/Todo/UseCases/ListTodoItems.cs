@@ -1,5 +1,6 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.Core.Events;
 using TimeOnion.Domain.Todo.Core.Events.Items;

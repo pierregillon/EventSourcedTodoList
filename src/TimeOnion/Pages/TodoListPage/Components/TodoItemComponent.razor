@@ -8,6 +8,7 @@
     <div class="@(Item.CategoryId is not null ? "task under-category" : "task")">
         <div class="d-flex">
             <MudMenu
+                UserAttributes="@(new Dictionary<string, object>{{"draggable", "true"}})"
                 Class="overlay-menu"
                 Icon="@Icons.Material.Filled.MoreHoriz"
                 Size="Size.Small"
