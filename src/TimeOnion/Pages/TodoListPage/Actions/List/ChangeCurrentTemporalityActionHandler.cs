@@ -30,9 +30,6 @@ public class ChangeCurrentTemporalityActionHandler : ActionHandler<TodoListState
         state.CurrentTimeHorizon = action.TimeHorizons;
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
 
-        foreach (var todoList in state.TodoLists)
-        {
-            await _mediator.Send(new TodoListState.LoadTodoListItems(todoList.Id), aCancellationToken);
-        }
+        await _mediator.Send(new TodoListState.ReloadTodoListItems(), aCancellationToken);
     }
 }

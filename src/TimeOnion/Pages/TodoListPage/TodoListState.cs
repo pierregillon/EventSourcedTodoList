@@ -50,6 +50,8 @@ public class TodoListState : State<TodoListState>
 
     public record LoadTodoListItems(TodoListId ListId) : IAction;
 
+    public record ReloadTodoListItems : IAction;
+
     public record CreateNewCategory(
         TodoListId ListId,
         string Name

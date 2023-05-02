@@ -9,7 +9,7 @@
         <DialogContent>
             <TodayTaskPreparationTimeline></TodayTaskPreparationTimeline>
             <br/>
-            <MudContainer MaxWidth="MaxWidth.Medium" Style="padding: 10px;">
+            <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-3">
                 @switch (State.CurrentStep.Id)
                 {
                     case TodayTaskPreparationSteps.EndYesterdayTasks:
@@ -24,7 +24,7 @@
                         <FinalizeTodayTasks></FinalizeTodayTasks>
                         break;
                 }
-                <div style="display: flex;align-items: center;justify-content: flex-end;gap: 10px">
+                <div class="d-flex align-center justify-end gap-3">
                     <MudButton OnClick="Cancel">Annuler</MudButton>
                     @if (State.CurrentStep.Next() is null)
                     {
@@ -57,7 +57,7 @@
     async Task Submit()
     {
         await Mediator.Send(new TodayTaskPreparationState.MoveToNextPreparationStep());
-        await Mediator.Send(new TodoListState.LoadLists());
+        await Mediator.Send(new TodoListState.ReloadTodoListItems());
         MudDialog.Close(DialogResult.Ok(true));
     }
 

@@ -105,16 +105,21 @@
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
-        await base.SetParametersAsync(parameters);
-
-        if (TodoListId is null)
+        if (parameters.TryGetValue<TodoListId?>(nameof(TodoListId), out var newId))
         {
-            return;
-        }
+            if (newId is not null && newId != TodoListId)
+            {
+                await Mediator.Send(new TodoListState.LoadCategories(newId));
+                await Mediator.Send(new TodoListState.LoadTodoListItems(newId));
+            }
 
-        if (parameters.TryGetValue<TodoListId?>(nameof(TodoListId), out _))
-        {
+            await base.SetParametersAsync(parameters);
+
             _container?.Refresh();
+        }
+        else
+        {
+            await base.SetParametersAsync(parameters);
         }
     }
 
