@@ -17,26 +17,17 @@
             {
                 <MudDropZone
                     T="TodoListItemReadModel"
-                    Class="pl-4"
+                    Class="pl-5"
                     Style="transition: none"
                     Identifier="@category.Id.Value.ToString()"
                     AllowReorder="true"
                     ItemIsDisabled="_ => true"
                     ItemsSelector="model => model.CategoryId == category.Id"
-                    ApplyDropClassesOnDragStarted="false"
-                    CanDropClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success"
-                    DraggingClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success">
-                    <div class="d-flex gap-1 align-center ml-1">
-                        <MudIcon
-                            Icon="@Icons.Material.Outlined.Folder"
-                            Color="Color.Secondary"
-                            Size="Size.Large">
-                        </MudIcon>
-                        <TextEditor
-                            Text="@category.Name"
-                            TextChanged="text => RenameCategory(category.Id, text, TodoListId)">
-                        </TextEditor>
-                    </div>
+                    CanDropClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-primary"
+                    DraggingClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-primary">
+
+                    <CategoryComponent Category="@category"></CategoryComponent>
+
                 </MudDropZone>
             }
 
@@ -179,8 +170,5 @@
 
     private async Task Delete(TodoListId listId)
         => await Mediator.Send(new TodoListState.DeleteTodoList(listId));
-
-    private async Task RenameCategory(CategoryId categoryId, string newName, TodoListId listId)
-        => await Mediator.Send(new TodoListState.RenameCategory(categoryId, newName, listId));
 
 }

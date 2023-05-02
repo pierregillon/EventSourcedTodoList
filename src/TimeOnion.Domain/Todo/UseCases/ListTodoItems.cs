@@ -1,5 +1,6 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Categories.Core.Events;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.Core.Events;
 using TimeOnion.Domain.Todo.Core.Events.Items;
@@ -33,7 +34,8 @@ internal class ListTodoItemsQueryHandler :
     IDomainEventListener<TodoItemRepositionedAboveAnother>,
     IDomainEventListener<TodoItemRepositionedAtTheEnd>,
     IDomainEventListener<TodoItemCategorized>,
-    IDomainEventListener<TodoItemDecategorized>
+    IDomainEventListener<TodoItemDecategorized>,
+    IDomainEventListener<CategoryDeleted>
 {
     private readonly IReadModelDatabase _database;
 
@@ -156,6 +158,29 @@ internal class ListTodoItemsQueryHandler :
         x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { CategoryId = null })
     );
+
+    public async Task On(CategoryDeleted domainEvent)
+    {
+        var items = await _database.GetAll<TodoListEntry>();
+
+        var categoryListId = items
+            .FirstOrDefault(x => x.Items.Any(i => i.CategoryId == domainEvent.CategoryId))
+            ?.ListId;
+
+        if (categoryListId is not null)
+        {
+            await _database.Update<TodoListEntry>(
+                list => list.ListId == categoryListId,
+                list => list with
+                {
+                    Items = list.Items
+                        .Select(x => x.CategoryId == domainEvent.CategoryId
+                            ? x with { CategoryId = null }
+                            : x)
+                        .ToArray()
+                });
+        }
+    }
 
     private static Func<TodoListEntry, TodoListEntry> UpdateItem(
         TodoItemId todoItemId,

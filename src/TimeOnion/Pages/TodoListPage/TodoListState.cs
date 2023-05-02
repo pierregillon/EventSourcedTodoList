@@ -63,6 +63,11 @@ public class TodoListState : State<TodoListState>
         TodoListId ListId
     ) : IAction;
 
+    public record DeleteCategory(
+        CategoryId Id,
+        TodoListId ListId
+    ) : IAction;
+
     public record CategorizeItem(
         TodoListId ListId,
         TodoItemId ItemId,

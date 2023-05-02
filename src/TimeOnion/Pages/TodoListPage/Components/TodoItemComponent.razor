@@ -1,76 +1,61 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
-@using TimeOnion.Pages.TodayTaskPreparation
 @inherits BlazorState.BlazorStateComponent
 
 @if (Item is not null)
 {
-    <div class="task">
-        <div class="d-flex">
-            <MudMenu
-                UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
-                Class="overlay-menu"
-                Icon="@Icons.Material.Filled.MoreHoriz"
-                Size="Size.Small"
-                AnchorOrigin="Origin.BottomLeft"
-                TransformOrigin="Origin.TopRight">
+    <div class="@(Item.CategoryId is null ? "d-flex overlay-parent" : "d-flex overlay-parent ml-2")">
+        <MudMenu
+            UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
+            Class="invisible overlay"
+            Icon="@Icons.Material.Filled.MoreHoriz"
+            Size="Size.Small"
+            AnchorOrigin="Origin.BottomLeft"
+            TransformOrigin="Origin.TopRight">
 
-                @if (NextTimeHorizons != CurrentTimeHorizons)
-                {
-                    <MudMenuItem
-                        Icon="@Icons.Material.Filled.Redo"
-                        OnClick="() => Reschedule(Item.ListId, Item.Id, NextTimeHorizons)">
-                        Reporter à @NextTimeHorizons.ToText().ToLower()
-                    </MudMenuItem>
-                }
-
-                @if (PreviousTimeHorizons != CurrentTimeHorizons)
-                {
-                    <MudMenuItem
-                        Icon="@Icons.Material.Filled.Undo"
-                        OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTimeHorizons)">
-                        Avancer à @PreviousTimeHorizons.ToText().ToLower()
-                    </MudMenuItem>
-                }
-
+            @if (NextTimeHorizons != CurrentTimeHorizons)
+            {
                 <MudMenuItem
-                    Icon="@Icons.Material.Filled.Delete"
-                    IconColor="Color.Warning"
-                    OnClick="() => Delete(Item.ListId, Item.Id)">
-                    Supprimer
+                    Icon="@Icons.Material.Filled.Redo"
+                    OnClick="() => Reschedule(Item.ListId, Item.Id, NextTimeHorizons)">
+                    Reporter à @NextTimeHorizons.ToText().ToLower()
                 </MudMenuItem>
+            }
 
-            </MudMenu>
+            @if (PreviousTimeHorizons != CurrentTimeHorizons)
+            {
+                <MudMenuItem
+                    Icon="@Icons.Material.Filled.Undo"
+                    OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTimeHorizons)">
+                    Avancer à @PreviousTimeHorizons.ToText().ToLower()
+                </MudMenuItem>
+            }
 
-            <MudCheckBox
-                T="bool"
-                Checked="Item.IsDone"
-                CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.ListId, Item.Id) : MarkAsToDo(Item.ListId, Item.Id)"
-                Class="compact"
-                Color="Color.Primary">
-            </MudCheckBox>
+            <MudMenuItem
+                Icon="@Icons.Material.Filled.Delete"
+                IconColor="Color.Warning"
+                OnClick="() => Delete(Item.ListId, Item.Id)">
+                Supprimer
+            </MudMenuItem>
 
-            <TextEditor
-                Text="@Item.Description"
-                TextChanged="text => FixItemDescription(Item.ListId, Item.Id, text)"
-                DeletionTriggered="() => Delete(Item.ListId, Item.Id)"
-                IsStrikeThrough="@Item.IsDone">
-            </TextEditor>
-        </div>
+        </MudMenu>
+
+        <MudCheckBox
+            T="bool"
+            Checked="Item.IsDone"
+            CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.ListId, Item.Id) : MarkAsToDo(Item.ListId, Item.Id)"
+            Class="compact"
+            Color="Color.Primary">
+        </MudCheckBox>
+
+        <TextEditor
+            Text="@Item.Description"
+            TextChanged="text => FixItemDescription(Item.ListId, Item.Id, text)"
+            DeletionTriggered="() => Delete(Item.ListId, Item.Id)"
+            IsStrikeThrough="@Item.IsDone">
+        </TextEditor>
     </div>
 }
-
-<style>
-    
-    .overlay-menu {
-        opacity: 0;
-    }
-    
-    .task:hover .overlay-menu {
-        opacity: 0.7;
-    }
-    
-</style>
 
 @code {
 

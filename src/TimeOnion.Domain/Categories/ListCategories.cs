@@ -11,7 +11,8 @@ public record CategoryReadModel(CategoryId Id, string Name, TodoListId ListId);
 
 internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, IReadOnlyCollection<CategoryReadModel>>,
     IDomainEventListener<CategoryCreated>,
-    IDomainEventListener<CategoryRenamed>
+    IDomainEventListener<CategoryRenamed>,
+    IDomainEventListener<CategoryDeleted>
 {
     private readonly IReadModelDatabase _database;
 
@@ -29,5 +30,9 @@ internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, I
     public async Task On(CategoryRenamed domainEvent) => await _database.Update<CategoryReadModel>(
         category => category.Id == domainEvent.CategoryId,
         category => category with { Name = domainEvent.NewName.Value }
+    );
+
+    public async Task On(CategoryDeleted domainEvent) => await _database.Delete<CategoryReadModel>(
+        category => category.Id == domainEvent.CategoryId
     );
 }

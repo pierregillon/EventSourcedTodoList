@@ -36,6 +36,8 @@ public class Category : EventSourcedAggregate<CategoryId>
         }
     }
 
+    public void Delete() => StoreEvent(new CategoryDeleted(Id));
+
     protected override void Apply(IDomainEvent domainEvent) => _currentName = domainEvent switch
     {
         CategoryCreated created => created.Name,

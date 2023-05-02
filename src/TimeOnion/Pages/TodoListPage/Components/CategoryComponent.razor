@@ -1,0 +1,49 @@
+@using TimeOnion.Domain.Categories
+@using TimeOnion.Domain.Categories.Core
+@using TimeOnion.Domain.Todo.Core
+@inherits BlazorState.BlazorStateComponent
+
+@if (Category is not null)
+{
+    <div class="overlay-parent d-flex gap-1 align-center">
+        <MudMenu
+            Class="invisible overlay"
+            Icon="@Icons.Material.Filled.MoreHoriz"
+            Size="Size.Small"
+            AnchorOrigin="Origin.BottomLeft"
+            TransformOrigin="Origin.TopRight">
+
+            <MudMenuItem
+                Icon="@Icons.Material.Filled.Delete"
+                IconColor="Color.Warning"
+                OnClick="() => DeleteCategory(Category.Id, Category.ListId)">
+                Supprimer
+            </MudMenuItem>
+
+        </MudMenu>
+
+        <MudIcon
+            Icon="@Icons.Material.Filled.Folder"
+            Color="Color.Primary"
+            Size="Size.Large">
+        </MudIcon>
+
+        <TextEditor
+            Text="@Category.Name"
+            TextChanged="text => RenameCategory(Category.Id, text, Category.ListId)">
+        </TextEditor>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public CategoryReadModel? Category { get; set; }
+
+    private async Task RenameCategory(CategoryId categoryId, string newName, TodoListId listId)
+        => await Mediator.Send(new TodoListState.RenameCategory(categoryId, newName, listId));
+
+    private async Task DeleteCategory(CategoryId categoryId, TodoListId listId)
+        => await Mediator.Send(new TodoListState.DeleteCategory(categoryId, listId));
+
+}

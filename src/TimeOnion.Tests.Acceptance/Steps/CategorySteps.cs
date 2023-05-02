@@ -41,6 +41,15 @@ public class CategorySteps
         await _application.Dispatch(() => new RenameCategoryCommand(categoryId, new CategoryName(newName)));
     }
 
+    [When(@"I delete the (.*) category in my (.*) list")]
+    public async Task WhenIDeleteTheHealthCategoryInMyPersonalList(string categoryName, string listName)
+    {
+        var listId = await FindListId(listName)
+            ?? throw new InvalidOperationException($"Specflow: unable to find the list {listName}.");
+        var categoryId = await FindCategoryId(listId, categoryName) ?? CategoryId.New();
+        await _application.Dispatch(() => new DeleteCategoryCommand(categoryId));
+    }
+
     [Then(@"my (.*) list categories are")]
     public async Task ThenTheCategoriesAre(string listName, Table table)
     {

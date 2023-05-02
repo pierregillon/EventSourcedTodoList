@@ -17,3 +17,7 @@
 .mud-divider.medium {
     margin: 15px 0;
 }
+
+.overlay-parent:hover .overlay {
+    visibility: visible;
+}
