@@ -1,8 +1,8 @@
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
 
 public record TodoItemDescriptionFixed(
-    TodoListId Id,
+    TodoListId ListId,
     TodoItemId ItemId,
     TodoItemDescription PreviousItemDescription,
     TodoItemDescription NewItemDescription
-) : TodoListDomainEvent(Id);
+) : TodoListDomainEvent(ListId);

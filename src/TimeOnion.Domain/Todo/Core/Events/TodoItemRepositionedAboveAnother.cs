@@ -1,4 +1,7 @@
 namespace TimeOnion.Domain.Todo.Core.Events;
 
-public record TodoItemRepositionedAboveAnother
-    (TodoListId Id, TodoItemId ItemId, TodoItemId ReferenceItemId) : TodoListDomainEvent(Id);
+public record TodoItemRepositionedAboveAnother(
+    TodoListId ListId,
+    TodoItemId ItemId,
+    TodoItemId ReferenceItemId
+) : TodoListDomainEvent(ListId);

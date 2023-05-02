@@ -1,6 +1,6 @@
 namespace TimeOnion.Domain.Todo.Core.Events;
 
 public record TodoItemDecategorized(
-    TodoListId Id,
+    TodoListId ListId,
     TodoItemId ItemId
-) : TodoListDomainEvent(Id);
+) : TodoListDomainEvent(ListId);

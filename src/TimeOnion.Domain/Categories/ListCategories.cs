@@ -24,10 +24,10 @@ internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, I
         .ToList();
 
     public async Task On(CategoryCreated domainEvent) =>
-        await _database.Add(new CategoryReadModel(domainEvent.Id, domainEvent.Name.Value, domainEvent.ListId));
+        await _database.Add(new CategoryReadModel(domainEvent.CategoryId, domainEvent.Name.Value, domainEvent.ListId));
 
     public async Task On(CategoryRenamed domainEvent) => await _database.Update<CategoryReadModel>(
-        category => category.Id == domainEvent.Id,
+        category => category.Id == domainEvent.CategoryId,
         category => category with { Name = domainEvent.NewName.Value }
     );
 }

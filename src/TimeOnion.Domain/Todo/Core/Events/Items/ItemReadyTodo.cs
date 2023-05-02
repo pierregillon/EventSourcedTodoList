@@ -1,3 +1,3 @@
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
 
-public record ItemReadyTodo(TodoListId Id, TodoItemId ItemId) : TodoListDomainEvent(Id);
+public record ItemReadyTodo(TodoListId ListId, TodoItemId ItemId) : TodoListDomainEvent(ListId);

@@ -1,8 +1,8 @@
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
 
 public record TodoItemAdded(
-    TodoListId Id,
+    TodoListId ListId,
     TodoItemId ItemId,
     TodoItemDescription Description,
     TimeHorizons TimeHorizon
-) : TodoListDomainEvent(Id);
+) : TodoListDomainEvent(ListId);

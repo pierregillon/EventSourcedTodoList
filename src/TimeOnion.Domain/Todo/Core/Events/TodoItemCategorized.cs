@@ -1,11 +1,10 @@
-using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 
 namespace TimeOnion.Domain.Todo.Core.Events;
 
 public record TodoItemCategorized(
-    TodoListId Id,
+    TodoListId ListId,
     TodoItemId ItemId,
     CategoryId? PreviousCategoryId,
     CategoryId NewCategoryId
-) : TodoListDomainEvent(Id);
+) : TodoListDomainEvent(ListId);

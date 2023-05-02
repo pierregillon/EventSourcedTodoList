@@ -1,5 +1,4 @@
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.Core.Events;
@@ -52,18 +51,18 @@ internal class ListTodoItemsQueryHandler :
     public async Task On(TodoListCreated domainEvent)
     {
         var readModel =
-            new TodoListEntry(domainEvent.Id, Array.Empty<TodoListItemReadModel>());
+            new TodoListEntry(domainEvent.ListId, Array.Empty<TodoListItemReadModel>());
         await _database.Add(readModel);
     }
 
     public async Task On(TodoListDeleted domainEvent) =>
-        await _database.Delete<TodoListEntry>(x => x.ListId == domainEvent.Id);
+        await _database.Delete<TodoListEntry>(x => x.ListId == domainEvent.ListId);
 
     public async Task On(TodoItemAdded domainEvent)
     {
         var newItem = new TodoListItemReadModel(
             domainEvent.ItemId,
-            domainEvent.Id,
+            domainEvent.ListId,
             domainEvent.Description.Value,
             false,
             domainEvent.TimeHorizon,
@@ -71,38 +70,38 @@ internal class ListTodoItemsQueryHandler :
         );
 
         await _database.Update<TodoListEntry>(
-            x => x.ListId == domainEvent.Id,
+            x => x.ListId == domainEvent.ListId,
             list => list with { Items = list.Items.Append(newItem).ToArray() }
         );
     }
 
     public async Task On(TodoItemCompleted domainEvent) => await _database.Update(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { IsDone = true })
     );
 
     public async Task On(ItemReadyTodo domainEvent) => await _database.Update(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { IsDone = false })
     );
 
     public async Task On(TodoItemDeleted domainEvent) => await _database.Update<TodoListEntry>(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         list => list with { Items = list.Items.Where(x => x.Id != domainEvent.ItemId).ToArray() }
     );
 
     public async Task On(TodoItemDescriptionFixed domainEvent) => await _database.Update(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { Description = domainEvent.NewItemDescription.Value })
     );
 
     public async Task On(TodoItemRescheduled domainEvent) => await _database.Update(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { TimeHorizons = domainEvent.NewTimeHorizon })
     );
 
     public async Task On(TodoItemRepositionedAboveAnother domainEvent) => await _database.Update<TodoListEntry>(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         todoList =>
         {
             var newList = todoList.Items.ToList();
@@ -132,7 +131,7 @@ internal class ListTodoItemsQueryHandler :
     );
 
     public async Task On(TodoItemRepositionedAtTheEnd domainEvent) => await _database.Update<TodoListEntry>(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         todoList =>
         {
             var newList = todoList.Items.ToList();
@@ -149,12 +148,12 @@ internal class ListTodoItemsQueryHandler :
     );
 
     public async Task On(TodoItemCategorized domainEvent) => await _database.Update(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { CategoryId = domainEvent.NewCategoryId })
     );
 
     public async Task On(TodoItemDecategorized domainEvent) => await _database.Update(
-        x => x.ListId == domainEvent.Id,
+        x => x.ListId == domainEvent.ListId,
         UpdateItem(domainEvent.ItemId, item => item with { CategoryId = null })
     );
 

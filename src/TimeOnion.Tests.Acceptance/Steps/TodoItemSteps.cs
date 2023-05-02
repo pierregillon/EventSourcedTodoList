@@ -178,7 +178,7 @@ public class TodoItemSteps
     [When(@"I decategorize ""(.*)"" in my (.*) list")]
     public async Task WhenIDecategorizeInMyPersonalList(string itemDescription, string listName)
     {
-        var listId = await FindListId(listName);
+        var listId = await FindListId(listName) ?? TodoListId.New();
         var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
         await _application.Dispatch(new DecategorizeTodoItemCommand(listId, itemId));
@@ -282,7 +282,7 @@ public class TodoItemSteps
         );
 
         var items = data
-            .SelectMany(x => x)
+            .SelectMany(x => x!)
             .ToArray();
 
         return items.FirstOrDefault(x => x.Description == itemDescription)?.Id;
