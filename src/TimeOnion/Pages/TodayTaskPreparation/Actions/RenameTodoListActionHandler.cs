@@ -32,6 +32,6 @@ public class RenameTodoListActionHandler : ActionHandler<TodoListState.RenameTod
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizon));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
     }
 }

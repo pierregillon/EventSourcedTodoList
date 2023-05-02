@@ -38,7 +38,7 @@ public class TodoListSteps
     public async Task ThenTheTodoListAre(Table table)
     {
         var expectedNames = table.Rows.Select(x => x["Name"]);
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
 
         todoLists!
             .Select(x => x.Name)
@@ -48,7 +48,7 @@ public class TodoListSteps
 
     private async Task<TodoListId?> FindListId(string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
 
         return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
     }

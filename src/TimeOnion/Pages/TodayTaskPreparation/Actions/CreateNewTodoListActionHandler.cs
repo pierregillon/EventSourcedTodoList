@@ -26,6 +26,6 @@ public class CreateNewTodoListActionHandler : ActionHandler<TodoListState.Create
 
         await _commandDispatcher.Dispatch(new CreateNewTodoListCommand(new TodoListName("Nouvelle todo liste")));
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizon));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
     }
 }

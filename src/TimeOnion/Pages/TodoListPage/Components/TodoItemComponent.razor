@@ -5,10 +5,10 @@
 
 @if (Item is not null)
 {
-    <div class="@(Item.CategoryId is not null ? "task under-category" : "task")">
+    <div class="task">
         <div class="d-flex">
             <MudMenu
-                UserAttributes="@(new Dictionary<string, object>{{"draggable", "true"}})"
+                UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
                 Class="overlay-menu"
                 Icon="@Icons.Material.Filled.MoreHoriz"
                 Size="Size.Small"
@@ -70,9 +70,6 @@
         opacity: 0.7;
     }
     
-    .task.under-category {
-        margin-left: 20px;
-    }
 </style>
 
 @code {

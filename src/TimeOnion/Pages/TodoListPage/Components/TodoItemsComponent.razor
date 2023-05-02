@@ -13,22 +13,23 @@
         Items="Items"
         ItemsSelector="@((item, dropzone) => true)"
         ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask"
-        ApplyDropClassesOnDragStarted="true"
-        >
+    >
         <ChildContent>
             @foreach (var category in Categories)
             {
                 <MudDropZone
                     T="TodoListItemReadModel"
+                    Class="pl-4"
+                    Style="transition: none"
                     Identifier="@category.Id.Value.ToString()"
                     AllowReorder="true"
-                    ItemIsDisabled="model => true"
+                    ItemIsDisabled="_ => true"
                     ItemsSelector="model => model.CategoryId == category.Id"
-                    DraggingClass="category-dragging"
-                    CanDropClass="category-dragging"
-                    ItemDraggingClass="in-category-dragging"
+                    ApplyDropClassesOnDragStarted="false"
+                    CanDropClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success"
+                    DraggingClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success"
                     >
-                    <div class="d-flex gap-1 align-center" style="margin-left: 22px">
+                    <div class="d-flex gap-1 align-center ml-1">
                         <MudIcon
                             Icon="@Icons.Material.Outlined.Folder"
                             Color="Color.Secondary"
@@ -46,10 +47,8 @@
                 T="TodoListItemReadModel"
                 Identifier=""
                 AllowReorder="true"
-                ItemIsDisabled="model => true"
-                ItemsSelector="model => model.CategoryId is null"
-                DraggingClass="no-category-dragging"
-                />
+                ItemIsDisabled="_ => true"
+                ItemsSelector="model => model.CategoryId is null"/>
 
         </ChildContent>
         <ItemRenderer>
@@ -77,25 +76,9 @@
 }
 
 <style>
-     .mud-drop-item-preview-start{
-        /*top: -20px;*/
+     .mud-drop-item-preview-start {
         position: relative;
-        height: 2px;
-     }
-     
-     .category-dragging {
-        border: 1px dashed red;
-        border-radius: 5px;
-     }
-     
-     .no-category-dragging {
-        border: 1px dashed lightgray;
-        border-radius: 5px;
-     }
-     
-     .in-category-dragging {
-        border-color: red !important;
-        color: red;
+        height: 5px;
      }
 </style>
 
@@ -136,54 +119,45 @@
 
     private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
     {
-        var todoListItems = Items.ToList();
-        var currentItem = todoListItems.First(x => x.Id == itemId);
+        var targetIdCategory = !string.IsNullOrWhiteSpace(targetCategoryIdString)
+            ? CategoryId.From(targetCategoryIdString)
+            : null;
 
-        await UpdateItemCategory(listId, itemId, targetCategoryIdString, currentItem);
-        await UpdateItemPosition(listId, itemId, indexInCategory, todoListItems, currentItem);
+        await UpdateItemCategory(listId, itemId, targetIdCategory);
+        await UpdateItemPosition(listId, itemId, indexInCategory, targetIdCategory);
     }
 
-    private async Task UpdateItemCategory(
-        TodoListId listId,
-        TodoItemId itemId,
-        string targetCategoryIdString,
-        TodoListItemReadModel currentItem
-        )
+    private async Task UpdateItemCategory(TodoListId listId, TodoItemId itemId, CategoryId? targetIdCategory)
     {
-        if (!string.IsNullOrWhiteSpace(targetCategoryIdString))
+        var currentItem = Items.ToList().First(x => x.Id == itemId);
+        
+        if (targetIdCategory is not null)
         {
-            var targetIdCategory = CategoryId.From(targetCategoryIdString);
-
             if (currentItem.CategoryId != targetIdCategory)
             {
                 await Mediator.Send(new TodoListState.CategorizeItem(listId, itemId, targetIdCategory));
             }
         }
-        else
+        else if (currentItem.CategoryId is not null)
         {
-            if (currentItem.CategoryId is not null)
-            {
-                await Mediator.Send(new TodoListState.DecategorizeItem(listId, itemId));
-            }
+            await Mediator.Send(new TodoListState.DecategorizeItem(listId, itemId));
         }
     }
 
-    private async Task UpdateItemPosition(
-        TodoListId listId,
-        TodoItemId itemId,
-        int indexInCategory,
-        List<TodoListItemReadModel> todoListItems,
-        TodoListItemReadModel currentItem
-        )
+    private async Task UpdateItemPosition(TodoListId listId, TodoItemId itemId, int indexInCategory, CategoryId? targetIdCategory)
     {
-        var currentItemIndex = todoListItems.IndexOf(currentItem);
-
+        var currentItem = Items.First(x => x.Id == itemId);
+        var itemsInSameCategory = Items
+            .Where(x => x.CategoryId == targetIdCategory)
+            .ToList();
+        
+        var currentItemIndex = itemsInSameCategory.IndexOf(currentItem);
         if (currentItemIndex < indexInCategory)
         {
             indexInCategory++;
         }
 
-        var referenceItem = Items.Where((_, i) => i == indexInCategory).FirstOrDefault();
+        var referenceItem = itemsInSameCategory.Where((_, i) => i == indexInCategory).FirstOrDefault();
         if (referenceItem is not null && referenceItem.Id != itemId)
         {
             await Mediator.Send(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));

@@ -4,7 +4,7 @@ using TimeOnion.Domain.Todo.Core.Events;
 
 namespace TimeOnion.Domain.Todo.UseCases;
 
-public record ListTodoListsQuery(TimeHorizons TimeHorizons) : IQuery<IReadOnlyCollection<TodoListReadModel>>;
+public record ListTodoListsQuery() : IQuery<IReadOnlyCollection<TodoListReadModel>>;
 
 public record TodoListReadModel(TodoListId Id, string Name);
 

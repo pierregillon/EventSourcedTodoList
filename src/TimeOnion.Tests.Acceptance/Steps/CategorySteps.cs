@@ -57,7 +57,7 @@ public class CategorySteps
 
     private async Task<TodoListId?> FindListId(string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
 
         return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
     }

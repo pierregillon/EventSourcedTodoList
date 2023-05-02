@@ -43,7 +43,7 @@ Scenario: Repositioning an item at the same position does nothing
       | call dad    |
       | call mum    |
 
-Scenario: Repositioned items are correctly ordered in the todo list
+Scenario: Repositioned items are correctly ordered in the todo list (moving up)
     Given the following items have been added to do this day in my personal list
       | Description |
       | call dad    |
@@ -57,7 +57,7 @@ Scenario: Repositioned items are correctly ordered in the todo list
       | call mum    |
       | call dad    |
 
-Scenario: Repositioned items are correctly ordered in the todo list 2
+Scenario: Repositioned items are correctly ordered in the todo list (moving down)
     Given the following items have been added to do this day in my personal list
       | Description |
       | call dad    |

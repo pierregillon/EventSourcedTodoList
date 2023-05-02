@@ -19,7 +19,7 @@ public class LoadDataActionHandler : ActionHandler<TodoListState.LoadData>
     {
         var state = Store.GetState<TodoListState>();
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery(state.CurrentTimeHorizon));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
 
         return Unit.Value;
     }

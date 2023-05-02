@@ -21,7 +21,7 @@ public class TodoItemSteps
     [When(@"I add the item ""(.*)"" to do (.*) in my (.*) list")]
     public async Task WhenIAddTheItemToDo(string description, TimeHorizons timeHorizons, string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(timeHorizons));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
 
         var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
 
@@ -36,7 +36,7 @@ public class TodoItemSteps
         Table table
     )
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(timeHorizons));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
 
         var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
 
@@ -268,7 +268,7 @@ public class TodoItemSteps
 
     private async Task<TodoListId?> FindListId(string todoListName)
     {
-        var todoLists = await _application.Dispatch(new ListTodoListsQuery(TimeHorizons.ThisDay));
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
 
         return todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id;
     }
