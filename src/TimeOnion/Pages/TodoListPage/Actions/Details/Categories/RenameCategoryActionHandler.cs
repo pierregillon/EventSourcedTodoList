@@ -26,7 +26,7 @@ public class RenameCategoryActionHandler : ActionHandler<TodoListState.RenameCat
 
         await _commandDispatcher.Dispatch(new RenameCategoryCommand(aAction.Id, new CategoryName(aAction.Name)));
 
-        state.TodoListDetails[aAction.ListId].Categories =
+        state.TodoListDetails.Get(aAction.ListId).Categories =
             await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
     }
 }

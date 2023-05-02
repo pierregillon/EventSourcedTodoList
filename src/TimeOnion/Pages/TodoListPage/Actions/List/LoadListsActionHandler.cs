@@ -19,7 +19,7 @@ public class LoadListsActionHandler : ActionHandler<TodoListState.LoadLists>
         var state = Store.GetState<TodoListState>();
 
         state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
-        state.TodoListDetails = state.TodoLists.ToDictionary(x => x.Id, _ => new TodoListDetailState());
+        state.TodoListDetails = new TodoListDetails(state.TodoLists);
 
         return Unit.Value;
     }

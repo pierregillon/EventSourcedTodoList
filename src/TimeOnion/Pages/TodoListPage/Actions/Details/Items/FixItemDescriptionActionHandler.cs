@@ -33,7 +33,7 @@ public class FixItemDescriptionActionHandler : ActionHandler<TodoListState.FixIt
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoListDetails[action.ListId].TodoListItems =
+        state.TodoListDetails.Get(action.ListId).TodoListItems =
             await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
     }
 }

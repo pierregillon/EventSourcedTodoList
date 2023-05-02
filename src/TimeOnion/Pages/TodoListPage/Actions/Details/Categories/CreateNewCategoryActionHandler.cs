@@ -28,7 +28,7 @@ public class CreateNewCategoryActionHandler : ActionHandler<TodoListState.Create
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoListDetails[aAction.ListId].Categories =
+        state.TodoListDetails.Get(aAction.ListId).Categories =
             await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
     }
 }

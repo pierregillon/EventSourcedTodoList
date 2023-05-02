@@ -35,7 +35,7 @@ public class RepositionItemAtTheEndActionHandler : ActionHandler<TodoListState.R
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoListDetails[aAction.ListId].TodoListItems =
+        state.TodoListDetails.Get(aAction.ListId).TodoListItems =
             await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
     }
 }

@@ -17,7 +17,7 @@ public class LoadCategoriesActionHandler : ActionHandler<TodoListState.LoadCateg
     {
         var state = Store.GetState<TodoListState>();
 
-        state.TodoListDetails[action.ListId].Categories =
+        state.TodoListDetails.Get(action.ListId).Categories =
             await _queryDispatcher.Dispatch(new ListCategoriesQuery(action.ListId));
     }
 }

@@ -86,13 +86,9 @@
 
     TodoListState State => GetState<TodoListState>();
 
-    IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListDetails.TryGetValue(TodoListId!, out var items)
-        ? items.TodoListItems
-        : new List<TodoListItemReadModel>();
+    IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListDetails.Get(TodoListId!).TodoListItems;
 
-    IReadOnlyCollection<CategoryReadModel> Categories => State.TodoListDetails.TryGetValue(TodoListId!, out var items)
-        ? items.Categories
-        : new List<CategoryReadModel>();
+    IReadOnlyCollection<CategoryReadModel> Categories => State.TodoListDetails.Get(TodoListId!).Categories;
 
     private MudDropContainer<TodoListItemReadModel>? _container;
 

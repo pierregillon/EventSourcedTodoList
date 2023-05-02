@@ -30,7 +30,7 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
 
         state.NewTodoItemDescription = string.Empty;
 
-        state.TodoListDetails[action.ListId].TodoListItems =
+        state.TodoListDetails.Get(action.ListId).TodoListItems =
             await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
         return Unit.Value;

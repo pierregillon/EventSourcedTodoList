@@ -11,7 +11,7 @@ public class TodoListState : State<TodoListState>
     public TimeHorizons CurrentTimeHorizon { get; set; } = TimeHorizons.ThisDay;
     public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
 
-    public Dictionary<TodoListId, TodoListDetailState> TodoListDetails { get; set; } = new();
+    public TodoListDetails TodoListDetails { get; set; } = new(new List<TodoListReadModel>());
 
     public override void Initialize()
     {
