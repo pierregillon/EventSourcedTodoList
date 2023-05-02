@@ -18,7 +18,10 @@ internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, I
     public ListCategoriesQueryHandler(IReadModelDatabase database) => _database = database;
 
     public async Task<IReadOnlyCollection<CategoryReadModel>> Handle(ListCategoriesQuery query) =>
-        (await _database.GetAll<CategoryReadModel>()).Where(x => x.ListId == query.ListId).ToList();
+        (await _database.GetAll<CategoryReadModel>())
+        .Where(x => x.ListId == query.ListId)
+        .OrderBy(x => x.Name)
+        .ToList();
 
     public async Task On(CategoryCreated domainEvent) =>
         await _database.Add(new CategoryReadModel(domainEvent.Id, domainEvent.Name.Value, domainEvent.ListId));

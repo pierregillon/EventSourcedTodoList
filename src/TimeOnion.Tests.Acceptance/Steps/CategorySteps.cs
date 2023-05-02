@@ -52,7 +52,7 @@ public class CategorySteps
         categories!
             .Select(x => x.Name)
             .Should()
-            .BeEquivalentTo(expectedCategoryNames);
+            .BeEquivalentTo(expectedCategoryNames, options => options.WithStrictOrdering());
     }
 
     private async Task<TodoListId?> FindListId(string todoListName)
