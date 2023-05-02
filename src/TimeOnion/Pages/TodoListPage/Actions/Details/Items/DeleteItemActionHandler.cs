@@ -1,16 +1,15 @@
 using BlazorState;
-using MediatR;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 
-namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
+namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class CompleteItemActionHandler : ActionHandler<TodoListState.MarkItemAsDone>
+public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public CompleteItemActionHandler(
+    public DeleteItemActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -20,15 +19,13 @@ public class CompleteItemActionHandler : ActionHandler<TodoListState.MarkItemAsD
         _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task<Unit> Handle(TodoListState.MarkItemAsDone action, CancellationToken cancellationToken)
+    public override async Task Handle(TodoListState.DeleteItem action, CancellationToken aCancellationToken)
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new MarkItemAsDoneCommand(action.ListId, action.ItemId));
+        await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
 
-        state.TodoListItems[action.ListId] =
+        state.TodoListDetails[action.ListId].TodoListItems =
             await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
-
-        return Unit.Value;
     }
 }

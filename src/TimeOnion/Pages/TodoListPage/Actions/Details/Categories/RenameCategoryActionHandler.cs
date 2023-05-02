@@ -2,9 +2,8 @@ using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
-using TimeOnion.Pages.TodayTaskPreparation;
 
-namespace TimeOnion.Pages.TodoListPage.Actions;
+namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
 public class RenameCategoryActionHandler : ActionHandler<TodoListState.RenameCategory>
 {
@@ -27,6 +26,7 @@ public class RenameCategoryActionHandler : ActionHandler<TodoListState.RenameCat
 
         await _commandDispatcher.Dispatch(new RenameCategoryCommand(aAction.Id, new CategoryName(aAction.Name)));
 
-        state.Categories[aAction.ListId] = await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
+        state.TodoListDetails[aAction.ListId].Categories =
+            await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
     }
 }

@@ -1,6 +1,5 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
-@using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Domain.Categories
 @using TimeOnion.Domain.Categories.Core
 @inherits BlazorState.BlazorStateComponent
@@ -12,8 +11,7 @@
         T="TodoListItemReadModel"
         Items="Items"
         ItemsSelector="@((item, dropzone) => true)"
-        ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask"
-    >
+        ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask">
         <ChildContent>
             @foreach (var category in Categories)
             {
@@ -27,8 +25,7 @@
                     ItemsSelector="model => model.CategoryId == category.Id"
                     ApplyDropClassesOnDragStarted="false"
                     CanDropClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success"
-                    DraggingClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success"
-                    >
+                    DraggingClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-success">
                     <div class="d-flex gap-1 align-center ml-1">
                         <MudIcon
                             Icon="@Icons.Material.Outlined.Folder"
@@ -88,8 +85,14 @@
     public TodoListId? TodoListId { get; set; }
 
     TodoListState State => GetState<TodoListState>();
-    IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListItems[TodoListId];
-    IReadOnlyCollection<CategoryReadModel> Categories => State.Categories[TodoListId];
+
+    IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListDetails.TryGetValue(TodoListId!, out var items)
+        ? items.TodoListItems
+        : new List<TodoListItemReadModel>();
+
+    IReadOnlyCollection<CategoryReadModel> Categories => State.TodoListDetails.TryGetValue(TodoListId!, out var items)
+        ? items.Categories
+        : new List<CategoryReadModel>();
 
     private MudDropContainer<TodoListItemReadModel>? _container;
 
@@ -107,6 +110,11 @@
     public override async Task SetParametersAsync(ParameterView parameters)
     {
         await base.SetParametersAsync(parameters);
+
+        if (TodoListId is null)
+        {
+            return;
+        }
 
         if (parameters.TryGetValue<TodoListId?>(nameof(TodoListId), out _))
         {
@@ -130,7 +138,7 @@
     private async Task UpdateItemCategory(TodoListId listId, TodoItemId itemId, CategoryId? targetIdCategory)
     {
         var currentItem = Items.ToList().First(x => x.Id == itemId);
-        
+
         if (targetIdCategory is not null)
         {
             if (currentItem.CategoryId != targetIdCategory)
@@ -150,7 +158,7 @@
         var itemsInSameCategory = Items
             .Where(x => x.CategoryId == targetIdCategory)
             .ToList();
-        
+
         var currentItemIndex = itemsInSameCategory.IndexOf(currentItem);
         if (currentItemIndex < indexInCategory)
         {

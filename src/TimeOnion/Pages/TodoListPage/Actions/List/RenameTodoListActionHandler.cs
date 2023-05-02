@@ -1,16 +1,16 @@
 using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
-using TimeOnion.Domain.Todo.UseCases.Categorization;
 
-namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
+namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-public class DecategorizeItemActionHandler : ActionHandler<TodoListState.DecategorizeItem>
+public class RenameTodoListActionHandler : ActionHandler<TodoListState.RenameTodoList>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public DecategorizeItemActionHandler(
+    public RenameTodoListActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -20,19 +20,18 @@ public class DecategorizeItemActionHandler : ActionHandler<TodoListState.Decateg
         _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.DecategorizeItem aAction, CancellationToken aCancellationToken)
+    public override async Task Handle(TodoListState.RenameTodoList aAction, CancellationToken aCancellationToken)
     {
         var state = Store.GetState<TodoListState>();
 
         var command =
-            new DecategorizeTodoItemCommand(
+            new RenameTodoListCommand(
                 aAction.ListId,
-                aAction.ItemId
+                new TodoListName(aAction.NewName)
             );
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoListItems[aAction.ListId] =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
+        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
     }
 }

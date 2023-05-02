@@ -1,24 +1,23 @@
 using BlazorState;
-using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 
-namespace TimeOnion.Pages.TodayTaskPreparation;
+namespace TimeOnion.Pages.TodoListPage;
 
 public class TodoListState : State<TodoListState>
 {
     public string NewTodoItemDescription { get; set; } = string.Empty;
     public TimeHorizons CurrentTimeHorizon { get; set; } = TimeHorizons.ThisDay;
     public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
-    public Dictionary<TodoListId, IReadOnlyCollection<CategoryReadModel>> Categories { get; set; } = new();
-    public Dictionary<TodoListId, IReadOnlyCollection<TodoListItemReadModel>> TodoListItems { get; set; } = new();
+
+    public Dictionary<TodoListId, TodoListDetailState> TodoListDetails { get; set; } = new();
 
     public override void Initialize()
     {
     }
 
-    public record LoadData : IAction;
+    public record LoadLists : IAction;
 
     public record CreateNewTodoList : IAction;
 
@@ -49,9 +48,7 @@ public class TodoListState : State<TodoListState>
         TodoListId ListId
     ) : IAction;
 
-    public record LoadTodoListItems(
-        TodoListId ListId
-    ) : IAction;
+    public record LoadTodoListItems(TodoListId ListId) : IAction;
 
     public record CreateNewCategory(
         TodoListId ListId,

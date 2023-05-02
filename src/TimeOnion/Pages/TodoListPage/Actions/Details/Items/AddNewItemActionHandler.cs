@@ -4,7 +4,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 
-namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
+namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
 public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
 {
@@ -30,7 +30,7 @@ public class AddNewItemActionHandler : ActionHandler<TodoListState.AddNewItem>
 
         state.NewTodoItemDescription = string.Empty;
 
-        state.TodoListItems[action.ListId] =
+        state.TodoListDetails[action.ListId].TodoListItems =
             await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
         return Unit.Value;

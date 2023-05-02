@@ -1,3 +1,4 @@
+@using TimeOnion.Pages.TodoListPage
 @using TimeOnion.Pages.TodayTaskPreparation.Steps
 @using TimeOnion.Pages.TodayTaskPreparation.Components
 @inherits BlazorState.BlazorStateComponent
@@ -56,7 +57,7 @@
     async Task Submit()
     {
         await Mediator.Send(new TodayTaskPreparationState.MoveToNextPreparationStep());
-        await Mediator.Send(new TodoListState.LoadData());
+        await Mediator.Send(new TodoListState.LoadLists());
         MudDialog.Close(DialogResult.Ok(true));
     }
 

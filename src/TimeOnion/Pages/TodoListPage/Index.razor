@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using TimeOnion.Domain.Todo.Core
-@using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Pages.TodoListPage.Components
 @inherits BlazorState.BlazorStateComponent
 
@@ -54,7 +53,7 @@
     TodoListState State => GetState<TodoListState>();
 
     protected override async Task OnInitializedAsync()
-        => await Mediator.Send(new TodoListState.LoadData());
+        => await Mediator.Send(new TodoListState.LoadLists());
 
     private async Task CreateNewTodoList() => await Mediator.Send(new TodoListState.CreateNewTodoList());
 

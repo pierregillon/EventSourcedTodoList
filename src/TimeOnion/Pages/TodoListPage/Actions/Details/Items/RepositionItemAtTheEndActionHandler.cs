@@ -3,7 +3,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Positionning;
 
-namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
+namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
 public class RepositionItemAtTheEndActionHandler : ActionHandler<TodoListState.RepositionItemAtTheEnd>
 {
@@ -35,7 +35,7 @@ public class RepositionItemAtTheEndActionHandler : ActionHandler<TodoListState.R
 
         await _commandDispatcher.Dispatch(command);
 
-        state.TodoListItems[aAction.ListId] =
+        state.TodoListDetails[aAction.ListId].TodoListItems =
             await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
     }
 }

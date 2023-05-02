@@ -3,7 +3,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 
-namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
+namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
 public class CreateNewCategoryActionHandler : ActionHandler<TodoListState.CreateNewCategory>
 {
@@ -28,6 +28,7 @@ public class CreateNewCategoryActionHandler : ActionHandler<TodoListState.Create
 
         await _commandDispatcher.Dispatch(command);
 
-        state.Categories[aAction.ListId] = await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
+        state.TodoListDetails[aAction.ListId].Categories =
+            await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
     }
 }
