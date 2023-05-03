@@ -9,16 +9,15 @@ public static class ReplayAllDomainEventsExtensions
     {
         using var scope = application.Services.CreateScope();
 
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<WebApplication>>();
         var eventPublisher = scope.ServiceProvider.GetRequiredService<IDomainEventPublisher>();
         var eventStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
 
-        logger.LogInformation("Loading existing events ...");
+        Console.WriteLine("Loading existing events ...");
         var allEvents = await eventStore.GetAll();
 
-        logger.LogInformation($"Replaying {allEvents.Count} events ...");
+        Console.WriteLine($"Replaying {allEvents.Count} events ...");
         await eventPublisher.Publish(allEvents);
 
-        logger.LogInformation("Projection are updated");
+        Console.WriteLine("Projections are updated");
     }
 }

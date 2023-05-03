@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
@@ -14,7 +15,7 @@ public class CachedEventStoreTests
     public CachedEventStoreTests()
     {
         _decorated = Substitute.For<IEventStore>();
-        _cache = new CachedEventStore(_decorated, new DomainEventsCache());
+        _cache = new CachedEventStore(_decorated, new DomainEventsCache(), Substitute.For<ILogger<CachedEventStore>>());
     }
 
     [Fact]
@@ -46,7 +47,8 @@ public class CachedEventStoreTests
     {
         await _cache.Save(new[]
         {
-            new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"), TimeHorizons.ThisMonth)
+            new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"),
+                TimeHorizons.ThisMonth)
         });
 
         await _decorated
