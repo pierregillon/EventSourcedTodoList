@@ -1,5 +1,4 @@
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core.Events;
 using TimeOnion.Domain.Todo.Core.Events.Items;
@@ -20,15 +19,6 @@ public class TodoList : EventSourcedAggregate<TodoListId>
         var todoListId = TodoListId.New();
         var todoList = new TodoList(todoListId);
         todoList.StoreEvent(new TodoListCreated(todoListId, name));
-        return todoList;
-    }
-
-    public static TodoList Rehydrate(TodoListId id, IReadOnlyCollection<IDomainEvent> eventHistory)
-    {
-        var todoList = new TodoList(id);
-
-        todoList.LoadFromHistory(eventHistory);
-
         return todoList;
     }
 

@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases;
@@ -7,9 +8,9 @@ public record CreateNewTodoListCommand(TodoListName Name) : ICommand;
 
 internal class CreateNewTodoListCommandHandler : ICommandHandler<CreateNewTodoListCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public CreateNewTodoListCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public CreateNewTodoListCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(CreateNewTodoListCommand command)
     {

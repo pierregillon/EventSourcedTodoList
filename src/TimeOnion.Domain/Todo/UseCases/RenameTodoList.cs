@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases;
@@ -7,9 +8,9 @@ public record RenameTodoListCommand(TodoListId Id, TodoListName NewName) : IComm
 
 internal class RenameTodoListCommandHandler : ICommandHandler<RenameTodoListCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public RenameTodoListCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public RenameTodoListCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(RenameTodoListCommand command)
     {

@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases;
@@ -11,9 +12,9 @@ public record FixItemDescriptionCommand(
 
 public class FixItemDescriptionCommandHandler : ICommandHandler<FixItemDescriptionCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public FixItemDescriptionCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public FixItemDescriptionCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(FixItemDescriptionCommand command)
     {

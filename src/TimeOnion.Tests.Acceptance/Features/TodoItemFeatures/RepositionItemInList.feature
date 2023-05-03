@@ -9,12 +9,12 @@ Background:
 @ErrorHandling
 Scenario: Cannot reposition an item in an unknown todo list
     When I reposition "call dad" above "call mum" on my professional list
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 @ErrorHandling
 Scenario: Cannot reposition an item at the end of unknown todo list
     When I reposition "call dad" at the end of my professional list
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 @ErrorHandling
 Scenario: Cannot reposition an unknown item

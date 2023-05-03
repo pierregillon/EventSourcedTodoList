@@ -9,7 +9,7 @@ Background:
 @ErrorHandling
 Scenario: Cannot add an item on unknown todo list
     When I add the item "test" to do this day in my professional list
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 @ErrorHandling
 Scenario: Cannot add an item to do with no description specified

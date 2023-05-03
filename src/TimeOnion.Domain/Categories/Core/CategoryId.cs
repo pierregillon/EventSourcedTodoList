@@ -1,6 +1,8 @@
+using TimeOnion.Domain.BuildingBlocks;
+
 namespace TimeOnion.Domain.Categories.Core;
 
-public record CategoryId(Guid Value)
+public record CategoryId(Guid Value) : IAggregateId
 {
     public static CategoryId New() => new(Guid.NewGuid());
     public static CategoryId? None => null;

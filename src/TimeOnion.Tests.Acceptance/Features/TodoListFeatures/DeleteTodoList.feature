@@ -6,7 +6,7 @@ In order to remove all todo items and todo list
 @ErrorHandling
 Scenario: Cannot delete an unknown todo list
     When I delete my personal todo list
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 Scenario: Deleted todo list is not listed anymore
     Given a personal todo list has been created

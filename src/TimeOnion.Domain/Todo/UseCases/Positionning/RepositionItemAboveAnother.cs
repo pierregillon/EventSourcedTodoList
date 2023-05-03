@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases.Positionning;
@@ -11,9 +12,9 @@ public record RepositionItemAboveAnotherCommand(
 
 internal class RepositionItemCommandHandler : ICommandHandler<RepositionItemAboveAnotherCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public RepositionItemCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public RepositionItemCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(RepositionItemAboveAnotherCommand command)
     {

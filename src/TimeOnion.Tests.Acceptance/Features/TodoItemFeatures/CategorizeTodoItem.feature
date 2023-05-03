@@ -9,7 +9,7 @@ Background:
 @ErrorHandling
 Scenario: Cannot categorize an item on an unknown todo list
     When I categorize "call dad" to family category on my professional list
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 @ErrorHandling
 Scenario: Cannot categorize to an unknown category

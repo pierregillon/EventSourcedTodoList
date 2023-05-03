@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases;
@@ -11,9 +12,9 @@ public record RescheduleTodoItemCommand(
 
 internal class RescheduleTodoItemCommandHandler : ICommandHandler<RescheduleTodoItemCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public RescheduleTodoItemCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public RescheduleTodoItemCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(RescheduleTodoItemCommand command)
     {

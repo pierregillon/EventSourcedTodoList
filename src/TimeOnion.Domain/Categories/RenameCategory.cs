@@ -7,9 +7,9 @@ public record RenameCategoryCommand(CategoryId CategoryId, CategoryName NewName)
 
 internal class RenameCategoryCommandHandler : ICommandHandler<RenameCategoryCommand>
 {
-    private readonly ICategoryRepository _repository;
+    private readonly IRepository<Category, CategoryId> _repository;
 
-    public RenameCategoryCommandHandler(ICategoryRepository repository) => _repository = repository;
+    public RenameCategoryCommandHandler(IRepository<Category, CategoryId> repository) => _repository = repository;
 
     public async Task Handle(RenameCategoryCommand command)
     {

@@ -7,9 +7,9 @@ public record DeleteCategoryCommand(CategoryId CategoryId) : ICommand;
 
 internal class DeleteCategoryCommandHandler : ICommandHandler<DeleteCategoryCommand>
 {
-    private readonly ICategoryRepository _repository;
+    private readonly IRepository<Category, CategoryId> _repository;
 
-    public DeleteCategoryCommandHandler(ICategoryRepository repository) => _repository = repository;
+    public DeleteCategoryCommandHandler(IRepository<Category, CategoryId> repository) => _repository = repository;
 
     public async Task Handle(DeleteCategoryCommand command)
     {

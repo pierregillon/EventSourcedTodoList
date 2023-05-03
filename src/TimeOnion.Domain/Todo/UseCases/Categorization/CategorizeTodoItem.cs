@@ -1,5 +1,4 @@
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
@@ -9,12 +8,12 @@ public record CategorizeTodoItemCommand(TodoListId ListId, TodoItemId ItemId, Ca
 
 internal class CategorizeTodoItemCommandHandler : ICommandHandler<CategorizeTodoItemCommand>
 {
-    private readonly ITodoListRepository _todoListRepository;
-    private readonly ICategoryRepository _categoryRepository;
+    private readonly IRepository<TodoList, TodoListId> _todoListRepository;
+    private readonly IRepository<Category, CategoryId> _categoryRepository;
 
     public CategorizeTodoItemCommandHandler(
-        ITodoListRepository todoListRepository,
-        ICategoryRepository categoryRepository
+        IRepository<TodoList, TodoListId> todoListRepository,
+        IRepository<Category, CategoryId> categoryRepository
     )
     {
         _todoListRepository = todoListRepository;

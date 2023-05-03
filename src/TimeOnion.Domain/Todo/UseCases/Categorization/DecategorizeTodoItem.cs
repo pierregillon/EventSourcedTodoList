@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases.Categorization;
@@ -7,9 +8,9 @@ public record DecategorizeTodoItemCommand(TodoListId ListId, TodoItemId ItemId) 
 
 internal class DecategorizeTodoItemCommandHandler : ICommandHandler<DecategorizeTodoItemCommand>
 {
-    private readonly ITodoListRepository _todoListRepository;
+    private readonly IRepository<TodoList, TodoListId> _todoListRepository;
 
-    public DecategorizeTodoItemCommandHandler(ITodoListRepository todoListRepository) =>
+    public DecategorizeTodoItemCommandHandler(IRepository<TodoList, TodoListId> todoListRepository) =>
         _todoListRepository = todoListRepository;
 
     public async Task Handle(DecategorizeTodoItemCommand command)

@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases;
@@ -7,9 +8,9 @@ public record DeleteTodoItemCommand(TodoListId TodoListId, TodoItemId ItemId) : 
 
 public class DeleteTodoItemCommandHandler : ICommandHandler<DeleteTodoItemCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public DeleteTodoItemCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public DeleteTodoItemCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(DeleteTodoItemCommand command)
     {

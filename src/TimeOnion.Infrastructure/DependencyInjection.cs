@@ -12,8 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services
-            .AddScoped<ITodoListRepository, TodoListRepository>()
-            .AddScoped<ICategoryRepository, CategoryRepository>()
+            .AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
             .AddScoped<IClock, SystemClock>()
             .AddSingleton<IReadModelDatabase, InMemoryReadModelDatabase>()
             .AddSingleton<DomainEventsCache>()

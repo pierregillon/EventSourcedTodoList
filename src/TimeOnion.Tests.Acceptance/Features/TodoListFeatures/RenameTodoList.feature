@@ -9,7 +9,7 @@ Background:
 @ErrorHandling
 Scenario: Cannot rename an unknown todo list
     When I rename my personal2 todo list into "professional"
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 @ErrorHandling
 Scenario: Cannot rename with an empty name

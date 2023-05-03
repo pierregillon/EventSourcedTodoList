@@ -28,7 +28,7 @@ public class TodoListTests
 
         todoListCreated.Version = 20;
 
-        var todoList = TodoList.Rehydrate(todoListId, new[]
+        var todoList = IEventSourcedAggregate.Rehydrate<TodoList, TodoListId>(todoListId, new[]
         {
             todoListCreated
         });

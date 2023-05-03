@@ -1,32 +1,34 @@
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 
 namespace TimeOnion.Infrastructure;
 
-public class CategoryRepository : ICategoryRepository
+public class Repository<TAggregate, TAggregateId> : IRepository<TAggregate, TAggregateId>
+    where TAggregate : IEventSourcedAggregate
+    where TAggregateId : IAggregateId
 {
     private readonly IDomainEventPublisher _domainEventPublisher;
     private readonly IEventStore _eventStore;
 
-    public CategoryRepository(IEventStore eventStore, IDomainEventPublisher domainEventPublisher)
+    public Repository(IEventStore eventStore, IDomainEventPublisher domainEventPublisher)
     {
         _eventStore = eventStore;
         _domainEventPublisher = domainEventPublisher;
     }
 
-    public async Task<Category> Get(CategoryId id)
+    public async Task<TAggregate> Get(TAggregateId id)
     {
         var eventHistory = await _eventStore.GetAll(id.Value);
+
         if (eventHistory.Count == 0)
         {
-            throw new InvalidOperationException("The category could not be found.");
+            throw new InvalidOperationException($"The {typeof(TAggregate).Name.ToLower()} could not be found.");
         }
 
-        return Category.Rehydrate(id, eventHistory);
+        return IEventSourcedAggregate.Rehydrate<TAggregate, TAggregateId>(id, eventHistory);
     }
 
-    public async Task Save(Category aggregate)
+    public async Task Save(TAggregate aggregate)
     {
         await _eventStore.Save(aggregate.UncommittedChanges);
         await _domainEventPublisher.Publish(aggregate.UncommittedChanges);

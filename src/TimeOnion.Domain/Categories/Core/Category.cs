@@ -19,15 +19,6 @@ public class Category : EventSourcedAggregate<CategoryId>
         return category;
     }
 
-    public static Category Rehydrate(CategoryId id, IReadOnlyCollection<IDomainEvent> eventHistory)
-    {
-        var todoList = new Category(id);
-
-        todoList.LoadFromHistory(eventHistory);
-
-        return todoList;
-    }
-
     public void Rename(CategoryName newName)
     {
         if (newName != _currentName)

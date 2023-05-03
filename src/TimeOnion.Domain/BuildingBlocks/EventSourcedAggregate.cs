@@ -1,6 +1,6 @@
 namespace TimeOnion.Domain.BuildingBlocks;
 
-public abstract class EventSourcedAggregate<TId>
+public abstract class EventSourcedAggregate<TId> : IEventSourcedAggregate where TId : IAggregateId
 {
     private readonly List<IDomainEvent> _uncommittedDomainEvents = new();
     private int _version;
@@ -20,7 +20,7 @@ public abstract class EventSourcedAggregate<TId>
         Apply(domainEvent);
     }
 
-    protected void LoadFromHistory(IReadOnlyCollection<IDomainEvent> domainEvents)
+    void IEventSourcedAggregate.LoadFromHistory(IReadOnlyCollection<IDomainEvent> domainEvents)
     {
         if (domainEvents.Count == 0)
         {

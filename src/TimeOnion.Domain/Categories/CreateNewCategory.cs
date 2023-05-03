@@ -8,12 +8,12 @@ public record CreateNewCategory(CategoryName Name, TodoListId ListId) : ICommand
 
 internal class CreateNewCategoryCommandHandler : ICommandHandler<CreateNewCategory>
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ITodoListRepository _todoListRepository;
+    private readonly IRepository<Category, CategoryId> _categoryRepository;
+    private readonly IRepository<TodoList, TodoListId> _todoListRepository;
 
     public CreateNewCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
-        ITodoListRepository todoListRepository
+        IRepository<Category, CategoryId> categoryRepository,
+        IRepository<TodoList, TodoListId> todoListRepository
     )
     {
         _categoryRepository = categoryRepository;

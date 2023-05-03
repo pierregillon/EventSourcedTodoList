@@ -14,7 +14,7 @@ Scenario: Cannot create a category with empty name
 @ErrorHandling
 Scenario: Cannot a category on an unknown todo list
     When I create the food category in my professional list
-    Then an error occurred with the message "The todo list could not be found."
+    Then an error occurred with the message "The todolist could not be found."
 
 Scenario: Created categories can be listed
     When I create the food category in my personal list

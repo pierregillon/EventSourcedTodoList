@@ -1,4 +1,5 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Todo.UseCases;
@@ -7,9 +8,9 @@ public record MarkItemAsToDoCommand(TodoListId TodoListId, TodoItemId ItemId) : 
 
 public class MarkItemAsToDoCommandHandler : ICommandHandler<MarkItemAsToDoCommand>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly IRepository<TodoList, TodoListId> _repository;
 
-    public MarkItemAsToDoCommandHandler(ITodoListRepository repository) => _repository = repository;
+    public MarkItemAsToDoCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
 
     public async Task Handle(MarkItemAsToDoCommand command)
     {
