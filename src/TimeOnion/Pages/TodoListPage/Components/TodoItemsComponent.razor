@@ -17,14 +17,13 @@
             {
                 <MudDropZone
                     T="TodoListItemReadModel"
-                    Class="pl-5"
-                    Style="transition: none"
                     Identifier="@category.Id.Value.ToString()"
+                    Style="transition: none"
+                    Class="category"
                     AllowReorder="true"
                     ItemIsDisabled="_ => true"
                     ItemsSelector="model => model.CategoryId == category.Id"
-                    CanDropClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-primary"
-                    DraggingClass="rounded-lg border-2 border-dashed mud-border-lines-default mud-border-primary">
+                    CanDropClass="border-2 border-dashed mud-border-lines-default mud-border-secondary">
 
                     <CategoryComponent Category="@category"></CategoryComponent>
 
@@ -68,6 +67,15 @@
         position: relative;
         height: 5px;
      }
+     
+     .mud-dropitem-placeholder{
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+     }
+     
+     .mud-drop-zone.category .mud-dropitem-placeholder{
+         margin-left: 70px !important;
+      }
 </style>
 
 @code {
