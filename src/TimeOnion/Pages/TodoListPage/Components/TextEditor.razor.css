@@ -3,3 +3,25 @@
     color: #B4B4B4;
     font-style: italic;
 }
+
+textarea.strikeThrough {
+    text-decoration: line-through;
+    color: #B4B4B4;
+    font-style: italic;
+}
+
+textarea.compact {
+    margin-top: 2px;
+    width: 100%;
+    resize: none;
+    height: 25px;
+    font-size: 16px;
+    min-height: 25px;
+
+    border: none;
+    overflow: hidden;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}

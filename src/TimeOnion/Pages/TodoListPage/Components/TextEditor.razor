@@ -1,18 +1,16 @@
 <div class="full-width">
-    <MudTextField
-        @ref="_textField"
-        T="string"
-        Class="@(IsStrikeThrough ? "compact strikeThrough" : "compact")"
-        InputMode="InputMode.text"
-        @bind-Text="@_boundedText"
-        OnKeyDown="ChallengeKeyDown"
-        OnBlur="ChallengeBlur"
-        Variant="Variant.Text"
-        Immediate="true"
-        TextUpdateSuppression="true"
-        DisableUnderLine="true">
-    </MudTextField>
+
+    <textarea 
+        class="@(IsStrikeThrough ? "strikeThrough compact" : "compact")"
+        value="@_boundedText" 
+        @oninput="@OnInput"
+        onblur="@OnBlur"
+        onkeydown="@OnKeyDown"
+    >
+    </textarea>
 </div>
+
+@inject IJSRuntime JavascriptRuntime;
 
 @code {
 
@@ -42,7 +40,19 @@
         return base.SetParametersAsync(parameters);
     }
 
-    private async Task ChallengeKeyDown(KeyboardEventArgs obj)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        
+        if (!firstRender)
+        {
+            await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", Array.Empty<object?>());
+        }
+    }
+
+    private void OnInput(ChangeEventArgs args) => _boundedText = (string?)args.Value ?? string.Empty;
+
+    private async Task OnKeyDown(KeyboardEventArgs obj)
     {
         if (obj.Key == "Backspace" && string.IsNullOrEmpty(_boundedText))
         {
@@ -54,7 +64,7 @@
         }
     }
 
-    private async Task ChallengeBlur(FocusEventArgs obj)
+    private async Task OnBlur(FocusEventArgs obj)
     {
         if (_boundedText != Text)
         {
