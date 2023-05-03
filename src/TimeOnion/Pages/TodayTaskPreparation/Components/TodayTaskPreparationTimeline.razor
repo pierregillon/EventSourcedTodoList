@@ -3,42 +3,38 @@
 
 @if (State.CurrentStep is not null)
 {
-    <MudTimeline
-        TimelineOrientation="TimelineOrientation.Horizontal"
-        TimelinePosition="TimelinePosition.Bottom">
+    <div>
+        <MudTimeline
+            TimelineOrientation="TimelineOrientation.Horizontal"
+            TimelinePosition="TimelinePosition.Bottom">
 
-        @foreach (var step in Enum.GetValues<TodayTaskPreparationSteps>())
-        {
-            var isCurrent = step == State.CurrentStep.Id;
-            var isBeforeCurrent = step < State.CurrentStep.Id;
+            @foreach (var step in Enum.GetValues<TodayTaskPreparationSteps>())
+            {
+                var isCurrent = step == State.CurrentStep.Id;
+                var isBeforeCurrent = step < State.CurrentStep.Id;
 
-            <MudTimelineItem
-                Color="isCurrent || isBeforeCurrent ? Color.Primary : Color.Default"
-                Size="isCurrent ? Size.Large : Size.Small">
-                @switch (step)
-                {
-                    case TodayTaskPreparationSteps.EndYesterdayTasks:
-                        <MudText Align="Align.Center">Tâches de la veille</MudText>
-                        break;
+                <MudTimelineItem
+                    Color="isCurrent || isBeforeCurrent ? Color.Primary : Color.Default"
+                    Size="isCurrent ? Size.Large : Size.Small">
+                    @switch (step)
+                    {
+                        case TodayTaskPreparationSteps.EndYesterdayTasks:
+                            <MudText Align="Align.Center">Tâches de la veille</MudText>
+                            break;
 
-                    case TodayTaskPreparationSteps.AddThisWeekTasks:
-                        <MudText Align="Align.Center">Nouvelles tâches</MudText>
-                        break;
+                        case TodayTaskPreparationSteps.AddThisWeekTasks:
+                            <MudText Align="Align.Center">Nouvelles tâches</MudText>
+                            break;
 
-                    case TodayTaskPreparationSteps.FinalizeTodayTasks:
-                        <MudText Align="Align.Center">Finaliser</MudText>
-                        break;
-                }
-            </MudTimelineItem>
-        }
-    </MudTimeline>
+                        case TodayTaskPreparationSteps.FinalizeTodayTasks:
+                            <MudText Align="Align.Center">Finaliser</MudText>
+                            break;
+                    }
+                </MudTimelineItem>
+            }
+        </MudTimeline>
+    </div>
 }
-
-<style>
-    .mud-timeline-horizontal .mud-timeline-item .mud-timeline-item-divider{
-        min-height: 90px;
-    }
-</style>
 
 @code {
 

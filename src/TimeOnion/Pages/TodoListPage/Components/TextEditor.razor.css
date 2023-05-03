@@ -1,0 +1,5 @@
+::deep .strikeThrough .mud-input input {
+    text-decoration: line-through;
+    color: #B4B4B4;
+    font-style: italic;
+}

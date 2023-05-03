@@ -1,13 +1,11 @@
 @using TimeOnion.Domain.Todo.UseCases
-@using TimeOnion.Pages.TodayTaskPreparation
 @using TimeOnion.Domain.Todo.Core
 @inherits BlazorState.BlazorStateComponent
 
 @if (TodoList is not null)
 {
-    <div class="todolist">
-
-        <div class="todolist-actions">
+    <div>
+        <div class="overlay-parent d-flex align-end justify-center gap-3">
             <MudTextField
                 T="string"
                 InputMode="InputMode.text"
@@ -21,7 +19,7 @@
 
             <MudTooltip Text="Créer une catégorie">
                 <MudIconButton
-                    Class="action-button"
+                    Class="invisible overlay"
                     Icon="@Icons.Material.Filled.CreateNewFolder"
                     Color="Color.Primary"
                     OnClick="() => CreateNewCategory(TodoList.Id)">
@@ -30,7 +28,7 @@
 
             <MudTooltip Text="Supprimer la liste">
                 <MudIconButton
-                    Class="action-button"
+                    Class="invisible overlay"
                     Icon="@Icons.Material.Filled.Delete"
                     Color="Color.Error"
                     OnClick="() => Delete(TodoList.Id)">
@@ -38,41 +36,11 @@
             </MudTooltip>
         </div>
 
-        <MudDivider Class="medium"/>
+        <MudDivider Class="mt-4 mb-4"/>
 
         <TodoItemsComponent TodoListId="@TodoList.Id"></TodoItemsComponent>
     </div>
 }
-
-<style>
-    .fake.mud-input-control.mud-input-control-boolean-input {
-        margin-left: 26px;
-    }
-    
-    .todolist {
-        flex-grow: 1;
-        max-width: 600px;
-    }
-    
-    .title .mud-input > input {
-        font-size: 30px;
-    }
-    
-    .todolist-actions {
-         display: flex;
-         align-items: self-end;
-         justify-content: center;
-         gap: 20px;
-     }
-     
-     .action-button {
-        opacity: 0;
-     }
-     
-     .todolist-actions:hover .action-button {
-        opacity: 1;
-     }
-</style>
 
 @code {
 

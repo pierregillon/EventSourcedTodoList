@@ -1,9 +1,8 @@
 @using TimeOnion.Domain.Todo.Core
-@using TimeOnion.Pages.TodayTaskPreparation
 @inherits BlazorState.BlazorStateComponent
 
 <MudTimeline
-    Style="margin-top: 20px"
+    Class="mt-5"
     TimelineOrientation="TimelineOrientation.Horizontal"
     TimelinePosition="TimelinePosition.Bottom">
 
@@ -12,14 +11,13 @@
         var isCurrent = State.CurrentTimeHorizon == temporality;
 
         <MudTimelineItem
-            Class="timeline-item"
+            Class="cursor-pointer"
             Color="isCurrent ? Color.Primary : Color.Default"
             Size="isCurrent ? Size.Large : Size.Small"
-            Style="cursor: pointer;"
             @onmousedown="() => ChangeCurrentTemporality(temporality)">
 
             <MudText
-                Class="@(isCurrent ? "temporality important" : "temporality")"
+                Class="@(isCurrent ? "cursor-pointer important" : "cursor-pointer")"
                 Color="isCurrent ? Color.Primary : Color.Dark"
                 Align="Align.Center"
                 @onclick="() => ChangeCurrentTemporality(temporality)">
@@ -30,22 +28,6 @@
     }
 
 </MudTimeline>
-
-<style>
-    
-    .mud-timeline-item.timeline-item > .mud-timeline-item-divider{
-        min-height: 90px;
-        cursor: pointer;
-    }
-    
-    .temporality, .mud-timeline-item-dot.mud-timeline-dot-size-small {
-        cursor: pointer;
-    }
-    
-    .temporality.important {
-        font-weight: bold
-    }
-</style>
 
 @code {
     TodoListState State => GetState<TodoListState>();

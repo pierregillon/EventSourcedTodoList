@@ -1,0 +1,8 @@
+:deep .mud-timeline-item.timeline-item > .mud-timeline-item-divider {
+    min-height: 90px;
+    cursor: pointer;
+}
+
+:deep .mud-timeline-item-dot.mud-timeline-dot-size-small {
+    cursor: pointer;
+}

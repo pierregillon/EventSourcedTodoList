@@ -4,79 +4,72 @@
 @using TimeOnion.Domain.Categories.Core
 @inherits BlazorState.BlazorStateComponent
 
-@if (TodoListId is not null)
-{
-    <MudDropContainer
-        @ref="_container"
-        T="TodoListItemReadModel"
-        Items="Items"
-        ItemsSelector="@((item, dropzone) => true)"
-        ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask">
-        <ChildContent>
-            @foreach (var category in Categories)
-            {
+<div>
+    @if (TodoListId is not null)
+    {
+        <MudDropContainer
+            @ref="_container"
+            T="TodoListItemReadModel"
+            Items="Items"
+            ItemsSelector="@((item, dropzone) => true)"
+            ItemDropped="info => info.Item is not null ? UpdateItem(info.Item.ListId, info.Item.Id, info.IndexInZone, info.DropzoneIdentifier) : Task.CompletedTask">
+            <ChildContent>
+                @foreach (var category in Categories)
+                {
+                    <MudDropZone
+                        T="TodoListItemReadModel"
+                        Identifier="@category.Id.Value.ToString()"
+                        Style="transition: none"
+                        Class="category"
+                        AllowReorder="true"
+                        ItemIsDisabled="_ => true"
+                        ItemsSelector="model => model.CategoryId == category.Id"
+                        CanDropClass="border-2 border-dashed mud-border-lines-default mud-border-secondary">
+
+                        <CategoryComponent Category="@category"></CategoryComponent>
+
+                    </MudDropZone>
+                }
+
                 <MudDropZone
                     T="TodoListItemReadModel"
-                    Identifier="@category.Id.Value.ToString()"
-                    Style="transition: none"
-                    Class="category"
+                    Identifier=""
                     AllowReorder="true"
                     ItemIsDisabled="_ => true"
-                    ItemsSelector="model => model.CategoryId == category.Id"
-                    CanDropClass="border-2 border-dashed mud-border-lines-default mud-border-secondary">
+                    ItemsSelector="model => model.CategoryId is null"/>
 
-                    <CategoryComponent Category="@category"></CategoryComponent>
+            </ChildContent>
+            <ItemRenderer>
+                <TodoItemComponent Item="@context"></TodoItemComponent>
+            </ItemRenderer>
+        </MudDropContainer>
 
-                </MudDropZone>
-            }
+        <div class="d-flex gap-1">
+            
+            <MudMenu
+                Class="invisible"
+                Icon="@Icons.Material.Filled.MoreHoriz"
+                Size="Size.Small">
+            </MudMenu>
+            
+            <MudCheckBox
+                Class="compact"
+                Checked="@(false)"
+                Color="Color.Secondary">
+            </MudCheckBox>
 
-            <MudDropZone
-                T="TodoListItemReadModel"
-                Identifier=""
-                AllowReorder="true"
-                ItemIsDisabled="_ => true"
-                ItemsSelector="model => model.CategoryId is null"/>
-
-        </ChildContent>
-        <ItemRenderer>
-            <TodoItemComponent Item="@context"></TodoItemComponent>
-        </ItemRenderer>
-    </MudDropContainer>
-
-    <div class="d-flex">
-        <MudCheckBox
-            Class="compact fake"
-            Checked="@(false)"
-            Color="Color.Secondary">
-        </MudCheckBox>
-
-        <MudTextField
-            T="string"
-            InputMode="InputMode.text"
-            Text="@State.NewTodoItemDescription"
-            TextChanged="itemDescription => AddItemToDo(TodoListId, itemDescription)"
-            TextUpdateSuppression="false"
-            Class="compact"
-            DisableUnderLine="true">
-        </MudTextField>
-    </div>
-}
-
-<style>
-     .mud-drop-item-preview-start {
-        position: relative;
-        height: 5px;
-     }
-     
-     .mud-dropitem-placeholder{
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-     }
-     
-     .mud-drop-zone.category .mud-dropitem-placeholder{
-         margin-left: 70px !important;
-      }
-</style>
+            <MudTextField
+                T="string"
+                InputMode="InputMode.text"
+                Text="@State.NewTodoItemDescription"
+                TextChanged="itemDescription => AddItemToDo(TodoListId, itemDescription)"
+                TextUpdateSuppression="false"
+                Class="compact"
+                DisableUnderLine="true">
+            </MudTextField>
+        </div>
+    }
+</div>
 
 @code {
 

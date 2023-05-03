@@ -1,24 +1,18 @@
-<MudTextField
-    @ref="_textField"
-    T="string"
-    Class="@(IsStrikeThrough ? "compact strikeThrough" : "compact")"
-    InputMode="InputMode.text"
-    @bind-Text="@_boundedText"
-    OnKeyDown="ChallengeKeyDown"
-    OnBlur="ChallengeBlur"
-    Variant="Variant.Text"
-    Immediate="true"
-    TextUpdateSuppression="true"
-    DisableUnderLine="true">
-</MudTextField>
-
-<style>
-    .strikeThrough .mud-input input {
-        text-decoration: line-through;
-        color: #B4B4B4;
-        font-style: italic;
-    }
-</style>
+<div class="full-width">
+    <MudTextField
+        @ref="_textField"
+        T="string"
+        Class="@(IsStrikeThrough ? "compact strikeThrough" : "compact")"
+        InputMode="InputMode.text"
+        @bind-Text="@_boundedText"
+        OnKeyDown="ChallengeKeyDown"
+        OnBlur="ChallengeBlur"
+        Variant="Variant.Text"
+        Immediate="true"
+        TextUpdateSuppression="true"
+        DisableUnderLine="true">
+    </MudTextField>
+</div>
 
 @code {
 

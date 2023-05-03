@@ -14,10 +14,18 @@
     margin-top: 3px !important;
 }
 
-.mud-divider.medium {
-    margin: 15px 0;
+.overlay-parent:hover > .overlay {
+    visibility: visible;
 }
 
-.overlay-parent:hover .overlay {
+.overlay-parent:hover > .mud-tooltip-root > .overlay {
     visibility: visible;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.important {
+    font-weight: bold;
 }

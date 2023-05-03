@@ -7,7 +7,7 @@
 
 <TimeHorizonSelector></TimeHorizonSelector>
 
-<div class="title-actions">
+<div class="d-flex align-end justify-center gap-3">
     <MudText Typo="Typo.h3">
         @State.CurrentTimeHorizon.ToText()
     </MudText>
@@ -15,38 +15,21 @@
     <MudTooltip Text="Ajouter une nouvelle liste">
         <MudIconButton
             Icon="@Icons.Material.Filled.AddCircle"
-            OnClick="CreateNewTodoList">
+            OnClick="CreateNewTodoList"
+            Color="Color.Primary">
         </MudIconButton>
     </MudTooltip>
 
 </div>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <div class="todolist-container">
+    <div class="d-flex align-start justify-space-around flex-wrap gap-5">
         @foreach (var todoList in State.TodoLists)
         {
             <TodoListComponent TodoList="@todoList"></TodoListComponent>
         }
     </div>
 </MudContainer>
-
-<style>
-    .title-actions {
-        display: flex;
-        align-items: self-end;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-    
-    .todolist-container {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-</style>
 
 @code {
 

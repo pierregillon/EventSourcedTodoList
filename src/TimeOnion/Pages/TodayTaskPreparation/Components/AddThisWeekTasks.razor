@@ -1,10 +1,12 @@
 @inherits BlazorState.BlazorStateComponent
 
 <MudText Typo="Typo.h4">Choisir des tâches de la semaine</MudText>
+
 @if (State.ThisWeekUndoneTasks.Any())
 {
     <MudText>Compléter vos tâches du jour en choisissant des tâches prévues cette semaine que vous comptez faire aujourd'hui.</MudText>
-    <MudDivider Class="medium"/>
+
+    <MudDivider Class="mt-4 mb-4"/>
 
     foreach (var item in State.ThisWeekUndoneTasks)
     {

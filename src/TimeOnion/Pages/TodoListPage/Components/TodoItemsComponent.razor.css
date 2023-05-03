@@ -1,0 +1,13 @@
+::deep .mud-drop-item-preview-start {
+    position: relative;
+    height: 5px;
+}
+
+::deep .mud-dropitem-placeholder {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+::deep .mud-drop-zone.category .mud-dropitem-placeholder {
+    margin-left: 70px !important;
+}
