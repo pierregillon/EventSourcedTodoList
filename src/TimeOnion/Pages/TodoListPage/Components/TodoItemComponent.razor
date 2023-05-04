@@ -1,5 +1,6 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodoListPage.Actions.Details.Items
 @inherits BlazorState.BlazorStateComponent
 
 @if (Item is not null)
@@ -52,9 +53,12 @@
             Color="Color.Primary">
         </MudCheckBox>
 
+
         <TextEditor
+            @ref="_textEditor"
             Text="@Item.Description"
-            TextChanged="text => FixItemDescription(Item.ListId, Item.Id, text)"
+            TextChanged="text => EditItemDescription(Item.ListId, Item.Id, text)"
+            EnterPressed="() => InsertNewItemToDo(Item.ListId, Item.Id)"
             DeletionTriggered="() => Delete(Item.ListId, Item.Id)"
             IsStrikeThrough="@Item.IsDone">
         </TextEditor>
@@ -62,6 +66,8 @@
 }
 
 @code {
+
+    TextEditor _textEditor = default!;
 
     [Parameter]
     public TodoListItemReadModel? Item { get; set; }
@@ -72,7 +78,17 @@
 
     private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
 
-    private async Task FixItemDescription(TodoListId listId, TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.FixItemDescription(listId, itemId, newValue));
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (Item is TodoListItemReadModelBeingCreated)
+        {
+            await _textEditor.Focus();
+        }
+    }
+
+    private async Task EditItemDescription(TodoListId listId, TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.EditItemDescription(listId, itemId, newValue));
 
     private async Task MarkItemAsDone(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(listId, itemId));
 
@@ -81,5 +97,8 @@
     private async Task Reschedule(TodoListId listId, TodoItemId itemId, TimeHorizons timeHorizons) => await Mediator.Send(new TodoListState.RescheduleTodoItem(listId, itemId, timeHorizons));
 
     private async Task Delete(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.DeleteItem(listId, itemId));
+
+    private async Task InsertNewItemToDo(TodoListId listId, TodoItemId itemId)
+        => await Mediator.Send(new TodoListState.InsertNewItemToDo(listId, itemId));
 
 }

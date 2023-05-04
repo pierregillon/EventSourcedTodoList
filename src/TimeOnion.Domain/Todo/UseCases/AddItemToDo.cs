@@ -5,23 +5,46 @@ using TimeOnion.Domain.Todo.Core;
 namespace TimeOnion.Domain.Todo.UseCases;
 
 public record AddItemToDoCommand(
-    TodoListId TodoListId,
+    TodoListId ListId,
+    TodoItemId ItemId,
     TodoItemDescription Description,
-    TimeHorizons TimeHorizons
+    TimeHorizons TimeHorizons,
+    CategoryId? CategoryId,
+    TodoItemId? AboveItemId
 ) : ICommand;
 
 internal class AddItemToDoCommandHandler : ICommandHandler<AddItemToDoCommand>
 {
-    private readonly IRepository<TodoList, TodoListId> _repository;
+    private readonly IRepository<TodoList, TodoListId> _todoListRepository;
+    private readonly IRepository<Category, CategoryId> _categoryRepository;
 
-    public AddItemToDoCommandHandler(IRepository<TodoList, TodoListId> repository) => _repository = repository;
+    public AddItemToDoCommandHandler(
+        IRepository<TodoList, TodoListId> todoListRepository,
+        IRepository<Category, CategoryId> categoryRepository
+    )
+    {
+        _todoListRepository = todoListRepository;
+        _categoryRepository = categoryRepository;
+    }
 
     public async Task Handle(AddItemToDoCommand command)
     {
-        var todoList = await _repository.Get(command.TodoListId);
+        var todoList = await _todoListRepository.Get(command.ListId);
+        Category? category = null;
 
-        todoList.AddItem(command.Description, command.TimeHorizons);
+        if (command.CategoryId is not null)
+        {
+            category = await _categoryRepository.Get(command.CategoryId);
+        }
 
-        await _repository.Save(todoList);
+        todoList.AddItem(
+            command.ItemId,
+            command.Description,
+            command.TimeHorizons,
+            category,
+            command.AboveItemId
+        );
+
+        await _todoListRepository.Save(todoList);
     }
 }

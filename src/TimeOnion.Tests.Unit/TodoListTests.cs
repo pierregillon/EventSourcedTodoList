@@ -37,4 +37,43 @@ public class TodoListTests
 
         todoList.UncommittedChanges.Single().Version.Should().Be(21);
     }
+
+    [Fact]
+    public void Cannot_add_the_same_item_twice()
+    {
+        var todoList = TodoList.New(new TodoListName("Test"));
+
+        var todoItemId = TodoItemId.New();
+
+        todoList.AddItem(
+            todoItemId,
+            new TodoItemDescription("my item"),
+            TimeHorizons.ThisDay,
+            null,
+            TodoItemId.None
+        );
+
+        var creatingTwice = () =>
+        {
+            todoList.AddItem(
+                todoItemId,
+                new TodoItemDescription("my item"),
+                TimeHorizons.ThisDay,
+                null,
+                TodoItemId.None
+            );
+        };
+
+        creatingTwice.Should().Throw<InvalidOperationException>().WithMessage("Item already exists in the todo list.");
+    }
+
+    [Fact]
+    public void Cannot_decategorize_an_unknown_item()
+    {
+        var todoList = TodoList.New(new TodoListName("Test"));
+
+        var invalidAction = () => { todoList.DecategorizeItem(TodoItemId.New()); };
+
+        invalidAction.Should().Throw<InvalidOperationException>().WithMessage("Cannot decategorize: unknown item");
+    }
 }

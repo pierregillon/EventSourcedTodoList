@@ -53,7 +53,14 @@ public class S3StorageEventStoreTests
         {
             await _eventStore.Save(new IDomainEvent[]
             {
-                new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"), TimeHorizons.ThisDay)
+                new TodoItemAdded(
+                    TodoListId.New(),
+                    TodoItemId.New(),
+                    new TodoItemDescription("test"),
+                    TimeHorizons.ThisMonth,
+                    null,
+                    null
+                )
             });
 
             var stat = await _minio.StatObjectAsync(new StatObjectArgs().InitializeFrom(_configuration));
@@ -71,8 +78,14 @@ public class S3StorageEventStoreTests
     {
         try
         {
-            var todoItemAdded = new TodoItemAdded(TodoListId.New(), TodoItemId.New(), new TodoItemDescription("test"),
-                TimeHorizons.ThisWeek);
+            var todoItemAdded = new TodoItemAdded(
+                TodoListId.New(),
+                TodoItemId.New(),
+                new TodoItemDescription("test"),
+                TimeHorizons.ThisMonth,
+                null,
+                null
+            );
 
             await _eventStore.Save(new IDomainEvent[]
             {

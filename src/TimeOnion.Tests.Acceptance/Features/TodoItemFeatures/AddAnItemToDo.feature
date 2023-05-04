@@ -37,3 +37,39 @@ Scenario: By default, items are to do
       | Description           | Is done? |
       | call daddy            | false    |
       | prepare job interview | false    |
+
+@ErrorHandling
+Scenario: Cannot add an item below an unknown one
+    When I add the item "call mummy" to do this day in my personal list just after "call daddy"
+    Then an error occurred with the message "The reference item after the todo item must be created is unknown."
+
+Scenario: Add an item to do below another one
+    Given the following items have been added to do this day in my personal list
+      | Description |
+      | call daddy  |
+      | do shopping |
+    When I add the item "call mummy" to do this day in my personal list just after "call daddy"
+    Then my personal todo list of this day is
+      | Description |
+      | call daddy  |
+      | call mummy  |
+      | do shopping |
+
+Scenario: Add an item to do below the last one
+    Given the following items have been added to do this day in my personal list
+      | Description |
+      | call daddy  |
+      | do shopping |
+    When I add the item "call mummy" to do this day in my personal list just after "do shopping"
+    Then my personal todo list of this day is
+      | Description |
+      | call daddy  |
+      | do shopping |
+      | call mummy  |
+
+Scenario: Add an item to do in a category
+    Given the family category has been created in my personal list
+    When I add the item "call mummy" to do this day in my personal list in the family category
+    Then my personal todo list of this day is
+      | Description | Category |
+      | call mummy  | family   |

@@ -1,6 +1,7 @@
 <div class="full-width">
 
     <textarea 
+        @ref="_textArea"
         class="@(IsStrikeThrough ? "strikeThrough compact" : "compact")"
         value="@_boundedText" 
         @oninput="@OnInput"
@@ -18,6 +19,9 @@
     public EventCallback<string> TextChanged { get; set; }
 
     [Parameter]
+    public EventCallback<string> EnterPressed { get; set; }
+
+    [Parameter]
     public EventCallback DeletionTriggered { get; set; }
 
     [Parameter]
@@ -27,8 +31,7 @@
     public bool IsStrikeThrough { get; set; }
 
     string _boundedText = string.Empty;
-
-    MudTextField<string> _textField = default!;
+    private ElementReference _textArea;
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
@@ -43,7 +46,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        
+
         if (!firstRender)
         {
             await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", Array.Empty<object?>());
@@ -61,6 +64,7 @@
         else if (obj.Key == "Enter")
         {
             await AcceptChanges();
+            await EnterPressed.InvokeAsync();
         }
     }
 
@@ -79,5 +83,7 @@
             await TextChanged.InvokeAsync(_boundedText);
         }
     }
+
+    public async Task Focus() => await _textArea.FocusAsync();
 
 }

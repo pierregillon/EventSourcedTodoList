@@ -25,8 +25,7 @@ public class TodoItemSteps
 
         var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
 
-        await _application.Dispatch(() =>
-            new AddItemToDoCommand(todoListId, new TodoItemDescription(description), timeHorizons));
+        await AddItemToDo(todoListId, description, timeHorizons);
     }
 
     [Given(@"the following items have been added to do (.*) in my (.*) list")]
@@ -42,9 +41,42 @@ public class TodoItemSteps
 
         foreach (var description in table.Rows.Select(x => x["Description"]))
         {
-            await _application.Dispatch(() =>
-                new AddItemToDoCommand(todoListId, new TodoItemDescription(description), timeHorizons));
+            await AddItemToDo(todoListId, description, timeHorizons);
         }
+    }
+
+    [When(@"I add the item ""(.*)"" to do (.*) in my (.*) list just after ""(.*)""")]
+    public async Task WhenIAddTheItemToDoThisDayInMyPersonalListJustAfter(
+        string description,
+        TimeHorizons timeHorizon,
+        string todoListName,
+        string beforeItemDescription
+    )
+    {
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
+        var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
+
+        var items = await _application.Dispatch(new ListTodoItemsQuery(todoListId, timeHorizon));
+        var aboveItemId = items?.FirstOrDefault(x => x.Description == beforeItemDescription)?.Id ?? TodoItemId.New();
+
+        await AddItemToDo(todoListId, description, timeHorizon, aboveItemId);
+    }
+
+    [When(@"I add the item ""(.*)"" to do (.*) in my (.*) list in the (.*) category")]
+    public async Task WhenIAddTheItemToDoThisDayInMyPersonalListInTheFamilyCategory(
+        string description,
+        TimeHorizons timeHorizon,
+        string todoListName,
+        string categoryName
+    )
+    {
+        var todoLists = await _application.Dispatch(new ListTodoListsQuery());
+        var todoListId = todoLists?.FirstOrDefault(x => x.Name == todoListName)?.Id ?? TodoListId.New();
+
+        var categories = await _application.Dispatch(new ListCategoriesQuery(todoListId));
+        var categoryId = categories?.FirstOrDefault(x => x.Name == categoryName)?.Id ?? CategoryId.New();
+
+        await AddItemToDo(todoListId, description, timeHorizon, categoryId: categoryId);
     }
 
     [When(@"I mark the item ""(.*)"" in my (.*) list as done")]
@@ -294,4 +326,21 @@ public class TodoItemSteps
 
         return categories?.FirstOrDefault(x => x.Name == categoryName)?.Id;
     }
+
+    private async Task AddItemToDo(
+        TodoListId todoListId,
+        string description,
+        TimeHorizons timeHorizon,
+        TodoItemId? aboveItemId = null,
+        CategoryId? categoryId = null
+    ) => await _application.Dispatch(() =>
+        new AddItemToDoCommand(
+            todoListId,
+            TodoItemId.New(),
+            new TodoItemDescription(description),
+            timeHorizon,
+            categoryId,
+            aboveItemId
+        )
+    );
 }

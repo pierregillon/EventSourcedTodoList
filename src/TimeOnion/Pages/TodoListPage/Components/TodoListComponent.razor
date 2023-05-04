@@ -47,9 +47,6 @@
     [Parameter]
     public TodoListReadModel? TodoList { get; set; }
 
-    private async Task AddItemToDo(TodoListId listId, string itemDescription)
-        => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
-
     private async Task Rename(TodoListId listId, string newName)
         => await Mediator.Send(new TodoListState.RenameTodoList(listId, newName));
 

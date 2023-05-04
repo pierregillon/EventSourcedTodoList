@@ -21,13 +21,11 @@ public class TodoListState : State<TodoListState>
 
     public record CreateNewTodoList : IAction;
 
-    public record AddNewItem(TodoListId ListId, string? Text) : IAction;
-
     public record MarkItemAsDone(TodoListId ListId, TodoItemId ItemId) : IAction;
 
     public record MarkItemAsToDo(TodoListId ListId, TodoItemId ItemId) : IAction;
 
-    public record FixItemDescription(TodoListId ListId, TodoItemId ItemId, string NewDescription) : IAction;
+    public record EditItemDescription(TodoListId ListId, TodoItemId ItemId, string NewDescription) : IAction;
 
     public record RescheduleTodoItem(TodoListId ListId, TodoItemId ItemId, TimeHorizons TimeHorizons) : IAction;
 
@@ -84,4 +82,6 @@ public class TodoListState : State<TodoListState>
     public record RenameTodoList(TodoListId ListId, string NewName) : IAction;
 
     public record DeleteTodoList(TodoListId ListId) : IAction;
+
+    public record InsertNewItemToDo(TodoListId ListId, TodoItemId? ItemId) : IAction;
 }

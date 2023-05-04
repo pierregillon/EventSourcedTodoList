@@ -32,8 +32,26 @@ public class TodoList : EventSourcedAggregate<TodoListId>
 
     public void Delete() => StoreEvent(new TodoListDeleted(Id));
 
-    public void AddItem(TodoItemDescription description, TimeHorizons timeHorizons) =>
-        StoreEvent(new TodoItemAdded(Id, TodoItemId.New(), description, timeHorizons));
+    public void AddItem(
+        TodoItemId todoItemId,
+        TodoItemDescription description,
+        TimeHorizons timeHorizons,
+        Category? category,
+        TodoItemId? aboveItemId
+    )
+    {
+        if (_items.Any(x => x.Id == todoItemId))
+        {
+            throw new InvalidOperationException("Item already exists in the todo list.");
+        }
+
+        if (aboveItemId is not null && _items.All(x => x.Id != aboveItemId))
+        {
+            throw new InvalidOperationException("The reference item after the todo item must be created is unknown.");
+        }
+
+        StoreEvent(new TodoItemAdded(Id, todoItemId, description, timeHorizons, category?.Id, aboveItemId));
+    }
 
     public void MarkItemAsDone(TodoItemId itemId)
     {

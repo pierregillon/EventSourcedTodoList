@@ -68,13 +68,33 @@ internal class ListTodoItemsQueryHandler :
             domainEvent.Description.Value,
             false,
             domainEvent.TimeHorizon,
-            CategoryId.None
+            domainEvent.CategoryId
         );
 
-        await _database.Update<TodoListEntry>(
-            x => x.ListId == domainEvent.ListId,
-            list => list with { Items = list.Items.Append(newItem).ToArray() }
-        );
+        if (domainEvent.AboveItemId is not null)
+        {
+            var aboveItem = (await _database.GetAll<TodoListEntry>())
+                .Where(x => x.ListId == domainEvent.ListId)
+                .SelectMany(x => x.Items)
+                .Single(x => x.Id == domainEvent.AboveItemId);
+
+            await _database.Update<TodoListEntry>(
+                x => x.ListId == domainEvent.ListId,
+                list =>
+                {
+                    var items = list.Items.ToList();
+                    var aboveItemIndex = items.IndexOf(aboveItem);
+                    items.Insert(aboveItemIndex + 1, newItem);
+                    return list with { Items = items };
+                });
+        }
+        else
+        {
+            await _database.Update<TodoListEntry>(
+                x => x.ListId == domainEvent.ListId,
+                list => list with { Items = list.Items.Append(newItem).ToArray() }
+            );
+        }
     }
 
     public async Task On(TodoItemCompleted domainEvent) => await _database.Update(

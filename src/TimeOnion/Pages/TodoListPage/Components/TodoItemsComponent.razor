@@ -2,7 +2,8 @@
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Domain.Categories
 @using TimeOnion.Domain.Categories.Core
-@inherits BlazorState.BlazorStateComponent
+@using BlazorState
+@inherits BlazorStateComponent
 
 <div>
     @if (TodoListId is not null)
@@ -45,28 +46,19 @@
         </MudDropContainer>
 
         <div class="d-flex gap-1">
-            
+
             <MudMenu
                 Class="invisible"
                 Icon="@Icons.Material.Filled.MoreHoriz"
                 Size="Size.Small">
             </MudMenu>
-            
-            <MudCheckBox
-                Class="compact"
-                Checked="@(false)"
-                Color="Color.Secondary">
-            </MudCheckBox>
 
-            <MudTextField
-                T="string"
-                InputMode="InputMode.text"
-                Text="@State.NewTodoItemDescription"
-                TextChanged="itemDescription => AddItemToDo(TodoListId, itemDescription)"
-                TextUpdateSuppression="false"
-                Class="compact"
-                DisableUnderLine="true">
-            </MudTextField>
+            <MudIconButton
+                Icon="@Icons.Material.Filled.Add"
+                Size="Size.Small"
+                Color="Color.Primary"
+                OnClick="_ => Dispatch(new TodoListState.InsertNewItemToDo(TodoListId, TodoItemId.None))">
+            </MudIconButton>
         </div>
     }
 </div>
@@ -115,8 +107,7 @@
         }
     }
 
-    private async Task AddItemToDo(TodoListId listId, string itemDescription)
-        => await Mediator.Send(new TodoListState.AddNewItem(listId, itemDescription));
+    private async Task Dispatch(IAction action) => await Mediator.Send(action);
 
     private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
     {
@@ -168,8 +159,5 @@
             await Mediator.Send(new TodoListState.RepositionItemAtTheEnd(listId, itemId));
         }
     }
-
-    private async Task Delete(TodoListId listId)
-        => await Mediator.Send(new TodoListState.DeleteTodoList(listId));
 
 }

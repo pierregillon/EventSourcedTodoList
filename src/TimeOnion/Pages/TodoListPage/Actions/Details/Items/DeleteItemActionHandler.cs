@@ -23,9 +23,18 @@ public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
     {
         var state = Store.GetState<TodoListState>();
 
-        await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+        var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
 
-        state.TodoListDetails.Get(action.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+        if (item is TodoListItemReadModelBeingCreated)
+        {
+            state.TodoListDetails.RemoveItem(item);
+        }
+        else
+        {
+            await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+
+            state.TodoListDetails.Get(action.ListId).TodoListItems =
+                await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+        }
     }
 }
