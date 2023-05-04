@@ -5,38 +5,44 @@
 @if (TodoList is not null)
 {
     <div>
-        <div class="overlay-parent d-flex align-end justify-center gap-3">
-            <MudTextField
-                T="string"
-                InputMode="InputMode.text"
-                Text="@TodoList.Name"
-                TextChanged="newName => Rename(TodoList.Id, newName)"
-                TextUpdateSuppression="false"
-                DebounceInterval="1000"
-                Class="compact title"
-                DisableUnderLine="true">
-            </MudTextField>
-
-            <MudTooltip Text="Créer une catégorie">
-                <MudIconButton
-                    Class="invisible overlay"
+        <div class="overlay-parent d-flex align-center gap-3">
+            <MudMenu
+                Class="invisible overlay d-none d-md-flex"
+                Icon="@Icons.Material.Filled.MoreHoriz"
+                Size="Size.Small"
+                AnchorOrigin="Origin.BottomCenter">
+            
+                <MudMenuItem
                     Icon="@Icons.Material.Filled.CreateNewFolder"
-                    Color="Color.Primary"
+                    IconColor="Color.Primary"
                     OnClick="() => CreateNewCategory(TodoList.Id)">
-                </MudIconButton>
-            </MudTooltip>
-
-            <MudTooltip Text="Supprimer la liste">
-                <MudIconButton
-                    Class="invisible overlay"
+                    Créer une catégorie
+                </MudMenuItem>
+    
+                <MudMenuItem
                     Icon="@Icons.Material.Filled.Delete"
-                    Color="Color.Error"
+                    IconColor="Color.Error"
                     OnClick="() => Delete(TodoList.Id)">
-                </MudIconButton>
-            </MudTooltip>
+                    Supprimer la liste
+                </MudMenuItem>
+            
+            </MudMenu>
+            
+            <MudIcon
+                Icon="@Icons.Material.Filled.Checklist"
+                Color="Color.Primary"
+                Size="Size.Large">
+            </MudIcon>
+
+            <TextEditor
+                Class="title"
+                Text="@TodoList.Name"
+                TextChanged="newName => Rename(TodoList.Id, newName)">
+            </TextEditor>
+
         </div>
 
-        <MudDivider Class="mt-4 mb-4"/>
+        <MudDivider Class="mt-2 mb-2"/>
 
         <TodoItemsComponent TodoListId="@TodoList.Id"></TodoItemsComponent>
     </div>

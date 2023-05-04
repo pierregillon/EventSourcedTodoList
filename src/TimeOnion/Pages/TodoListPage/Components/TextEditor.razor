@@ -2,7 +2,7 @@
 
     <textarea 
         @ref="_textArea"
-        class="@(IsStrikeThrough ? "strikeThrough compact" : "compact")"
+        class="@(IsStrikeThrough ? $"strikeThrough compact {Class}" : $"compact {Class}")"
         value="@_boundedText" 
         @oninput="@OnInput"
         onblur="@OnBlur"
@@ -26,6 +26,9 @@
 
     [Parameter]
     public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
 
     [Parameter]
     public bool IsStrikeThrough { get; set; }

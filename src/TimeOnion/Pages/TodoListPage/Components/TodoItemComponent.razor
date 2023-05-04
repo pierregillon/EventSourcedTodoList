@@ -5,18 +5,18 @@
 
 @if (Item is not null)
 {
-    <div class="d-flex gap-1 overlay-parent">
+    <div class="d-flex gap-1 align-center overlay-parent">
         @if (Item.CategoryId is not null)
         {
-            <div class="ml-12 mr-1 border-l-2 border-dotted mud-border-primary"></div>
+            <div class="ml-12 mr-1 border-l-2 border-dotted mud-border-primary d-none d-md-flex"></div>
+            <div class="ml-4 mr-1 border-l-2 border-dotted mud-border-primary d-flex d-md-none"></div>
         }
         <MudMenu
             UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
-            Class="invisible overlay align-self-start"
+            Class="invisible overlay align-self-start d-none d-md-flex"
             Icon="@Icons.Material.Filled.MoreHoriz"
             Size="Size.Small"
-            AnchorOrigin="Origin.BottomLeft"
-            TransformOrigin="Origin.TopRight">
+            AnchorOrigin="Origin.BottomCenter">
 
             @if (NextTimeHorizons != CurrentTimeHorizons)
             {

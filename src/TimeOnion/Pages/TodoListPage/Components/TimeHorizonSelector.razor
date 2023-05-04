@@ -1,33 +1,35 @@
 @using TimeOnion.Domain.Todo.Core
 @inherits BlazorState.BlazorStateComponent
 
-<MudTimeline
-    Class="mt-5"
-    TimelineOrientation="TimelineOrientation.Horizontal"
-    TimelinePosition="TimelinePosition.Bottom">
-
-    @foreach (var temporality in Enum.GetValues<TimeHorizons>())
-    {
-        var isCurrent = State.CurrentTimeHorizon == temporality;
-
-        <MudTimelineItem
-            Class="cursor-pointer"
-            Color="isCurrent ? Color.Primary : Color.Default"
-            Size="isCurrent ? Size.Large : Size.Small"
-            @onmousedown="() => ChangeCurrentTemporality(temporality)">
-
-            <MudText
-                Class="@(isCurrent ? "cursor-pointer important" : "cursor-pointer")"
-                Color="isCurrent ? Color.Primary : Color.Dark"
-                Align="Align.Center"
-                @onclick="() => ChangeCurrentTemporality(temporality)">
-                @temporality.ToText()
-            </MudText>
-
-        </MudTimelineItem>
-    }
-
-</MudTimeline>
+<div style="overflow: auto;">
+    <MudTimeline
+        Class="mt-5"
+        TimelineOrientation="TimelineOrientation.Horizontal"
+        TimelinePosition="TimelinePosition.Bottom">
+    
+        @foreach (var temporality in Enum.GetValues<TimeHorizons>())
+        {
+            var isCurrent = State.CurrentTimeHorizon == temporality;
+    
+            <MudTimelineItem
+                Class="cursor-pointer"
+                Color="isCurrent ? Color.Primary : Color.Default"
+                Size="isCurrent ? Size.Large : Size.Small"
+                @onmousedown="() => ChangeCurrentTemporality(temporality)">
+    
+                <MudText
+                    Class="@(isCurrent ? "cursor-pointer important" : "cursor-pointer")"
+                    Color="isCurrent ? Color.Primary : Color.Dark"
+                    Align="Align.Center"
+                    @onclick="() => ChangeCurrentTemporality(temporality)">
+                    @temporality.ToText()
+                </MudText>
+    
+            </MudTimelineItem>
+        }
+    
+    </MudTimeline>
+</div>
 
 @code {
     TodoListState State => GetState<TodoListState>();
