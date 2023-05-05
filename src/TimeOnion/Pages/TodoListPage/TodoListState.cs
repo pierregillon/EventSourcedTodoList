@@ -84,4 +84,5 @@ public class TodoListState : State<TodoListState>
     public record DeleteTodoList(TodoListId ListId) : IAction;
 
     public record InsertNewItemToDo(TodoListId ListId, TodoItemId? ItemId) : IAction;
+    public record InsertNewItemToDoOnTopOfCategory(TodoListId ListId, CategoryId CategoryId) : IAction;
 }

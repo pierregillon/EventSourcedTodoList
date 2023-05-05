@@ -1,6 +1,7 @@
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Pages.TodoListPage.Actions.Details;
 using TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
 namespace TimeOnion.Pages.TodoListPage;
@@ -66,6 +67,22 @@ public class TodoListDetails
             false,
             timeHorizon,
             CategoryId.None
+        ));
+
+        Get(listId).TodoListItems = items;
+    }
+
+    public void InsertNewItemOnTopOfCategory(TodoListId listId, TimeHorizons timeHorizon, CategoryId categoryId)
+    {
+        var items = Get(listId).TodoListItems.ToList();
+
+        items.Insert(0, new TodoListItemReadModelBeingCreated(
+            TodoItemId.New(),
+            listId,
+            string.Empty,
+            false,
+            timeHorizon,
+            categoryId
         ));
 
         Get(listId).TodoListItems = items;
