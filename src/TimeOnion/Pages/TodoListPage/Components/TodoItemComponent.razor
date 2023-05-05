@@ -1,8 +1,8 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Pages.TodoListPage.Actions.Details
-@using TimeOnion.Pages.TodoListPage.Actions.Details.Items
-@inherits BlazorState.BlazorStateComponent
+@using BlazorState
+@inherits BlazorStateComponent
 
 @if (Item is not null)
 {
@@ -23,7 +23,7 @@
             {
                 <MudMenuItem
                     Icon="@Icons.Material.Filled.Redo"
-                    OnClick="() => Reschedule(Item.ListId, Item.Id, NextTimeHorizons)">
+                    OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
                     Reporter à @NextTimeHorizons.ToText().ToLower()
                 </MudMenuItem>
             }
@@ -32,7 +32,7 @@
             {
                 <MudMenuItem
                     Icon="@Icons.Material.Filled.Undo"
-                    OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTimeHorizons)">
+                    OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
                     Avancer à @PreviousTimeHorizons.ToText().ToLower()
                 </MudMenuItem>
             }
@@ -40,7 +40,7 @@
             <MudMenuItem
                 Icon="@Icons.Material.Filled.Delete"
                 IconColor="Color.Warning"
-                OnClick="() => Delete(Item.ListId, Item.Id)">
+                OnClick="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
                 Supprimer
             </MudMenuItem>
 
@@ -50,7 +50,7 @@
             T="bool"
             UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
             Checked="Item.IsDone"
-            CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.ListId, Item.Id) : MarkAsToDo(Item.ListId, Item.Id)"
+            CheckedChanged="isChecked => isChecked ? Send(new TodoListState.MarkItemAsDone(Item.ListId, Item.Id)) : Send(new TodoListState.MarkItemAsToDo(Item.ListId, Item.Id))"
             Class="compact"
             Color="Color.Primary">
         </MudCheckBox>
@@ -59,9 +59,9 @@
         <TextEditor
             @ref="_textEditor"
             Text="@Item.Description"
-            TextChanged="text => EditItemDescription(Item.ListId, Item.Id, text)"
-            EnterPressed="() => InsertNewItemToDo(Item.ListId, Item.Id)"
-            DeletionTriggered="() => Delete(Item.ListId, Item.Id)"
+            TextChanged="text => Send(new TodoListState.EditItemDescription(Item.ListId, Item.Id, text))"
+            EnterPressed="newDescription => Send(new TodoListState.InsertNewItemToDo(Item.ListId, Item.Id))"
+            DeletionTriggered="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
             IsStrikeThrough="@Item.IsDone">
         </TextEditor>
     </div>
@@ -90,17 +90,6 @@
         }
     }
 
-    private async Task EditItemDescription(TodoListId listId, TodoItemId itemId, string newValue) => await Mediator.Send(new TodoListState.EditItemDescription(listId, itemId, newValue));
-
-    private async Task MarkItemAsDone(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsDone(listId, itemId));
-
-    private async Task MarkAsToDo(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.MarkItemAsToDo(listId, itemId));
-
-    private async Task Reschedule(TodoListId listId, TodoItemId itemId, TimeHorizons timeHorizons) => await Mediator.Send(new TodoListState.RescheduleTodoItem(listId, itemId, timeHorizons));
-
-    private async Task Delete(TodoListId listId, TodoItemId itemId) => await Mediator.Send(new TodoListState.DeleteItem(listId, itemId));
-
-    private async Task InsertNewItemToDo(TodoListId listId, TodoItemId itemId)
-        => await Mediator.Send(new TodoListState.InsertNewItemToDo(listId, itemId));
+    private Task Send(IAction action) => Mediator.Send(action);
 
 }
