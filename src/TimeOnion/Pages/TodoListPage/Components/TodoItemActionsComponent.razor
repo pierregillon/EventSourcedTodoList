@@ -1,7 +1,6 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
-@using BlazorState
-@inherits BlazorStateComponent
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 <MudMenu
     UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
@@ -14,8 +13,8 @@
     {
         <MudMenuItem
             Icon="@Icons.Material.Filled.Redo"
-            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))"
-            OnTouch="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
+            OnClick="() => Execute(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))"
+            OnTouch="() => Execute(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
             Reporter à @NextTimeHorizons.ToText().ToLower()
         </MudMenuItem>
     }
@@ -24,8 +23,8 @@
     {
         <MudMenuItem
             Icon="@Icons.Material.Filled.Undo"
-            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))"
-            OnTouch="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
+            OnClick="() => Execute(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))"
+            OnTouch="() => Execute(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
             Avancer à @PreviousTimeHorizons.ToText().ToLower()
         </MudMenuItem>
     }
@@ -33,8 +32,8 @@
     <MudMenuItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Warning"
-        OnClick="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
-        OnTouch="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
+        OnClick="() => Execute(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
+        OnTouch="() => Execute(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
         Supprimer
     </MudMenuItem>
 
@@ -53,7 +52,5 @@
     private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
 
     private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
-
-    private Task Send(IAction action) => Mediator.Send(action);
 
 }

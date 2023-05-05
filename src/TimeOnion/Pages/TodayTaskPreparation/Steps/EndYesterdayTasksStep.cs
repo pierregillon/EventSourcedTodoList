@@ -18,10 +18,17 @@ public class EndYesterdayTasksStep : ITodayTaskPreparationStep
 
     public ITodayTaskPreparationStep? Next() => new AddThisWeekTasksStep(_queryDispatcher, _commandDispatcher);
 
-    public async Task Initialize(TodayTaskPreparationState state) => state.YesterdayUndoneTasks =
-        (await _queryDispatcher.Dispatch(new ListYesterdayUndoneTasksQuery()))
-        .Select(SelectableTodoItem.From)
-        .ToArray();
+    public async Task<TodayTaskPreparationState> Initialize(TodayTaskPreparationState state)
+    {
+        var items = (await _queryDispatcher.Dispatch(new ListYesterdayUndoneTasksQuery()))
+            .Select(SelectableTodoItem.From)
+            .ToArray();
+
+        return state with
+        {
+            YesterdayUndoneTasks = items
+        };
+    }
 
     public async Task Save(TodayTaskPreparationState state)
     {

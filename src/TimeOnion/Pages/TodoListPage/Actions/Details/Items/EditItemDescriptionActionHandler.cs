@@ -1,34 +1,28 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class EditItemDescriptionActionHandler : ActionHandler<TodoListState.EditItemDescription>
+public class EditItemDescriptionActionHandler : ActionHandlerBase<TodoListState, TodoListState.EditItemDescription>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public EditItemDescriptionActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.EditItemDescription action, CancellationToken token)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.EditItemDescription action)
     {
-        var state = Store.GetState<TodoListState>();
-
         var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
 
         if (item is TodoListItemReadModelBeingCreated)
         {
             var aboveItem = state.TodoListDetails.GetAboveItem(item);
+
             var command =
                 new AddItemToDoCommand(
                     action.ListId,
@@ -39,7 +33,7 @@ public class EditItemDescriptionActionHandler : ActionHandler<TodoListState.Edit
                     aboveItem?.Id
                 );
 
-            await _commandDispatcher.Dispatch(command);
+            await Dispatch(command);
         }
         else
         {
@@ -50,10 +44,14 @@ public class EditItemDescriptionActionHandler : ActionHandler<TodoListState.Edit
                     new TodoItemDescription(action.NewDescription)
                 );
 
-            await _commandDispatcher.Dispatch(command);
+            await Dispatch(command);
         }
 
-        state.TodoListDetails.Get(action.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }

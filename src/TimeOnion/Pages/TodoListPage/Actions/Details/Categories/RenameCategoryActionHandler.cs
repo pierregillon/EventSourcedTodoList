@@ -1,32 +1,29 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class RenameCategoryActionHandler : ActionHandler<TodoListState.RenameCategory>
+public class RenameCategoryActionHandler : ActionHandlerBase<TodoListState, TodoListState.RenameCategory>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public RenameCategoryActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.RenameCategory aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.RenameCategory action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new RenameCategoryCommand(action.Id, new CategoryName(action.Name)));
 
-        await _commandDispatcher.Dispatch(new RenameCategoryCommand(aAction.Id, new CategoryName(aAction.Name)));
+        var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 
-        state.TodoListDetails.Get(aAction.ListId).Categories =
-            await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateCategories(action.ListId, categories)
+        };
     }
 }

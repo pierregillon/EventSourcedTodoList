@@ -1,6 +1,6 @@
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Domain.Todo.Core
-@inherits BlazorState.BlazorStateComponent
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 @if (TodoList is not null)
 {
@@ -42,6 +42,6 @@
     public TodoListReadModel? TodoList { get; set; }
 
     private async Task Rename(TodoListId listId, string newName)
-        => await Mediator.Send(new TodoListState.RenameTodoList(listId, newName));
+        => await Execute(new TodoListState.RenameTodoList(listId, newName));
 
 }

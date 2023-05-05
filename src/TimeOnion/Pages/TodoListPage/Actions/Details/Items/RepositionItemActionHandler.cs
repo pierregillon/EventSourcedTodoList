@@ -1,42 +1,36 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Positionning;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class RepositionItemActionHandler : ActionHandler<TodoListState.RepositionItemAboveAnother>
+public class RepositionItemActionHandler : ActionHandlerBase<TodoListState, TodoListState.RepositionItemAboveAnother>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public RepositionItemActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(
-        TodoListState.RepositionItemAboveAnother aAction,
-        CancellationToken aCancellationToken
+    protected override async Task<TodoListState> Apply(
+        TodoListState state,
+        TodoListState.RepositionItemAboveAnother action
     )
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new RepositionItemAboveAnotherCommand(
+            action.ListId,
+            action.ItemId,
+            action.ReferenceItemId
+        ));
 
-        var command =
-            new RepositionItemAboveAnotherCommand(
-                aAction.ListId,
-                aAction.ItemId,
-                aAction.ReferenceItemId
-            );
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        await _commandDispatcher.Dispatch(command);
-
-        state.TodoListDetails.Get(aAction.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }

@@ -2,8 +2,7 @@
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Domain.Categories
 @using TimeOnion.Domain.Categories.Core
-@using BlazorState
-@inherits BlazorStateComponent
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 <div>
     @if (TodoListId is not null)
@@ -57,7 +56,7 @@
                 Icon="@Icons.Material.Filled.Add"
                 Size="Size.Small"
                 Color="Color.Primary"
-                OnClick="_ => Send(new TodoListState.InsertNewItemToDoAtTheEnd(TodoListId))">
+                OnClick="_ => Execute(new TodoListState.InsertNewItemToDoAtTheEnd(TodoListId))">
             </MudIconButton>
         </div>
     }
@@ -84,8 +83,8 @@
         {
             return;
         }
-        await Mediator.Send(new TodoListState.LoadCategories(TodoListId));
-        await Mediator.Send(new TodoListState.LoadTodoListItems(TodoListId));
+        await Execute(new TodoListState.LoadCategories(TodoListId));
+        await Execute(new TodoListState.LoadTodoListItems(TodoListId));
 
         await base.OnInitializedAsync();
     }
@@ -106,8 +105,8 @@
         {
             if (newId is not null && newId != TodoListId)
             {
-                await Mediator.Send(new TodoListState.LoadCategories(newId));
-                await Mediator.Send(new TodoListState.LoadTodoListItems(newId));
+                await Execute(new TodoListState.LoadCategories(newId));
+                await Execute(new TodoListState.LoadTodoListItems(newId));
             }
 
             await base.SetParametersAsync(parameters);
@@ -119,8 +118,6 @@
             await base.SetParametersAsync(parameters);
         }
     }
-
-    private async Task Send(IAction action) => await Mediator.Send(action);
 
     private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
     {
@@ -140,12 +137,12 @@
         {
             if (currentItem.CategoryId != targetIdCategory)
             {
-                await Mediator.Send(new TodoListState.CategorizeItem(listId, itemId, targetIdCategory));
+                await Execute(new TodoListState.CategorizeItem(listId, itemId, targetIdCategory));
             }
         }
         else if (currentItem.CategoryId is not null)
         {
-            await Mediator.Send(new TodoListState.DecategorizeItem(listId, itemId));
+            await Execute(new TodoListState.DecategorizeItem(listId, itemId));
         }
     }
 
@@ -165,11 +162,11 @@
         var referenceItem = itemsInSameCategory.Where((_, i) => i == indexInCategory).FirstOrDefault();
         if (referenceItem is not null && referenceItem.Id != itemId)
         {
-            await Mediator.Send(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));
+            await Execute(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));
         }
         else if (referenceItem is null)
         {
-            await Mediator.Send(new TodoListState.RepositionItemAtTheEnd(listId, itemId));
+            await Execute(new TodoListState.RepositionItemAtTheEnd(listId, itemId));
         }
     }
 

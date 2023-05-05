@@ -1,26 +1,24 @@
-using BlazorState;
-using MediatR;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-public class LoadListsActionHandler : ActionHandler<TodoListState.LoadLists>
+public class LoadListsActionHandler : ActionHandlerBase<TodoListState, TodoListState.LoadLists>
 {
-    private readonly IQueryDispatcher _queryDispatcher;
-
-    public LoadListsActionHandler(
-        IStore aStore,
-        IQueryDispatcher queryDispatcher
-    ) : base(aStore) => _queryDispatcher = queryDispatcher;
-
-    public override async Task<Unit> Handle(TodoListState.LoadLists action, CancellationToken cancellationToken)
+    public LoadListsActionHandler(IStore store, ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        : base(store, commandDispatcher, queryDispatcher)
     {
-        var state = Store.GetState<TodoListState>();
+    }
 
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
-        state.TodoListDetails = new TodoListDetails(state.TodoLists);
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.LoadLists action)
+    {
+        var todoLists = await Dispatch(new ListTodoListsQuery());
 
-        return Unit.Value;
+        return state with
+        {
+            TodoLists = todoLists,
+            TodoListDetails = TodoListDetails.From(todoLists)
+        };
     }
 }

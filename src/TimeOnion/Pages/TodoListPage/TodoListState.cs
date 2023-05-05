@@ -1,21 +1,22 @@
-using BlazorState;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage;
 
-public class TodoListState : State<TodoListState>
+public record TodoListState(
+    TimeHorizons CurrentTimeHorizon,
+    IEnumerable<TodoListReadModel> TodoLists,
+    TodoListDetails TodoListDetails
+) : IState
 {
-    public string NewTodoItemDescription { get; set; } = string.Empty;
-    public TimeHorizons CurrentTimeHorizon { get; set; } = TimeHorizons.ThisDay;
-    public IEnumerable<TodoListReadModel> TodoLists { get; set; } = Array.Empty<TodoListReadModel>();
-
-    public TodoListDetails TodoListDetails { get; set; } = new(new List<TodoListReadModel>());
-
-    public override void Initialize()
-    {
-    }
+    public static TodoListState Initialize() =>
+        new(
+            TimeHorizons.ThisDay,
+            new List<TodoListReadModel>(),
+            TodoListDetails.Empty
+        );
 
     public record LoadLists : IAction;
 

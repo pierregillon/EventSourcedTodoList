@@ -1,37 +1,30 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-public class RenameTodoListActionHandler : ActionHandler<TodoListState.RenameTodoList>
+public class RenameTodoListActionHandler : ActionHandlerBase<TodoListState, TodoListState.RenameTodoList>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public RenameTodoListActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.RenameTodoList aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.RenameTodoList action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new RenameTodoListCommand(
+            action.ListId,
+            new TodoListName(action.NewName)
+        ));
 
-        var command =
-            new RenameTodoListCommand(
-                aAction.ListId,
-                new TodoListName(aAction.NewName)
-            );
-
-        await _commandDispatcher.Dispatch(command);
-
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
+        return state with
+        {
+            TodoLists = await Dispatch(new ListTodoListsQuery())
+        };
     }
 }

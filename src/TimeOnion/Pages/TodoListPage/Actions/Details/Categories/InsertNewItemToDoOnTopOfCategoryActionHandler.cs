@@ -1,19 +1,33 @@
-using BlazorState;
+using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class InsertNewItemToDoOnTopOfCategoryActionHandler : ActionHandler<TodoListState.InsertNewItemToDoOnTopOfCategory>
+public class InsertNewItemToDoOnTopOfCategoryActionHandler :
+    ActionHandlerBase<TodoListState, TodoListState.InsertNewItemToDoOnTopOfCategory>
 {
-    public InsertNewItemToDoOnTopOfCategoryActionHandler(IStore aStore) : base(aStore)
+    public InsertNewItemToDoOnTopOfCategoryActionHandler(
+        IStore store,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
     }
 
-    public override Task Handle(TodoListState.InsertNewItemToDoOnTopOfCategory aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(
+        TodoListState state,
+        TodoListState.InsertNewItemToDoOnTopOfCategory action
+    )
     {
-        var state = Store.GetState<TodoListState>();
+        await Task.Delay(0);
 
-        state.TodoListDetails.InsertNewItemOnTopOfCategory(aAction.ListId, state.CurrentTimeHorizon, aAction.CategoryId);
-
-        return Task.CompletedTask;
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.InsertNewItemOnTopOfCategory(
+                action.ListId,
+                state.CurrentTimeHorizon,
+                action.CategoryId
+            )
+        };
     }
 }

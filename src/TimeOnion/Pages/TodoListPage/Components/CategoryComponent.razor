@@ -1,6 +1,5 @@
 @using TimeOnion.Domain.Categories
-@using BlazorState
-@inherits BlazorStateComponent
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 @if (Category is not null)
 {
@@ -18,8 +17,8 @@
 
         <TextEditor
             Text="@Category.Name"
-            TextChanged="@(text => Send(new TodoListState.RenameCategory(Category.Id, text, Category.ListId)))"
-            EnterPressed="@(() => Send(new TodoListState.InsertNewItemToDoOnTopOfCategory(Category.ListId, Category.Id)))">
+            TextChanged="@(text => Execute(new TodoListState.RenameCategory(Category.Id, text, Category.ListId)))"
+            EnterPressed="@(() => Execute(new TodoListState.InsertNewItemToDoOnTopOfCategory(Category.ListId, Category.Id)))">
         </TextEditor>
 
         <CategoryActionsComponent
@@ -34,5 +33,4 @@
     [Parameter]
     public CategoryReadModel? Category { get; set; }
 
-    private Task Send(IAction action) => Mediator.Send(action);
 }

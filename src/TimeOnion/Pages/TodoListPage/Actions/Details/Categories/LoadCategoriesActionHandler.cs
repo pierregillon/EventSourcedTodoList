@@ -1,23 +1,26 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class LoadCategoriesActionHandler : ActionHandler<TodoListState.LoadCategories>
+public class LoadCategoriesActionHandler : ActionHandlerBase<TodoListState, TodoListState.LoadCategories>
 {
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public LoadCategoriesActionHandler(
-        IStore aStore,
+        IStore store,
+        ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore) => _queryDispatcher = queryDispatcher;
-
-    public override async Task Handle(TodoListState.LoadCategories action, CancellationToken aCancellationToken)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        var state = Store.GetState<TodoListState>();
+    }
 
-        state.TodoListDetails.Get(action.ListId).Categories =
-            await _queryDispatcher.Dispatch(new ListCategoriesQuery(action.ListId));
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.LoadCategories action)
+    {
+        var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
+
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateCategories(action.ListId, categories)
+        };
     }
 }

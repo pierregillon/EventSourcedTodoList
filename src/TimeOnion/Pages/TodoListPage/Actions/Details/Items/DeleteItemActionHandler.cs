@@ -1,40 +1,35 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class DeleteItemActionHandler : ActionHandler<TodoListState.DeleteItem>
+public class DeleteItemActionHandler : ActionHandlerBase<TodoListState, TodoListState.DeleteItem>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
-    public DeleteItemActionHandler(
-        IStore aStore,
-        ICommandDispatcher commandDispatcher,
-        IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    public DeleteItemActionHandler(IStore store, ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.DeleteItem action, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.DeleteItem action)
     {
-        var state = Store.GetState<TodoListState>();
-
         var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
 
         if (item is TodoListItemReadModelBeingCreated)
         {
-            state.TodoListDetails.RemoveItem(item);
+            return state with
+            {
+                TodoListDetails = state.TodoListDetails.RemoveItem(item)
+            };
         }
-        else
-        {
-            await _commandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
 
-            state.TodoListDetails.Get(action.ListId).TodoListItems =
-                await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
-        }
+        await Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }

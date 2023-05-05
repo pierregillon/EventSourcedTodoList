@@ -1,35 +1,33 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class DeleteCategoryActionHandler : ActionHandler<TodoListState.DeleteCategory>
+public class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, TodoListState.DeleteCategory>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public DeleteCategoryActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(aStore, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.DeleteCategory aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.DeleteCategory action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new DeleteCategoryCommand(action.Id));
 
-        await _commandDispatcher.Dispatch(new DeleteCategoryCommand(aAction.Id));
+        var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 
-        state.TodoListDetails.Get(aAction.ListId).Categories =
-            await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        state.TodoListDetails.Get(aAction.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails
+                .UpdateCategories(action.ListId, categories)
+                .UpdateItems(action.ListId, items)
+        };
     }
 }

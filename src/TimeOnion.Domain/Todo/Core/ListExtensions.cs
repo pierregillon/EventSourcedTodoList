@@ -30,4 +30,28 @@ public static class ListExtensions
             }
         }
     }
+
+    public static IEnumerable<T> InsertAt<T>(this IEnumerable<T> enumerable, T newElement, int index)
+    {
+        using var enumerator = enumerable.GetEnumerator();
+
+        var currentIndex = 0;
+
+        while (enumerator.MoveNext())
+        {
+            if (currentIndex == index)
+            {
+                yield return newElement;
+            }
+            
+            yield return enumerator.Current;
+
+            currentIndex++;
+        }
+        
+        if (currentIndex == index)
+        {
+            yield return newElement;
+        }
+    }
 }

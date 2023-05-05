@@ -1,34 +1,30 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class CreateNewCategoryActionHandler : ActionHandler<TodoListState.CreateNewCategory>
+public class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListState, TodoListState.CreateNewCategory>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public CreateNewCategoryActionHandler(
         IStore aStore,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(aStore, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.CreateNewCategory aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.CreateNewCategory action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new CreateNewCategory(new CategoryName(action.Name), action.ListId));
 
-        var command = new CreateNewCategory(new CategoryName(aAction.Name), aAction.ListId);
+        var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 
-        await _commandDispatcher.Dispatch(command);
-
-        state.TodoListDetails.Get(aAction.ListId).Categories =
-            await _queryDispatcher.Dispatch(new ListCategoriesQuery(aAction.ListId));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateCategories(action.ListId,
+                categories)
+        };
     }
 }

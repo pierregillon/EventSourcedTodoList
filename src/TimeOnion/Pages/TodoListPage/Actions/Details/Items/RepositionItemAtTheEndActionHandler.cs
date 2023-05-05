@@ -1,41 +1,33 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Positionning;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class RepositionItemAtTheEndActionHandler : ActionHandler<TodoListState.RepositionItemAtTheEnd>
+public class RepositionItemAtTheEndActionHandler :
+    ActionHandlerBase<TodoListState, TodoListState.RepositionItemAtTheEnd>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public RepositionItemAtTheEndActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(
-        TodoListState.RepositionItemAtTheEnd aAction,
-        CancellationToken aCancellationToken
-    )
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.RepositionItemAtTheEnd action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new RepositionItemAtTheEndCommand(
+            action.ListId,
+            action.ItemId
+        ));
 
-        var command =
-            new RepositionItemAtTheEndCommand(
-                aAction.ListId,
-                aAction.ItemId
-            );
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        await _commandDispatcher.Dispatch(command);
-
-        state.TodoListDetails.Get(aAction.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }

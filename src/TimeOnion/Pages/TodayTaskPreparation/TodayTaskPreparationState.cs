@@ -1,26 +1,23 @@
-using BlazorState;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Pages.TodayTaskPreparation.Steps;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodayTaskPreparation;
 
-public class TodayTaskPreparationState : State<TodayTaskPreparationState>
+public record TodayTaskPreparationState(
+    ITodayTaskPreparationStep? CurrentStep,
+    IEnumerable<SelectableTodoItem> YesterdayUndoneTasks,
+    IEnumerable<SelectableTodoItem> ThisWeekUndoneTasks,
+    IEnumerable<SelectableTodoItem> ThisDayUndoneTasks
+) : IState
 {
-    public ITodayTaskPreparationStep? CurrentStep { get; set; }
-
-    public IReadOnlyCollection<SelectableTodoItem> YesterdayUndoneTasks { get; set; } =
-        Array.Empty<SelectableTodoItem>();
-
-    public IEnumerable<SelectableTodoItem> ThisWeekUndoneTasks { get; set; } =
-        Array.Empty<SelectableTodoItem>();
-
-    public IEnumerable<SelectableTodoItem> ThisDayUndoneTasks { get; set; } =
-        Array.Empty<SelectableTodoItem>();
-
-    public override void Initialize()
-    {
-    }
+    public static TodayTaskPreparationState Initialize => new(
+        null,
+        new List<SelectableTodoItem>(),
+        new List<SelectableTodoItem>(),
+        new List<SelectableTodoItem>()
+    );
 
     public record Load : IAction;
 

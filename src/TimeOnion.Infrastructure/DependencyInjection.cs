@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Minio;
 using TimeOnion.Domain;
-using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Infrastructure;

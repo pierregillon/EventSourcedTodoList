@@ -1,28 +1,36 @@
-using BlazorState;
+using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
-public class MoveToNextPreparationStepActionHandler : ActionHandler<TodayTaskPreparationState.MoveToNextPreparationStep>
+public class MoveToNextPreparationStepActionHandler :
+    ActionHandlerBase<TodayTaskPreparationState, TodayTaskPreparationState.MoveToNextPreparationStep>
 {
-    public MoveToNextPreparationStepActionHandler(IStore aStore) : base(aStore)
+    public MoveToNextPreparationStepActionHandler(
+        IStore store,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
     }
 
-    public override async Task Handle(TodayTaskPreparationState.MoveToNextPreparationStep aAction,
-        CancellationToken aCancellationToken)
+    protected override async Task<TodayTaskPreparationState> Apply(
+        TodayTaskPreparationState state,
+        TodayTaskPreparationState.MoveToNextPreparationStep action
+    )
     {
-        var state = Store.GetState<TodayTaskPreparationState>();
-
         if (state.CurrentStep is not null)
         {
             await state.CurrentStep.Save(state);
 
-            state.CurrentStep = state.CurrentStep.Next();
+            state = state with { CurrentStep = state.CurrentStep.Next() };
 
             if (state.CurrentStep is not null)
             {
-                await state.CurrentStep.Initialize(state);
+                state = await state.CurrentStep.Initialize(state);
             }
         }
+
+        return state;
     }
 }

@@ -1,26 +1,26 @@
-using BlazorState;
-using MediatR;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class LoadTodoListItemsActionHandler : ActionHandler<TodoListState.LoadTodoListItems>
+public class LoadTodoListItemsActionHandler : ActionHandlerBase<TodoListState, TodoListState.LoadTodoListItems>
 {
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public LoadTodoListItemsActionHandler(
-        IStore aStore,
+        IStore store,
+        ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore) => _queryDispatcher = queryDispatcher;
-
-    public override async Task<Unit> Handle(TodoListState.LoadTodoListItems action, CancellationToken cancellationToken)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        var state = Store.GetState<TodoListState>();
+    }
 
-        state.TodoListDetails.Get(action.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.LoadTodoListItems action)
+    {
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return Unit.Value;
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }

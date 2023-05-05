@@ -1,10 +1,9 @@
-using System.Reflection;
-using BlazorState;
 using MudBlazor.Services;
 using TimeOnion.Configuration;
 using TimeOnion.Configuration.HostedServices;
 using TimeOnion.Domain;
 using TimeOnion.Infrastructure;
+using TimeOnion.Shared.MVU;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,15 +12,11 @@ builder.WebHost.UseStaticWebAssets();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
-builder.Services.AddBlazorState
-(
-    options =>
-        options.Assemblies =
-            new[]
-            {
-                typeof(Program).GetTypeInfo().Assembly
-            }
-);
+
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(IStore).Assembly));
+builder.Services.AddSingleton<IStore, InMemoryStore>();
+builder.Services.AddSingleton<Subscriptions>();
+
 builder.Services.AddServiceHealthChecks();
 builder.Services
     .AddDomain()

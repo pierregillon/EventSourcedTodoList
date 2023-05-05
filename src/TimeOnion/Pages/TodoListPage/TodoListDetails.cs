@@ -1,3 +1,4 @@
+using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
@@ -5,22 +6,25 @@ using TimeOnion.Pages.TodoListPage.Actions.Details;
 
 namespace TimeOnion.Pages.TodoListPage;
 
-public class TodoListDetails
+public record TodoListDetails(List<TodoListDetailState> Details)
 {
-    private readonly Dictionary<TodoListId, TodoListDetailState> _details;
+    public static TodoListDetails From(IEnumerable<TodoListReadModel> lists) =>
+        new(lists.Select(x =>
+            new TodoListDetailState(x.Id, new List<CategoryReadModel>(), new List<TodoListItemReadModel>())).ToList());
 
-    public TodoListDetails(IEnumerable<TodoListReadModel> lists) =>
-        _details = lists.ToDictionary(x => x.Id, _ => new TodoListDetailState());
+
+    public static TodoListDetails Empty => new(new List<TodoListDetailState>());
 
     public TodoListDetailState Get(TodoListId listId)
     {
-        if (!_details.TryGetValue(listId, out var state))
+        var list = Details.FirstOrDefault(x => x.TodoListId == listId);
+        if (list is null)
         {
-            state = new TodoListDetailState();
-            _details.Add(listId, state);
+            list = new TodoListDetailState(listId, new List<CategoryReadModel>(), new List<TodoListItemReadModel>());
+            Details.Add(list);
         }
 
-        return state;
+        return list;
     }
 
 
@@ -28,11 +32,19 @@ public class TodoListDetails
         Get(listId).TodoListItems.SingleOrDefault(x => x.Id == itemId)
         ?? throw new InvalidOperationException("Unknown item id");
 
-    public void RemoveItem(TodoListItemReadModel item)
+    public TodoListDetails RemoveItem(TodoListItemReadModel item)
     {
-        var items = Get(item.ListId).TodoListItems.ToList();
-        items.Remove(item);
-        Get(item.ListId).TodoListItems = items;
+        var list = Get(item.ListId);
+
+        return this with
+        {
+            Details = Details
+                .Replace(list, list with
+                {
+                    TodoListItems = list.TodoListItems.Where(x => x.Id != item.Id).ToList()
+                })
+                .ToList()
+        };
     }
 
     public TodoListItemReadModel? GetAboveItem(TodoListItemReadModel item)
@@ -44,9 +56,10 @@ public class TodoListDetails
         return index == 0 ? null : items[index - 1];
     }
 
-    public void InsertNewItemTodoAfter(TodoListItemReadModel item)
+    public TodoListDetails InsertNewItemTodoAfter(TodoListItemReadModel item)
     {
-        var items = Get(item.ListId).TodoListItems.ToList();
+        var list = Get(item.ListId);
+        var items = list.TodoListItems.ToList();
 
         var clone = new TodoListItemReadModelBeingCreated(
             TodoItemId.New(),
@@ -57,40 +70,88 @@ public class TodoListDetails
             item.CategoryId
         );
 
-        items.Insert(items.IndexOf(item) + 1, clone);
-
-        Get(item.ListId).TodoListItems = items;
+        var todoListItemReadModels = list.TodoListItems.InsertAt(clone, items.IndexOf(item) + 1).ToList();
+        
+        return this with
+        {
+            Details = Details
+                .Replace(list, list with
+                {
+                    TodoListItems = todoListItemReadModels
+                })
+                .ToList()
+        };
     }
 
-    public void InsertAtTheEnd(TodoListId listId, TimeHorizons timeHorizon)
+    public TodoListDetails InsertAtTheEnd(TodoListId listId, TimeHorizons timeHorizon)
     {
-        var items = Get(listId).TodoListItems.ToList();
+        var list = Get(listId);
 
-        items.Add(new TodoListItemReadModelBeingCreated(
+        var newItem = new TodoListItemReadModelBeingCreated(
             TodoItemId.New(),
             listId,
             string.Empty,
             false,
             timeHorizon,
             CategoryId.None
-        ));
+        );
 
-        Get(listId).TodoListItems = items;
+        return this with
+        {
+            Details = Details
+                .Replace(list, list with
+                {
+                    TodoListItems = list.TodoListItems.Append(newItem).ToList()
+                })
+                .ToList()
+        };
     }
 
-    public void InsertNewItemOnTopOfCategory(TodoListId listId, TimeHorizons timeHorizon, CategoryId categoryId)
+    public TodoListDetails InsertNewItemOnTopOfCategory(
+        TodoListId listId,
+        TimeHorizons timeHorizon,
+        CategoryId categoryId
+    )
     {
-        var items = Get(listId).TodoListItems.ToList();
+        var list = Get(listId);
 
-        items.Insert(0, new TodoListItemReadModelBeingCreated(
+        var newItem = new TodoListItemReadModelBeingCreated(
             TodoItemId.New(),
             listId,
             string.Empty,
             false,
             timeHorizon,
             categoryId
-        ));
+        );
 
-        Get(listId).TodoListItems = items;
+        return this with
+        {
+            Details = Details
+                .Replace(list, list with
+                {
+                    TodoListItems = list.TodoListItems.Prepend(newItem).ToList()
+                })
+                .ToList()
+        };
+    }
+
+    public TodoListDetails UpdateCategories(TodoListId listId, IReadOnlyCollection<CategoryReadModel> categories)
+    {
+        var list = Get(listId);
+
+        return this with
+        {
+            Details = Details.Replace(list, list with { Categories = categories }).ToList()
+        };
+    }
+
+    public TodoListDetails UpdateItems(TodoListId listId, IReadOnlyCollection<TodoListItemReadModel> items)
+    {
+        var list = Get(listId);
+
+        return this with
+        {
+            Details = Details.Replace(list, list with { TodoListItems = items }).ToList()
+        };
     }
 }

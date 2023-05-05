@@ -1,30 +1,39 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Pages.TodayTaskPreparation.Steps;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
-public class LoadTodayTaskPreparationActionHandler : ActionHandler<TodayTaskPreparationState.Load>
+public class LoadTodayTaskPreparationActionHandler :
+    ActionHandlerBase<TodayTaskPreparationState, TodayTaskPreparationState.Load>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public LoadTodayTaskPreparationActionHandler(IStore aStore, IQueryDispatcher queryDispatcher,
-        ICommandDispatcher commandDispatcher) : base(aStore)
+    public LoadTodayTaskPreparationActionHandler(
+        IStore store,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _queryDispatcher = queryDispatcher;
         _commandDispatcher = commandDispatcher;
+        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodayTaskPreparationState.Load aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodayTaskPreparationState> Apply(
+        TodayTaskPreparationState state,
+        TodayTaskPreparationState.Load action
+    )
     {
-        var state = Store.GetState<TodayTaskPreparationState>();
-
-        state.CurrentStep = new EndYesterdayTasksStep(_queryDispatcher, _commandDispatcher);
-
-        state.YesterdayUndoneTasks = (await _queryDispatcher.Dispatch(new ListYesterdayUndoneTasksQuery()))
+        var items = (await Dispatch(new ListYesterdayUndoneTasksQuery()))
             .Select(SelectableTodoItem.From)
             .ToArray();
+
+        return state with
+        {
+            CurrentStep = new EndYesterdayTasksStep(_queryDispatcher, _commandDispatcher),
+            YesterdayUndoneTasks = items
+        };
     }
 }

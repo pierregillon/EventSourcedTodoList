@@ -1,24 +1,31 @@
-using BlazorState;
-using MediatR;
+using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class ReloadTodoListItemsActionHandler: ActionHandler<TodoListState.ReloadTodoListItems>
+public class ReloadTodoListItemsActionHandler : ActionHandlerBase<TodoListState, TodoListState.ReloadTodoListItems>
 {
-    private readonly IMediator _mediator;
-
-    public ReloadTodoListItemsActionHandler(IStore aStore, IMediator mediator) : base(aStore)
+    public ReloadTodoListItemsActionHandler(
+        IStore store,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _mediator = mediator;
     }
 
-    public override async Task Handle(TodoListState.ReloadTodoListItems aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.ReloadTodoListItems action)
     {
-        var state = Store.GetState<TodoListState>();
-
         foreach (var todoList in state.TodoLists)
         {
-            await _mediator.Send(new TodoListState.LoadTodoListItems(todoList.Id), aCancellationToken);
+            var items = await Dispatch(new ListTodoItemsQuery(todoList.Id, state.CurrentTimeHorizon));
+
+            state = state with
+            {
+                TodoListDetails = state.TodoListDetails.UpdateItems(todoList.Id, items)
+            };
         }
+
+        return state;
     }
 }

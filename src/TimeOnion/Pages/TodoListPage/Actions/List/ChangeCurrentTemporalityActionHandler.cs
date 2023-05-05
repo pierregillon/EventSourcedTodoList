@@ -1,35 +1,41 @@
-using BlazorState;
-using MediatR;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-public class ChangeCurrentTemporalityActionHandler : ActionHandler<TodoListState.ChangeCurrentTemporality>
+public class ChangeCurrentTemporalityActionHandler :
+    ActionHandlerBase<TodoListState, TodoListState.ChangeCurrentTemporality>
 {
-    private readonly IQueryDispatcher _queryDispatcher;
-    private readonly IMediator _mediator;
-
     public ChangeCurrentTemporalityActionHandler(
-        IStore aStore,
-        IQueryDispatcher queryDispatcher,
-        IMediator mediator
-    ) : base(aStore)
+        IStore store,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _queryDispatcher = queryDispatcher;
-        _mediator = mediator;
     }
 
-    public override async Task Handle(
-        TodoListState.ChangeCurrentTemporality action,
-        CancellationToken aCancellationToken
+    protected override async Task<TodoListState> Apply(
+        TodoListState state,
+        TodoListState.ChangeCurrentTemporality action
     )
     {
-        var state = Store.GetState<TodoListState>();
+        state = state with
+        {
+            CurrentTimeHorizon = action.TimeHorizons,
+            TodoLists = await Dispatch(new ListTodoListsQuery())
+        };
 
-        state.CurrentTimeHorizon = action.TimeHorizons;
-        state.TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery());
+        foreach (var todoList in state.TodoLists)
+        {
+            var items = await Dispatch(new ListTodoItemsQuery(todoList.Id, state.CurrentTimeHorizon));
 
-        await _mediator.Send(new TodoListState.ReloadTodoListItems(), aCancellationToken);
+            state = state with
+            {
+                TodoListDetails = state.TodoListDetails.UpdateItems(todoList.Id, items)
+            };
+        }
+
+        return state;
     }
 }

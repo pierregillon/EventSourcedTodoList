@@ -1,19 +1,29 @@
-using BlazorState;
+using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class InsertNewItemToDoAtTheEndActionHandler : ActionHandler<TodoListState.InsertNewItemToDoAtTheEnd>
+public class InsertNewItemToDoAtTheEndActionHandler :
+    ActionHandlerBase<TodoListState, TodoListState.InsertNewItemToDoAtTheEnd>
 {
-    public InsertNewItemToDoAtTheEndActionHandler(IStore aStore) : base(aStore)
+    public InsertNewItemToDoAtTheEndActionHandler(
+        IStore store,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
     }
 
-    public override Task Handle(TodoListState.InsertNewItemToDoAtTheEnd aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(
+        TodoListState state,
+        TodoListState.InsertNewItemToDoAtTheEnd action
+    )
     {
-        var state = Store.GetState<TodoListState>();
+        await Task.Delay(0);
 
-        state.TodoListDetails.InsertAtTheEnd(aAction.ListId, state.CurrentTimeHorizon);
-
-        return Task.CompletedTask;
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.InsertAtTheEnd(action.ListId, state.CurrentTimeHorizon)
+        };
     }
 }

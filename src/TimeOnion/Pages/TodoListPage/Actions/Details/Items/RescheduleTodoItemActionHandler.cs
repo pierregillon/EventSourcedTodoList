@@ -1,38 +1,33 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class RescheduleTodoItemActionHandler : ActionHandler<TodoListState.RescheduleTodoItem>
+public class RescheduleTodoItemActionHandler
+    : ActionHandlerBase<TodoListState, TodoListState.RescheduleTodoItem>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public RescheduleTodoItemActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.RescheduleTodoItem action, CancellationToken token)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.RescheduleTodoItem action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new RescheduleTodoItemCommand(
+            action.ListId,
+            action.ItemId,
+            action.TimeHorizons
+        ));
 
-        var command =
-            new RescheduleTodoItemCommand(
-                action.ListId,
-                action.ItemId,
-                action.TimeHorizons
-            );
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        await _commandDispatcher.Dispatch(command);
-
-        state.TodoListDetails.Get(action.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }

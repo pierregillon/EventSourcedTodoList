@@ -1,39 +1,33 @@
-using BlazorState;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Categorization;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class CategorizeItemActionHandler : ActionHandler<TodoListState.CategorizeItem>
+public class CategorizeItemActionHandler : ActionHandlerBase<TodoListState, TodoListState.CategorizeItem>
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
-
     public CategorizeItemActionHandler(
-        IStore aStore,
+        IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(aStore)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
     }
 
-    public override async Task Handle(TodoListState.CategorizeItem aAction, CancellationToken aCancellationToken)
+    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.CategorizeItem action)
     {
-        var state = Store.GetState<TodoListState>();
+        await Dispatch(new CategorizeTodoItemCommand(
+            action.ListId,
+            action.ItemId,
+            action.CategoryId
+        ));
 
-        var command =
-            new CategorizeTodoItemCommand(
-                aAction.ListId,
-                aAction.ItemId,
-                aAction.CategoryId
-            );
+        var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        await _commandDispatcher.Dispatch(command);
-
-        state.TodoListDetails.Get(aAction.ListId).TodoListItems =
-            await _queryDispatcher.Dispatch(new ListTodoItemsQuery(aAction.ListId, state.CurrentTimeHorizon));
+        return state with
+        {
+            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
+        };
     }
 }
