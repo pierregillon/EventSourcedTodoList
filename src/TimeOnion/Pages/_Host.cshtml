@@ -34,10 +34,7 @@
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_framework/blazor.server.js"></script>
 <script>
-    window.autoResizeTextArea = (id) => {
-        const textareas = document.querySelectorAll(`[_bl_${id}=""]`); 
-        const textarea = textareas.item(0)
-        
+    window.autoResizeTextArea = (textarea) => {
         textarea.setAttribute("style", "height:" + (textarea.scrollHeight) + "px;overflow-y:hidden;");
         textarea.addEventListener("input", OnInput, false);
         textarea.addEventListener("keydown", OnKeyDown, false);
@@ -62,6 +59,10 @@
           tx[i].setAttribute("style", "touch-action: initial;");
         }
     };
+    
+    window.getSelectedStart = (textarea) => {
+       return textarea.selectionStart;
+    }
 </script>
 </body>
 </html>

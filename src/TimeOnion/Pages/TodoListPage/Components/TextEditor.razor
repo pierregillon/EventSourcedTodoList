@@ -52,7 +52,7 @@
 
         if (!firstRender)
         {
-            await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", new object?[]{ _textArea.Id });
+            await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", _textArea);
         }
     }
 
@@ -66,8 +66,14 @@
         }
         else if (obj.Key == "Enter")
         {
-            await AcceptChanges();
-            await EnterPressed.InvokeAsync();
+            var caretPosition = await JavascriptRuntime.InvokeAsync<int>("getSelectedStart", _textArea);
+            var textBeforeCaret = _boundedText[..caretPosition];
+            var textAfterCaret = _boundedText[caretPosition..];
+            if (textBeforeCaret != Text)
+            {
+                await TextChanged.InvokeAsync(textBeforeCaret);
+            }
+            await EnterPressed.InvokeAsync(textAfterCaret);
         }
     }
 

@@ -11,14 +11,4 @@ public record TodoListItemReadModelBeingCreated(
     bool IsDone,
     TimeHorizons TimeHorizons,
     CategoryId? CategoryId
-) : TodoListItemReadModel(Id, ListId, Description, IsDone, TimeHorizons, CategoryId)
-{
-    public static TodoListItemReadModel From(TodoListItemReadModel item) => new TodoListItemReadModelBeingCreated(
-        TodoItemId.New(),
-        item.ListId,
-        string.Empty,
-        false,
-        item.TimeHorizons,
-        item.CategoryId
-    );
-}
+) : TodoListItemReadModel(Id, ListId, Description, IsDone, TimeHorizons, CategoryId);

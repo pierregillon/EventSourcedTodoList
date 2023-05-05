@@ -59,8 +59,8 @@
         <TextEditor
             @ref="_textEditor"
             Text="@Item.Description"
-            TextChanged="text => Send(new TodoListState.EditItemDescription(Item.ListId, Item.Id, text))"
-            EnterPressed="newDescription => Send(new TodoListState.InsertNewItemToDo(Item.ListId, Item.Id))"
+            TextChanged="async text => await Send(new TodoListState.EditItemDescription(Item.ListId, Item.Id, text))"
+            EnterPressed="newDescription => Send(new TodoListState.AddNewItemTodoAfterItem(Item.ListId, Item.Id, newDescription))"
             DeletionTriggered="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
             IsStrikeThrough="@Item.IsDone">
         </TextEditor>

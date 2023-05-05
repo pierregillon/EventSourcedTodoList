@@ -57,7 +57,7 @@
                 Icon="@Icons.Material.Filled.Add"
                 Size="Size.Small"
                 Color="Color.Primary"
-                OnClick="_ => Dispatch(new TodoListState.InsertNewItemToDo(TodoListId, TodoItemId.None))">
+                OnClick="_ => Send(new TodoListState.InsertNewItemToDoAtTheEnd(TodoListId))">
             </MudIconButton>
         </div>
     }
@@ -86,10 +86,10 @@
         }
         await Mediator.Send(new TodoListState.LoadCategories(TodoListId));
         await Mediator.Send(new TodoListState.LoadTodoListItems(TodoListId));
-        
+
         await base.OnInitializedAsync();
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -120,7 +120,7 @@
         }
     }
 
-    private async Task Dispatch(IAction action) => await Mediator.Send(action);
+    private async Task Send(IAction action) => await Mediator.Send(action);
 
     private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
     {

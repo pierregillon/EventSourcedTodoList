@@ -2,7 +2,6 @@ using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Pages.TodoListPage.Actions.Details;
-using TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
 namespace TimeOnion.Pages.TodoListPage;
 
@@ -49,7 +48,14 @@ public class TodoListDetails
     {
         var items = Get(item.ListId).TodoListItems.ToList();
 
-        var clone = TodoListItemReadModelBeingCreated.From(item);
+        var clone = new TodoListItemReadModelBeingCreated(
+            TodoItemId.New(),
+            item.ListId,
+            string.Empty,
+            false,
+            item.TimeHorizons,
+            item.CategoryId
+        );
 
         items.Insert(items.IndexOf(item) + 1, clone);
 
