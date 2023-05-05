@@ -14,7 +14,8 @@
     {
         <MudMenuItem
             Icon="@Icons.Material.Filled.Redo"
-            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
+            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))"
+            OnTouch="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
             Reporter à @NextTimeHorizons.ToText().ToLower()
         </MudMenuItem>
     }
@@ -23,7 +24,8 @@
     {
         <MudMenuItem
             Icon="@Icons.Material.Filled.Undo"
-            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
+            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))"
+            OnTouch="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
             Avancer à @PreviousTimeHorizons.ToText().ToLower()
         </MudMenuItem>
     }
@@ -31,7 +33,8 @@
     <MudMenuItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Warning"
-        OnClick="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
+        OnClick="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
+        OnTouch="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
         Supprimer
     </MudMenuItem>
 
