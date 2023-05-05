@@ -1,0 +1,30 @@
+@using TimeOnion.Domain.Categories
+@using BlazorState
+@inherits BlazorStateComponent
+
+<MudMenu
+    Class="@Class"
+    Icon="@Icons.Material.Filled.MoreHoriz"
+    Size="Size.Small"
+    AnchorOrigin="Origin.BottomCenter">
+
+    <MudMenuItem
+        Icon="@Icons.Material.Filled.Delete"
+        IconColor="Color.Warning"
+        OnClick="@(() => Send(new TodoListState.DeleteCategory(Category.Id, Category.ListId)))">
+        Supprimer
+    </MudMenuItem>
+
+</MudMenu>
+
+@code {
+
+    [Parameter]
+    public CategoryReadModel Category { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private Task Send(IAction action) => Mediator.Send(action);
+
+}

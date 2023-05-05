@@ -6,28 +6,11 @@
 {
     <div class="flex-grow-1" style="max-width: 700px">
         <div class="overlay-parent d-flex align-center gap-3">
-            <MudMenu
-                Class="invisible overlay d-none d-md-flex"
-                Icon="@Icons.Material.Filled.MoreHoriz"
-                Size="Size.Small"
-                AnchorOrigin="Origin.BottomCenter">
-            
-                <MudMenuItem
-                    Icon="@Icons.Material.Filled.CreateNewFolder"
-                    IconColor="Color.Primary"
-                    OnClick="() => CreateNewCategory(TodoList.Id)">
-                    Créer une catégorie
-                </MudMenuItem>
-    
-                <MudMenuItem
-                    Icon="@Icons.Material.Filled.Delete"
-                    IconColor="Color.Error"
-                    OnClick="() => Delete(TodoList.Id)">
-                    Supprimer la liste
-                </MudMenuItem>
-            
-            </MudMenu>
-            
+            <TodoListActionsComponent
+                TodoListId="TodoList.Id"
+                Class="invisible overlay d-none d-md-flex">
+            </TodoListActionsComponent>
+
             <MudIcon
                 Icon="@Icons.Material.Filled.Checklist"
                 Color="Color.Primary"
@@ -39,6 +22,11 @@
                 Text="@TodoList.Name"
                 TextChanged="newName => Rename(TodoList.Id, newName)">
             </TextEditor>
+
+            <TodoListActionsComponent
+                TodoListId="@TodoList.Id"
+                Class="d-flex d-md-none">
+            </TodoListActionsComponent>
 
         </div>
 
@@ -55,11 +43,5 @@
 
     private async Task Rename(TodoListId listId, string newName)
         => await Mediator.Send(new TodoListState.RenameTodoList(listId, newName));
-
-    private async Task CreateNewCategory(TodoListId listId)
-        => await Mediator.Send(new TodoListState.CreateNewCategory(listId, "Nouvelle catégorie"));
-
-    private async Task Delete(TodoListId listId)
-        => await Mediator.Send(new TodoListState.DeleteTodoList(listId));
 
 }

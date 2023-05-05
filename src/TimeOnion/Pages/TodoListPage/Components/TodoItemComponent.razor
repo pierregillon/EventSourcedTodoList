@@ -1,4 +1,3 @@
-@using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Pages.TodoListPage.Actions.Details
 @using BlazorState
@@ -12,39 +11,11 @@
             <div class="ml-12 mr-1 border-l-2 border-dotted mud-border-primary d-none d-md-flex"></div>
             <div class="ml-4 mr-2 border-l-2 border-dotted mud-border-primary d-flex d-md-none"></div>
         }
-        <MudMenu
-            UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
+
+        <TodoItemActionsComponent
             Class="invisible overlay align-self-start d-none d-md-flex"
-            Icon="@Icons.Material.Filled.MoreHoriz"
-            Size="Size.Small"
-            AnchorOrigin="Origin.BottomCenter">
-
-            @if (NextTimeHorizons != CurrentTimeHorizons)
-            {
-                <MudMenuItem
-                    Icon="@Icons.Material.Filled.Redo"
-                    OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
-                    Reporter à @NextTimeHorizons.ToText().ToLower()
-                </MudMenuItem>
-            }
-
-            @if (PreviousTimeHorizons != CurrentTimeHorizons)
-            {
-                <MudMenuItem
-                    Icon="@Icons.Material.Filled.Undo"
-                    OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
-                    Avancer à @PreviousTimeHorizons.ToText().ToLower()
-                </MudMenuItem>
-            }
-
-            <MudMenuItem
-                Icon="@Icons.Material.Filled.Delete"
-                IconColor="Color.Warning"
-                OnClick="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
-                Supprimer
-            </MudMenuItem>
-
-        </MudMenu>
+            Item="@Item">
+        </TodoItemActionsComponent>
 
         <MudCheckBox
             T="bool"
@@ -64,6 +35,11 @@
             DeletionTriggered="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
             IsStrikeThrough="@Item.IsDone">
         </TextEditor>
+
+        <TodoItemActionsComponent
+            Class="d-flex d-md-none"
+            Item="@Item">
+        </TodoItemActionsComponent>
     </div>
 }
 
@@ -73,12 +49,6 @@
 
     [Parameter]
     public TodoListItemReadModel? Item { get; set; }
-
-    private TimeHorizons NextTimeHorizons => CurrentTimeHorizons.Next();
-
-    private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
-
-    private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

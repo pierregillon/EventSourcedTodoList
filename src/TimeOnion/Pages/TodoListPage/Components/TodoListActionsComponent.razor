@@ -1,0 +1,35 @@
+@using TimeOnion.Domain.Todo.Core
+@using BlazorState
+@inherits BlazorStateComponent
+
+<MudMenu
+    Class="@Class"
+    Icon="@Icons.Material.Filled.MoreHoriz"
+    Size="Size.Small"
+    AnchorOrigin="Origin.BottomCenter">
+
+    <MudMenuItem
+        Icon="@Icons.Material.Filled.CreateNewFolder"
+        IconColor="Color.Primary"
+        OnClick="@(() => Send(new TodoListState.CreateNewCategory(TodoListId, "Nouvelle catégorie")))">
+        Créer une catégorie
+    </MudMenuItem>
+
+    <MudMenuItem
+        Icon="@Icons.Material.Filled.Delete"
+        IconColor="Color.Error"
+        OnClick="() => Send(new TodoListState.DeleteTodoList(TodoListId))">
+        Supprimer la liste
+    </MudMenuItem>
+</MudMenu>
+
+@code {
+
+    [Parameter]
+    public TodoListId TodoListId { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private Task Send(IAction action) => Mediator.Send(action);
+}

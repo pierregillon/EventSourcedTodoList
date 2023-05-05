@@ -1,0 +1,56 @@
+@using TimeOnion.Domain.Todo.Core
+@using TimeOnion.Domain.Todo.UseCases
+@using BlazorState
+@inherits BlazorStateComponent
+
+<MudMenu
+    UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
+    Class="@Class"
+    Icon="@Icons.Material.Filled.MoreHoriz"
+    Size="Size.Small"
+    AnchorOrigin="Origin.BottomCenter">
+
+    @if (NextTimeHorizons != CurrentTimeHorizons)
+    {
+        <MudMenuItem
+            Icon="@Icons.Material.Filled.Redo"
+            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, NextTimeHorizons))">
+            Reporter à @NextTimeHorizons.ToText().ToLower()
+        </MudMenuItem>
+    }
+
+    @if (PreviousTimeHorizons != CurrentTimeHorizons)
+    {
+        <MudMenuItem
+            Icon="@Icons.Material.Filled.Undo"
+            OnClick="() => Send(new TodoListState.RescheduleTodoItem(Item.ListId, Item.Id, PreviousTimeHorizons))">
+            Avancer à @PreviousTimeHorizons.ToText().ToLower()
+        </MudMenuItem>
+    }
+
+    <MudMenuItem
+        Icon="@Icons.Material.Filled.Delete"
+        IconColor="Color.Warning"
+        OnClick="() => Send(new TodoListState.DeleteItem(Item.ListId, Item.Id))">
+        Supprimer
+    </MudMenuItem>
+
+</MudMenu>
+
+@code {
+
+    [Parameter]
+    public TodoListItemReadModel Item { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private TimeHorizons NextTimeHorizons => CurrentTimeHorizons.Next();
+
+    private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
+
+    private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
+
+    private Task Send(IAction action) => Mediator.Send(action);
+
+}

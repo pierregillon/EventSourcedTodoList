@@ -1,26 +1,14 @@
 @using TimeOnion.Domain.Categories
-@using TimeOnion.Domain.Categories.Core
-@using TimeOnion.Domain.Todo.Core
 @using BlazorState
-@inherits BlazorState.BlazorStateComponent
+@inherits BlazorStateComponent
 
 @if (Category is not null)
 {
     <div class="overlay-parent d-flex gap-1 align-center">
-        <MudMenu
+        <CategoryActionsComponent
             Class="invisible overlay d-none d-md-flex"
-            Icon="@Icons.Material.Filled.MoreHoriz"
-            Size="Size.Small"
-            AnchorOrigin="Origin.BottomCenter">
-
-            <MudMenuItem
-                Icon="@Icons.Material.Filled.Delete"
-                IconColor="Color.Warning"
-                OnClick="@(() => Send(new TodoListState.DeleteCategory(Category.Id, Category.ListId)))">
-                Supprimer
-            </MudMenuItem>
-
-        </MudMenu>
+            Category="@Category">
+        </CategoryActionsComponent>
 
         <MudIcon
             Icon="@Icons.Material.Filled.Folder"
@@ -33,6 +21,11 @@
             TextChanged="@(text => Send(new TodoListState.RenameCategory(Category.Id, text, Category.ListId)))"
             EnterPressed="@(() => Send(new TodoListState.InsertNewItemToDoOnTopOfCategory(Category.ListId, Category.Id)))">
         </TextEditor>
+
+        <CategoryActionsComponent
+            Class="d-flex d-md-none"
+            Category="@Category">
+        </CategoryActionsComponent>
     </div>
 }
 
