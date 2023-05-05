@@ -63,6 +63,8 @@
     }
 </div>
 
+@inject IJSRuntime JavascriptRuntime;
+
 @code {
 
     [Parameter]
@@ -84,7 +86,18 @@
         }
         await Mediator.Send(new TodoListState.LoadCategories(TodoListId));
         await Mediator.Send(new TodoListState.LoadTodoListItems(TodoListId));
+        
         await base.OnInitializedAsync();
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (!firstRender)
+        {
+            await JavascriptRuntime.InvokeAsync<string>("enableTouchOnMudDropItems", Array.Empty<object?>());
+        }
     }
 
     public override async Task SetParametersAsync(ParameterView parameters)

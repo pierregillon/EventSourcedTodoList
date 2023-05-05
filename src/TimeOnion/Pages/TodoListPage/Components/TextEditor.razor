@@ -52,7 +52,7 @@
 
         if (!firstRender)
         {
-            await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", Array.Empty<object?>());
+            await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", new object?[]{ _textArea.Id });
         }
     }
 
