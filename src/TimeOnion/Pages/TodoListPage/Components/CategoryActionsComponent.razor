@@ -1,6 +1,7 @@
 @using TimeOnion.Domain.Categories
 @using BlazorState
 @inherits BlazorStateComponent
+@inject IDialogService DialogService
 
 <MudMenu
     Class="@Class"
@@ -11,7 +12,7 @@
     <MudMenuItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Warning"
-        OnClick="@(() => Send(new TodoListState.DeleteCategory(Category.Id, Category.ListId)))">
+        OnClick="ConfirmDeletion">
         Supprimer
     </MudMenuItem>
 
@@ -26,5 +27,13 @@
     public string Class { get; set; } = string.Empty;
 
     private Task Send(IAction action) => Mediator.Send(action);
+
+    private async Task ConfirmDeletion()
+    {
+        if (await DialogService.ShowConfirmationDialog("Confirmation", $"Êtes-vous sûr de vouloir supprimer la catégorie \"{Category.Name}\" ? Ses tâches seront conservées."))
+        {
+            await Send(new TodoListState.DeleteCategory(Category.Id, Category.ListId));
+        }
+    }
 
 }

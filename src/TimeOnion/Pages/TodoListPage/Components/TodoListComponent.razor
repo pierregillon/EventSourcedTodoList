@@ -7,7 +7,7 @@
     <div class="flex-grow-1" style="max-width: 700px">
         <div class="overlay-parent d-flex align-center gap-3">
             <TodoListActionsComponent
-                TodoListId="TodoList.Id"
+                TodoList="@TodoList"
                 Class="invisible overlay d-none d-md-flex">
             </TodoListActionsComponent>
 
@@ -24,7 +24,7 @@
             </TextEditor>
 
             <TodoListActionsComponent
-                TodoListId="@TodoList.Id"
+                TodoList="@TodoList"
                 Class="d-flex d-md-none">
             </TodoListActionsComponent>
 

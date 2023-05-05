@@ -1,0 +1,24 @@
+<MudDialog Class="ma-4">
+    <DialogContent>
+        <div class="d-flex gap-4 align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" Size="Size.Large"></MudIcon>
+            <MudText Typo="Typo.body1">@ConfirmationMessage</MudText>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Non</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Oui</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public string ConfirmationMessage { get; set; } = string.Empty;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

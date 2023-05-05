@@ -1,6 +1,7 @@
-@using TimeOnion.Domain.Todo.Core
+@using TimeOnion.Domain.Todo.UseCases
 @using BlazorState
 @inherits BlazorStateComponent
+@inject IDialogService DialogService
 
 <MudMenu
     Class="@Class"
@@ -11,14 +12,14 @@
     <MudMenuItem
         Icon="@Icons.Material.Filled.CreateNewFolder"
         IconColor="Color.Primary"
-        OnClick="@(() => Send(new TodoListState.CreateNewCategory(TodoListId, "Nouvelle catégorie")))">
+        OnClick="@(() => Send(new TodoListState.CreateNewCategory(TodoList.Id, "Nouvelle catégorie")))">
         Créer une catégorie
     </MudMenuItem>
 
     <MudMenuItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Error"
-        OnClick="() => Send(new TodoListState.DeleteTodoList(TodoListId))">
+        OnClick="ConfirmDeletion">
         Supprimer la liste
     </MudMenuItem>
 </MudMenu>
@@ -26,10 +27,19 @@
 @code {
 
     [Parameter]
-    public TodoListId TodoListId { get; set; } = default!;
+    public TodoListReadModel TodoList { get; set; } = default!;
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
 
     private Task Send(IAction action) => Mediator.Send(action);
+
+    private async Task ConfirmDeletion()
+    {
+        if (await DialogService.ShowConfirmationDialog("Confirmation", $"Êtes-vous sûr de vouloir supprimer la liste \"{TodoList.Name}\" ainsi que toutes ses tâches ?"))
+        {
+            await Send(new TodoListState.DeleteTodoList(TodoList.Id));
+        }
+    }
+
 }
