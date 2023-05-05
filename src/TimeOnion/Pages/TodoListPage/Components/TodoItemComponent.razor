@@ -10,7 +10,7 @@
         @if (Item.CategoryId is not null)
         {
             <div class="ml-12 mr-1 border-l-2 border-dotted mud-border-primary d-none d-md-flex"></div>
-            <div class="ml-4 mr-1 border-l-2 border-dotted mud-border-primary d-flex d-md-none"></div>
+            <div class="ml-4 mr-2 border-l-2 border-dotted mud-border-primary d-flex d-md-none"></div>
         }
         <MudMenu
             UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
@@ -48,6 +48,7 @@
 
         <MudCheckBox
             T="bool"
+            UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
             Checked="Item.IsDone"
             CheckedChanged="isChecked => isChecked ? MarkItemAsDone(Item.ListId, Item.Id) : MarkAsToDo(Item.ListId, Item.Id)"
             Class="compact"

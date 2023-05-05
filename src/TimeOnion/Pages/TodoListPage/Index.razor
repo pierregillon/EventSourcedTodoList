@@ -7,14 +7,14 @@
 
 <TimeHorizonSelector></TimeHorizonSelector>
 
-<div class="d-flex align-end justify-center gap-3 mb-4">
-    <MudText Typo="Typo.h3">
+<div class="d-flex align-center justify-center gap-3 mb-4">
+    <MudText Typo="Typo.h4">
         @State.CurrentTimeHorizon.ToText()
     </MudText>
 
     <MudTooltip Text="Ajouter une nouvelle liste">
         <MudIconButton
-            Icon="@Icons.Material.Filled.AddCircle"
+            Icon="@Icons.Material.Filled.PlaylistAdd"
             OnClick="CreateNewTodoList"
             Color="Color.Primary">
         </MudIconButton>
@@ -30,6 +30,8 @@
         }
     </div>
 </MudContainer>
+
+<div class="mb-10"></div>
 
 @code {
 
