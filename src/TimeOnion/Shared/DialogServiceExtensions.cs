@@ -10,13 +10,14 @@ public static class DialogServiceExtensions
         string message
     )
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, DisableBackdropClick = true, CloseButton = true};
         var parameters = new DialogParameters
         {
             { "ConfirmationMessage", message }
         };
         var dialog = await dialogService.ShowAsync<ConfirmationDialog>(title, parameters, options);
         var result = await dialog.Result;
-        return (bool)result.Data;
+
+        return !result.Canceled && (bool)result.Data;
     }
 }
