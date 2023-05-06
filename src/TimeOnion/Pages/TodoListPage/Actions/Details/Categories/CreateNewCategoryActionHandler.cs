@@ -17,7 +17,7 @@ public class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListState, T
 
     protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.CreateNewCategory action)
     {
-        await Dispatch(new CreateNewCategory(new CategoryName(action.Name), action.ListId));
+        await Dispatch(new CreateNewCategory(new CategoryName("Nouvelle Catégorie"), action.ListId));
 
         var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 

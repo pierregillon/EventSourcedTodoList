@@ -11,7 +11,8 @@
     <MudMenuItem
         Icon="@Icons.Material.Filled.CreateNewFolder"
         IconColor="Color.Primary"
-        OnClick="@(() => Execute(new TodoListState.CreateNewCategory(TodoList.Id, "Nouvelle catégorie")))">
+        OnClick="@(() => Execute(new TodoListState.CreateNewCategory(TodoList.Id)))"
+        OnTouch="@(() => Execute(new TodoListState.CreateNewCategory(TodoList.Id)))">
         Créer une catégorie
     </MudMenuItem>
 
@@ -22,6 +23,7 @@
         OnTouch="ConfirmDeletion">
         Supprimer la liste
     </MudMenuItem>
+
 </MudMenu>
 
 @code {

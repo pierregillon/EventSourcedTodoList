@@ -218,8 +218,12 @@ public class TodoList : EventSourcedAggregate<TodoListId>
                 break;
 
             case TodoItemDeleted deleted:
-                item = _items.Single(x => x.Id == deleted.ItemId);
-                _items.Remove(item);
+                var itemToDelete = _items.SingleOrDefault(x => x.Id == deleted.ItemId);
+                if (itemToDelete is not null)
+                {
+                    _items.Remove(itemToDelete);
+                }
+
                 break;
         }
     }

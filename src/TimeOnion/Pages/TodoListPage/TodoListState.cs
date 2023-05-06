@@ -52,8 +52,7 @@ public record TodoListState(
     public record ReloadTodoListItems : IAction;
 
     public record CreateNewCategory(
-        TodoListId ListId,
-        string Name
+        TodoListId ListId
     ) : IAction;
 
     public record RenameCategory(
