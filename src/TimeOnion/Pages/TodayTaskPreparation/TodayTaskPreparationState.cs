@@ -12,7 +12,7 @@ public record TodayTaskPreparationState(
     IEnumerable<SelectableTodoItem> ThisDayUndoneTasks
 ) : IState
 {
-    public static TodayTaskPreparationState Initialize => new(
+    public static TodayTaskPreparationState Initialize() => new(
         null,
         new List<SelectableTodoItem>(),
         new List<SelectableTodoItem>(),
