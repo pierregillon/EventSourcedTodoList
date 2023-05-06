@@ -1,10 +1,15 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class LoadCategoriesActionHandler : ActionHandlerBase<TodoListState, TodoListState.LoadCategories>
+internal record LoadCategoriesAction(
+    TodoListId ListId
+) : IAction<TodoListState>;
+
+internal class LoadCategoriesActionHandler : ActionHandlerBase<TodoListState, LoadCategoriesAction>
 {
     public LoadCategoriesActionHandler(
         IStore store,
@@ -14,7 +19,7 @@ public class LoadCategoriesActionHandler : ActionHandlerBase<TodoListState, Todo
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.LoadCategories action)
+    protected override async Task<TodoListState> Apply(TodoListState state, LoadCategoriesAction action)
     {
         var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 

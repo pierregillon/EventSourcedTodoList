@@ -5,9 +5,11 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-public class CreateNewTodoListActionHandler : ActionHandlerBase<TodoListState, TodoListState.CreateNewTodoList>
+internal record RenameTodoListAction(TodoListId ListId, string NewName) : IAction<TodoListState>;
+
+internal class RenameTodoListActionHandler : ActionHandlerBase<TodoListState, RenameTodoListAction>
 {
-    public CreateNewTodoListActionHandler(
+    public RenameTodoListActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -15,9 +17,12 @@ public class CreateNewTodoListActionHandler : ActionHandlerBase<TodoListState, T
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.CreateNewTodoList action)
+    protected override async Task<TodoListState> Apply(TodoListState state, RenameTodoListAction action)
     {
-        await Dispatch(new CreateNewTodoListCommand(new TodoListName("Nouvelle todo liste")));
+        await Dispatch(new RenameTodoListCommand(
+            action.ListId,
+            new TodoListName(action.NewName)
+        ));
 
         return state with
         {

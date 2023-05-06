@@ -1,17 +1,20 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class DeleteItemActionHandler : ActionHandlerBase<TodoListState, TodoListState.DeleteItem>
+internal record DeleteItemAction(TodoListId ListId, TodoItemId ItemId) : IAction<TodoListState>;
+
+internal class DeleteItemActionHandler : ActionHandlerBase<TodoListState, DeleteItemAction>
 {
     public DeleteItemActionHandler(IStore store, ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
         : base(store, commandDispatcher, queryDispatcher)
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.DeleteItem action)
+    protected override async Task<TodoListState> Apply(TodoListState state, DeleteItemAction action)
     {
         var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
 

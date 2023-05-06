@@ -1,13 +1,16 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
-using TimeOnion.Domain.Todo.UseCases.Categorization;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class DecategorizeItemActionHandler : ActionHandlerBase<TodoListState, TodoListState.DecategorizeItem>
+internal record LoadTodoListItemsAction(TodoListId ListId) : IAction<TodoListState>;
+
+internal class LoadTodoListItemsActionHandler :
+    ActionHandlerBase<TodoListState, LoadTodoListItemsAction>
 {
-    public DecategorizeItemActionHandler(
+    public LoadTodoListItemsActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -15,10 +18,11 @@ public class DecategorizeItemActionHandler : ActionHandlerBase<TodoListState, To
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.DecategorizeItem action)
+    protected override async Task<TodoListState> Apply(
+        TodoListState state,
+        LoadTodoListItemsAction action
+    )
     {
-        await Dispatch(new DecategorizeTodoItemCommand(action.ListId, action.ItemId));
-
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
         return state with

@@ -4,9 +4,9 @@ using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Domain.Categories;
 
-public record CreateNewCategory(CategoryName Name, TodoListId ListId) : ICommand;
+public record CreateNewCategoryCommand(CategoryName Name, TodoListId ListId) : ICommand;
 
-internal class CreateNewCategoryCommandHandler : ICommandHandler<CreateNewCategory>
+internal class CreateNewCategoryCommandHandler : ICommandHandler<CreateNewCategoryCommand>
 {
     private readonly IRepository<Category, CategoryId> _categoryRepository;
     private readonly IRepository<TodoList, TodoListId> _todoListRepository;
@@ -20,7 +20,7 @@ internal class CreateNewCategoryCommandHandler : ICommandHandler<CreateNewCatego
         _todoListRepository = todoListRepository;
     }
 
-    public async Task Handle(CreateNewCategory command)
+    public async Task Handle(CreateNewCategoryCommand command)
     {
         var todoList = await _todoListRepository.Get(command.ListId);
 

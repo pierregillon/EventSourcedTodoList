@@ -1,11 +1,18 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class RenameCategoryActionHandler : ActionHandlerBase<TodoListState, TodoListState.RenameCategory>
+internal record RenameCategoryAction(
+    CategoryId Id,
+    string Name,
+    TodoListId ListId
+) : IAction<TodoListState>;
+
+internal class RenameCategoryActionHandler : ActionHandlerBase<TodoListState, RenameCategoryAction>
 {
     public RenameCategoryActionHandler(
         IStore store,
@@ -15,7 +22,7 @@ public class RenameCategoryActionHandler : ActionHandlerBase<TodoListState, Todo
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.RenameCategory action)
+    protected override async Task<TodoListState> Apply(TodoListState state, RenameCategoryAction action)
     {
         await Dispatch(new RenameCategoryCommand(action.Id, new CategoryName(action.Name)));
 

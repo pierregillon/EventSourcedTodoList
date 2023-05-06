@@ -3,7 +3,8 @@ using TimeOnion.Domain.BuildingBlocks;
 namespace TimeOnion.Shared.MVU;
 
 public abstract class ActionHandlerBase<TState, TAction> : StateActionHandler<TState, TAction>
-    where TState : IState where TAction : IAction
+    where TState : IState
+    where TAction : IAction<TState>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;

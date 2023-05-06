@@ -1,14 +1,21 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
-using TimeOnion.Domain.Todo.UseCases.Positionning;
+using TimeOnion.Domain.Todo.UseCases.Categorization;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class RepositionItemAtTheEndActionHandler :
-    ActionHandlerBase<TodoListState, TodoListState.RepositionItemAtTheEnd>
+internal record CategorizeItemAction(
+    TodoListId ListId,
+    TodoItemId ItemId,
+    CategoryId CategoryId
+) : IAction<TodoListState>;
+
+internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListState, CategorizeItemAction>
 {
-    public RepositionItemAtTheEndActionHandler(
+    public CategorizeItemActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -16,11 +23,12 @@ public class RepositionItemAtTheEndActionHandler :
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.RepositionItemAtTheEnd action)
+    protected override async Task<TodoListState> Apply(TodoListState state, CategorizeItemAction action)
     {
-        await Dispatch(new RepositionItemAtTheEndCommand(
+        await Dispatch(new CategorizeTodoItemCommand(
             action.ListId,
-            action.ItemId
+            action.ItemId,
+            action.CategoryId
         ));
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));

@@ -1,5 +1,7 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodoListPage.Actions.Details.Categories
+@using TimeOnion.Pages.TodoListPage.Actions.Details.Items
 @using TimeOnion.Domain.Categories
 @using TimeOnion.Domain.Categories.Core
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
@@ -56,7 +58,7 @@
                 Icon="@Icons.Material.Filled.Add"
                 Size="Size.Small"
                 Color="Color.Primary"
-                OnClick="_ => Execute(new TodoListState.InsertNewItemToDoAtTheEnd(TodoListId))">
+                OnClick="_ => Execute(new InsertNewItemToDoAtTheEndActionAction(TodoListId))">
             </MudIconButton>
         </div>
     }
@@ -83,8 +85,8 @@
         {
             return;
         }
-        await Execute(new TodoListState.LoadCategories(TodoListId));
-        await Execute(new TodoListState.LoadTodoListItems(TodoListId));
+        await Execute(new LoadCategoriesAction(TodoListId));
+        await Execute(new LoadTodoListItemsAction(TodoListId));
 
         await base.OnInitializedAsync();
     }
@@ -105,8 +107,8 @@
         {
             if (newId is not null && newId != TodoListId)
             {
-                await Execute(new TodoListState.LoadCategories(newId));
-                await Execute(new TodoListState.LoadTodoListItems(newId));
+                await Execute(new LoadCategoriesAction(newId));
+                await Execute(new LoadTodoListItemsAction(newId));
             }
 
             await base.SetParametersAsync(parameters);
@@ -137,12 +139,12 @@
         {
             if (currentItem.CategoryId != targetIdCategory)
             {
-                await Execute(new TodoListState.CategorizeItem(listId, itemId, targetIdCategory));
+                await Execute(new CategorizeItemAction(listId, itemId, targetIdCategory));
             }
         }
         else if (currentItem.CategoryId is not null)
         {
-            await Execute(new TodoListState.DecategorizeItem(listId, itemId));
+            await Execute(new DecategorizeItemAction(listId, itemId));
         }
     }
 
@@ -162,11 +164,11 @@
         var referenceItem = itemsInSameCategory.Where((_, i) => i == indexInCategory).FirstOrDefault();
         if (referenceItem is not null && referenceItem.Id != itemId)
         {
-            await Execute(new TodoListState.RepositionItemAboveAnother(listId, itemId, referenceItem.Id));
+            await Execute(new RepositionItemAboveAnotherAction(listId, itemId, referenceItem.Id));
         }
         else if (referenceItem is null)
         {
-            await Execute(new TodoListState.RepositionItemAtTheEnd(listId, itemId));
+            await Execute(new RepositionItemAtTheEndAction(listId, itemId));
         }
     }
 

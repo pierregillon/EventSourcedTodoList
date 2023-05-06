@@ -18,10 +18,6 @@ public record TodayTaskPreparationState(
         new List<SelectableTodoItem>(),
         new List<SelectableTodoItem>()
     );
-
-    public record Load : IAction;
-
-    public record MoveToNextPreparationStep : IAction;
 }
 
 public record SelectableTodoItem(TodoListId ListId, TodoItemId ItemId, string Description, bool IsSelected)

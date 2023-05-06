@@ -1,13 +1,21 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Positionning;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class RepositionItemActionHandler : ActionHandlerBase<TodoListState, TodoListState.RepositionItemAboveAnother>
+internal record RepositionItemAboveAnotherAction(
+    TodoListId ListId,
+    TodoItemId ItemId,
+    TodoItemId ReferenceItemId
+) : IAction<TodoListState>;
+
+internal class
+    RepositionItemAboveAnotherActionHandler : ActionHandlerBase<TodoListState, RepositionItemAboveAnotherAction>
 {
-    public RepositionItemActionHandler(
+    public RepositionItemAboveAnotherActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -17,7 +25,7 @@ public class RepositionItemActionHandler : ActionHandlerBase<TodoListState, Todo
 
     protected override async Task<TodoListState> Apply(
         TodoListState state,
-        TodoListState.RepositionItemAboveAnother action
+        RepositionItemAboveAnotherAction action
     )
     {
         await Dispatch(new RepositionItemAboveAnotherCommand(

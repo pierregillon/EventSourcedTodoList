@@ -5,8 +5,10 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
-public class LoadTodayTaskPreparationActionHandler :
-    ActionHandlerBase<TodayTaskPreparationState, TodayTaskPreparationState.Load>
+internal record LoadTodayTaskPreparationAction : IAction<TodayTaskPreparationState>;
+
+internal class LoadTodayTaskPreparationActionHandler :
+    ActionHandlerBase<TodayTaskPreparationState, LoadTodayTaskPreparationAction>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
@@ -23,7 +25,7 @@ public class LoadTodayTaskPreparationActionHandler :
 
     protected override async Task<TodayTaskPreparationState> Apply(
         TodayTaskPreparationState state,
-        TodayTaskPreparationState.Load action
+        LoadTodayTaskPreparationAction action
     )
     {
         var items = (await Dispatch(new ListYesterdayUndoneTasksQuery()))

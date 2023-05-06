@@ -4,7 +4,9 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class ReloadTodoListItemsActionHandler : ActionHandlerBase<TodoListState, TodoListState.ReloadTodoListItems>
+internal record ReloadTodoListItemsAction : IAction<TodoListState>;
+
+internal class ReloadTodoListItemsActionHandler : ActionHandlerBase<TodoListState, ReloadTodoListItemsAction>
 {
     public ReloadTodoListItemsActionHandler(
         IStore store,
@@ -14,7 +16,7 @@ public class ReloadTodoListItemsActionHandler : ActionHandlerBase<TodoListState,
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.ReloadTodoListItems action)
+    protected override async Task<TodoListState> Apply(TodoListState state, ReloadTodoListItemsAction action)
     {
         foreach (var todoList in state.TodoLists)
         {

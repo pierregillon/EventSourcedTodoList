@@ -1,4 +1,5 @@
 @using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodoListPage.Actions.List
 @using TimeOnion.Domain.Todo.Core
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
@@ -42,6 +43,6 @@
     public TodoListReadModel? TodoList { get; set; }
 
     private async Task Rename(TodoListId listId, string newName)
-        => await Execute(new TodoListState.RenameTodoList(listId, newName));
+        => await Execute(new RenameTodoListAction(listId, newName));
 
 }

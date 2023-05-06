@@ -1,21 +1,25 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class LoadTodoListItemsActionHandler : ActionHandlerBase<TodoListState, TodoListState.LoadTodoListItems>
+public class MarkAsToDoActionHandler : ActionHandlerBase<TodoListState, MarkAsToDoActionHandler.MarkItemAsToDo>
 {
-    public LoadTodoListItemsActionHandler(
+    public MarkAsToDoActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(store, commandDispatcher, queryDispatcher)
+    )
+        : base(store, commandDispatcher, queryDispatcher)
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.LoadTodoListItems action)
+    protected override async Task<TodoListState> Apply(TodoListState state, MarkItemAsToDo action)
     {
+        await Dispatch(new MarkItemAsToDoCommand(action.ListId, action.ItemId));
+
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
         return state with
@@ -23,4 +27,6 @@ public class LoadTodoListItemsActionHandler : ActionHandlerBase<TodoListState, T
             TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
         };
     }
+
+    public record MarkItemAsToDo(TodoListId ListId, TodoItemId ItemId) : IAction<TodoListState>;
 }

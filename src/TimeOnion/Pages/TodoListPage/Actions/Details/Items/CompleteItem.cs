@@ -1,23 +1,25 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class MarkAsToDoActionHandler : ActionHandlerBase<TodoListState, TodoListState.MarkItemAsToDo>
+internal record MarkItemAsDoneAction(TodoListId ListId, TodoItemId ItemId) : IAction<TodoListState>;
+
+internal class CompleteItemActionHandler : ActionHandlerBase<TodoListState, MarkItemAsDoneAction>
 {
-    public MarkAsToDoActionHandler(
+    public CompleteItemActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    )
-        : base(store, commandDispatcher, queryDispatcher)
+    ) : base(store, commandDispatcher, queryDispatcher)
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.MarkItemAsToDo action)
+    protected override async Task<TodoListState> Apply(TodoListState state, MarkItemAsDoneAction action)
     {
-        await Dispatch(new MarkItemAsToDoCommand(action.ListId, action.ItemId));
+        await Dispatch(new MarkItemAsDoneCommand(action.ListId, action.ItemId));
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 

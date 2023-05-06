@@ -11,9 +11,23 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
 
     public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
     {
-        if (aRequest is IAction)
+        if (aRequest is not IAction)
         {
-            _subscriptions.ReRenderSubscribers(typeof(TRequest).DeclaringType!);
+            return Task.CompletedTask;
+        }
+
+        var actionInterface = aRequest
+            .GetType()
+            .FindInterfaces(
+                (interfaceType, _) => interfaceType.IsGenericType
+                    && interfaceType.GetGenericTypeDefinition() == typeof(IAction<>), null)
+            .SingleOrDefault();
+
+        if (actionInterface is not null)
+        {
+            var stateType = actionInterface.GetGenericArguments().Single();
+
+            _subscriptions.ReRenderSubscribers(stateType);
         }
 
         return Task.CompletedTask;

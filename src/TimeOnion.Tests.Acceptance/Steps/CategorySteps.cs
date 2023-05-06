@@ -17,14 +17,15 @@ public class CategorySteps
 
     [When(@"I create the ""(.*)"" empty category")]
     public async Task WhenICreateTheEmptyCategory(string categoryName) =>
-        await _application.Dispatch(() => new CreateNewCategory(new CategoryName(categoryName), TodoListId.New()));
+        await _application.Dispatch(
+            () => new CreateNewCategoryCommand(new CategoryName(categoryName), TodoListId.New()));
 
     [When(@"I create the (.*) category in my (.*) list")]
     [Given(@"the (.*) category has been created in my (.*) list")]
     public async Task WhenICreateTheCategory(string categoryName, string listName)
     {
         var listId = await FindListId(listName) ?? TodoListId.New();
-        await _application.Dispatch(() => new CreateNewCategory(new CategoryName(categoryName), listId));
+        await _application.Dispatch(() => new CreateNewCategoryCommand(new CategoryName(categoryName), listId));
     }
 
     [When(@"I rename the (.*) category in my (.*) list to (.*)")]

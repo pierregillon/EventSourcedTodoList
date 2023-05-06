@@ -5,7 +5,11 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class EditItemDescriptionActionHandler : ActionHandlerBase<TodoListState, TodoListState.EditItemDescription>
+internal record EditItemDescriptionAction
+    (TodoListId ListId, TodoItemId ItemId, string NewDescription) : IAction<TodoListState>;
+
+internal class EditItemDescriptionActionHandler :
+    ActionHandlerBase<TodoListState, EditItemDescriptionAction>
 {
     public EditItemDescriptionActionHandler(
         IStore store,
@@ -15,7 +19,7 @@ public class EditItemDescriptionActionHandler : ActionHandlerBase<TodoListState,
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.EditItemDescription action)
+    protected override async Task<TodoListState> Apply(TodoListState state, EditItemDescriptionAction action)
     {
         var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
 

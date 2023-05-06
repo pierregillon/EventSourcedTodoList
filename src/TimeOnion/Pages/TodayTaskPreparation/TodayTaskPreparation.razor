@@ -1,6 +1,7 @@
-@using TimeOnion.Pages.TodoListPage
-@using TimeOnion.Pages.TodayTaskPreparation.Steps
+@using TimeOnion.Pages.TodayTaskPreparation.Actions
 @using TimeOnion.Pages.TodayTaskPreparation.Components
+@using TimeOnion.Pages.TodayTaskPreparation.Steps
+@using TimeOnion.Pages.TodoListPage.Actions.Details.Items
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 @if (State.CurrentStep is not null)
@@ -35,7 +36,7 @@
                         <MudButton
                             Color="Color.Primary"
                             Variant="Variant.Filled"
-                            OnClick="() => Execute(new TodayTaskPreparationState.MoveToNextPreparationStep())">
+                            OnClick="() => Execute(new MoveToNextPreparationStepAction())">
                             Suivant
                         </MudButton>
                     }
@@ -55,12 +56,12 @@
     TodayTaskPreparationState State => GetState<TodayTaskPreparationState>();
 
     protected override async Task OnInitializedAsync()
-        => await Execute(new TodayTaskPreparationState.Load());
+        => await Execute(new LoadTodayTaskPreparationAction());
 
     async Task Submit()
     {
-        await Execute(new TodayTaskPreparationState.MoveToNextPreparationStep());
-        await Execute(new TodoListState.ReloadTodoListItems());
+        await Execute(new MoveToNextPreparationStepAction());
+        await Execute(new ReloadTodoListItemsAction());
         MudDialog.Close(DialogResult.Ok(true));
     }
 

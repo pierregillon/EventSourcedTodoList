@@ -4,10 +4,7 @@ public class Subscriptions
 {
     private readonly List<Subscription> _subscriptions;
 
-    public Subscriptions()
-    {
-        _subscriptions = new List<Subscription>();
-    }
+    public Subscriptions() => _subscriptions = new List<Subscription>();
 
     public Subscriptions Add<T>(IBlazorStateComponent aBlazorStateComponent)
     {
@@ -17,7 +14,8 @@ public class Subscriptions
 
     public Subscriptions Add(Type aType, IBlazorStateComponent aBlazorStateComponent)
     {
-        if (!_subscriptions.Any(subscription => subscription.StateType == aType && subscription.ComponentId == aBlazorStateComponent.Id))
+        if (!_subscriptions.Any(subscription =>
+                subscription.StateType == aType && subscription.ComponentId == aBlazorStateComponent.Id))
         {
             var subscription = new Subscription(
                 aType,
@@ -44,9 +42,10 @@ public class Subscriptions
         ReRenderSubscribers(type);
     }
 
-    public void ReRenderSubscribers(Type aType)
+    public void ReRenderSubscribers(Type stateType)
     {
-        var subscriptions = this._subscriptions.Where(aRecord => aRecord.StateType == aType);
+        var subscriptions = _subscriptions.Where(aRecord => aRecord.StateType == stateType);
+        
         foreach (var subscription in subscriptions.ToList())
         {
             if (subscription.BlazorStateComponentReference.TryGetTarget(out var target))
@@ -55,7 +54,7 @@ public class Subscriptions
             }
             else
             {
-                this._subscriptions.Remove(subscription);
+                _subscriptions.Remove(subscription);
             }
         }
     }
@@ -91,7 +90,7 @@ public class Subscriptions
             && EqualityComparer<WeakReference<IBlazorStateComponent>>.Default.Equals(BlazorStateComponentReference,
                 aSubscription.BlazorStateComponentReference);
 
-        public override bool Equals(object aObject) => Equals((Subscription)aObject);
+        public override bool Equals(object? aObject) => aObject is not null && Equals((Subscription)aObject);
 
         public override int GetHashCode() => ComponentId.GetHashCode();
     }

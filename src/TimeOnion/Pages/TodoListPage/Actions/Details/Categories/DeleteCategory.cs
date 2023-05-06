@@ -1,11 +1,18 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories;
+using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-public class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, TodoListState.DeleteCategory>
+internal record DeleteCategoryAction(
+    CategoryId Id,
+    TodoListId ListId
+) : IAction<TodoListState>;
+
+internal class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, DeleteCategoryAction>
 {
     public DeleteCategoryActionHandler(
         IStore aStore,
@@ -15,7 +22,7 @@ public class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, Todo
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, TodoListState.DeleteCategory action)
+    protected override async Task<TodoListState> Apply(TodoListState state, DeleteCategoryAction action)
     {
         await Dispatch(new DeleteCategoryCommand(action.Id));
 

@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using TimeOnion.Domain.Todo.Core
+@using TimeOnion.Pages.TodoListPage.Actions.List
 @using TimeOnion.Pages.TodoListPage.Components
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
@@ -15,7 +16,7 @@
     <MudTooltip Text="Ajouter une nouvelle liste">
         <MudIconButton
             Icon="@Icons.Material.Filled.PlaylistAdd"
-            OnClick="() => Execute(new TodoListState.CreateNewTodoList())"
+            OnClick="() => Execute(new CreateNewTodoListAction())"
             Color="Color.Primary">
         </MudIconButton>
     </MudTooltip>
@@ -38,6 +39,6 @@
     TodoListState State => GetState<TodoListState>();
 
     protected override async Task OnInitializedAsync()
-        => await Execute(new TodoListState.LoadLists());
+        => await Execute(new LoadListsAction());
 
 }

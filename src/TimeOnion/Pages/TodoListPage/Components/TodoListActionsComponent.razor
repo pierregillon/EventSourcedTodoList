@@ -1,4 +1,6 @@
 @using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodoListPage.Actions.Details.Categories
+@using TimeOnion.Pages.TodoListPage.Actions.List
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 @inject IDialogService DialogService
 
@@ -11,8 +13,8 @@
     <MudMenuItem
         Icon="@Icons.Material.Filled.CreateNewFolder"
         IconColor="Color.Primary"
-        OnClick="@(() => Execute(new TodoListState.CreateNewCategory(TodoList.Id)))"
-        OnTouch="@(() => Execute(new TodoListState.CreateNewCategory(TodoList.Id)))"
+        OnClick="@(() => Execute(new CreateNewCategoryAction(TodoList.Id)))"
+        OnTouch="@(() => Execute(new CreateNewCategoryAction(TodoList.Id)))"
         @ontouchstart:preventDefault="true">
         Créer une catégorie
     </MudMenuItem>
@@ -39,7 +41,7 @@
     {
         if (await DialogService.ShowConfirmationDialog("Confirmation", $"Êtes-vous sûr de vouloir supprimer la liste \"{TodoList.Name}\" ainsi que toutes ses tâches ?"))
         {
-            await Execute(new TodoListState.DeleteTodoList(TodoList.Id));
+            await Execute(new DeleteTodoListAction(TodoList.Id));
         }
     }
 

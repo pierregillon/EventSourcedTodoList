@@ -1,8 +1,8 @@
 namespace TimeOnion.Shared.MVU;
 
-public abstract class StateActionHandler<TState, TAction> : IActionHandler<TAction>
+public abstract class StateActionHandler<TState, TAction> : IActionHandler<TAction, TState>
     where TState : IState
-    where TAction : IAction
+    where TAction : IAction<TState>
 {
     private readonly IStore _store;
 

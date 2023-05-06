@@ -1,5 +1,6 @@
 @using TimeOnion.Domain.Todo.UseCases
 @using TimeOnion.Pages.TodoListPage.Actions.Details
+@using TimeOnion.Pages.TodoListPage.Actions.Details.Items
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 @if (Item is not null)
@@ -20,7 +21,7 @@
             T="bool"
             UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
             Checked="Item.IsDone"
-            CheckedChanged="isChecked => isChecked ? Execute(new TodoListState.MarkItemAsDone(Item.ListId, Item.Id)) : Execute(new TodoListState.MarkItemAsToDo(Item.ListId, Item.Id))"
+            CheckedChanged="isChecked => isChecked ? Execute(new MarkItemAsDoneAction(Item.ListId, Item.Id)) : Execute(new MarkAsToDoActionHandler.MarkItemAsToDo(Item.ListId, Item.Id))"
             Class="compact"
             Color="Color.Primary">
         </MudCheckBox>
@@ -29,9 +30,9 @@
         <TextEditor
             @ref="_textEditor"
             Text="@Item.Description"
-            TextChanged="async text => await Execute(new TodoListState.EditItemDescription(Item.ListId, Item.Id, text))"
-            EnterPressed="newDescription => Execute(new TodoListState.AddNewItemTodoAfterItem(Item.ListId, Item.Id, newDescription))"
-            DeletionTriggered="() => Execute(new TodoListState.DeleteItem(Item.ListId, Item.Id))"
+            TextChanged="async text => await Execute(new EditItemDescriptionAction(Item.ListId, Item.Id, text))"
+            EnterPressed="newDescription => Execute(new AddNewItemTodoAfterItemAction(Item.ListId, Item.Id, newDescription))"
+            DeletionTriggered="() => Execute(new DeleteItemAction(Item.ListId, Item.Id))"
             IsStrikeThrough="@Item.IsDone">
         </TextEditor>
 

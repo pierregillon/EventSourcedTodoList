@@ -1,11 +1,14 @@
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-public class ChangeCurrentTemporalityActionHandler :
-    ActionHandlerBase<TodoListState, TodoListState.ChangeCurrentTemporality>
+internal record ChangeCurrentTemporalityAction(TimeHorizons TimeHorizons) : IAction<TodoListState>;
+
+internal class ChangeCurrentTemporalityActionHandler :
+    ActionHandlerBase<TodoListState, ChangeCurrentTemporalityAction>
 {
     public ChangeCurrentTemporalityActionHandler(
         IStore store,
@@ -17,7 +20,7 @@ public class ChangeCurrentTemporalityActionHandler :
 
     protected override async Task<TodoListState> Apply(
         TodoListState state,
-        TodoListState.ChangeCurrentTemporality action
+        ChangeCurrentTemporalityAction action
     )
     {
         state = state with
