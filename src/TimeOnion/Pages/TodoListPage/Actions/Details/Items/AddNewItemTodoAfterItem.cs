@@ -9,10 +9,10 @@ internal record AddNewItemTodoAfterItemAction(
     TodoListId ListId,
     TodoItemId ItemId,
     string NewDescription
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
 internal class AddNewItemTodoAfterItemActionHandler :
-    ActionHandlerBase<TodoListState, AddNewItemTodoAfterItemAction>
+    ActionHandlerBase<TodoListDetailsState, AddNewItemTodoAfterItemAction>
 {
     public AddNewItemTodoAfterItemActionHandler(
         IStore store,
@@ -22,19 +22,16 @@ internal class AddNewItemTodoAfterItemActionHandler :
     {
     }
 
-    protected override async Task<TodoListState> Apply(
-        TodoListState state,
+    protected override async Task<TodoListDetailsState> Apply(
+        TodoListDetailsState state,
         AddNewItemTodoAfterItemAction action
     )
     {
-        var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
+        var item = state.GetItem(action.ListId, action.ItemId);
 
         if (string.IsNullOrWhiteSpace(action.NewDescription))
         {
-            return state with
-            {
-                TodoListDetails = state.TodoListDetails.InsertNewItemTodoAfter(item)
-            };
+            return state.InsertNewItemTodoAfter(item);
         }
 
         var command =
@@ -51,9 +48,6 @@ internal class AddNewItemTodoAfterItemActionHandler :
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

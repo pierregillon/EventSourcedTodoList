@@ -9,10 +9,10 @@ namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 internal record RepositionItemAtTheEndAction(
     TodoListId ListId,
     TodoItemId ItemId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
 internal class RepositionItemAtTheEndActionHandler :
-    ActionHandlerBase<TodoListState, RepositionItemAtTheEndAction>
+    ActionHandlerBase<TodoListDetailsState, RepositionItemAtTheEndAction>
 {
     public RepositionItemAtTheEndActionHandler(
         IStore store,
@@ -22,7 +22,7 @@ internal class RepositionItemAtTheEndActionHandler :
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, RepositionItemAtTheEndAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, RepositionItemAtTheEndAction action)
     {
         await Dispatch(new RepositionItemAtTheEndCommand(
             action.ListId,
@@ -31,9 +31,6 @@ internal class RepositionItemAtTheEndActionHandler :
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

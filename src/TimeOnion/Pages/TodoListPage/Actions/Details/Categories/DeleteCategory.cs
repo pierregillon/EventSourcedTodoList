@@ -10,9 +10,9 @@ namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 internal record DeleteCategoryAction(
     CategoryId Id,
     TodoListId ListId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
-internal class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, DeleteCategoryAction>
+internal class DeleteCategoryActionHandler : ActionHandlerBase<TodoListDetailsState, DeleteCategoryAction>
 {
     public DeleteCategoryActionHandler(
         IStore aStore,
@@ -22,7 +22,7 @@ internal class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, De
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, DeleteCategoryAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, DeleteCategoryAction action)
     {
         await Dispatch(new DeleteCategoryCommand(action.Id));
 
@@ -30,11 +30,8 @@ internal class DeleteCategoryActionHandler : ActionHandlerBase<TodoListState, De
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails
-                .UpdateCategories(action.ListId, categories)
-                .UpdateItems(action.ListId, items)
-        };
+        return state
+            .UpdateCategories(action.ListId, categories)
+            .UpdateItems(action.ListId, items);
     }
 }

@@ -3,24 +3,25 @@ using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Pages.TodoListPage.Actions.Details;
+using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage;
 
-public record TodoListDetails(List<TodoListDetailState> Details)
+public record TodoListDetailsState(TimeHorizons CurrentTimeHorizon, List<TodoListDetail> Details) : IState
 {
-    public static TodoListDetails From(IEnumerable<TodoListReadModel> lists) =>
-        new(lists.Select(x =>
-            new TodoListDetailState(x.Id, new List<CategoryReadModel>(), new List<TodoListItemReadModel>())).ToList());
+    // ReSharper disable once UnusedMember.Global
+    public static TodoListDetailsState Initialize() =>
+        new(
+            TimeHorizons.ThisDay,
+            new List<TodoListDetail>()
+        );
 
-
-    public static TodoListDetails Empty => new(new List<TodoListDetailState>());
-
-    public TodoListDetailState Get(TodoListId listId)
+    public TodoListDetail Get(TodoListId listId)
     {
         var list = Details.FirstOrDefault(x => x.TodoListId == listId);
         if (list is null)
         {
-            list = new TodoListDetailState(listId, new List<CategoryReadModel>(), new List<TodoListItemReadModel>());
+            list = new TodoListDetail(listId, new List<CategoryReadModel>(), new List<TodoListItemReadModel>());
             Details.Add(list);
         }
 
@@ -32,7 +33,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         Get(listId).TodoListItems.SingleOrDefault(x => x.Id == itemId)
         ?? throw new InvalidOperationException("Unknown item id");
 
-    public TodoListDetails RemoveItem(TodoListItemReadModel item)
+    public TodoListDetailsState RemoveItem(TodoListItemReadModel item)
     {
         var list = Get(item.ListId);
 
@@ -56,7 +57,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         return index == 0 ? null : items[index - 1];
     }
 
-    public TodoListDetails InsertNewItemTodoAfter(TodoListItemReadModel item)
+    public TodoListDetailsState InsertNewItemTodoAfter(TodoListItemReadModel item)
     {
         var list = Get(item.ListId);
         var items = list.TodoListItems.ToList();
@@ -71,7 +72,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         );
 
         var todoListItemReadModels = list.TodoListItems.InsertAt(clone, items.IndexOf(item) + 1).ToList();
-        
+
         return this with
         {
             Details = Details
@@ -83,7 +84,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         };
     }
 
-    public TodoListDetails InsertAtTheEnd(TodoListId listId, TimeHorizons timeHorizon)
+    public TodoListDetailsState InsertAtTheEnd(TodoListId listId, TimeHorizons timeHorizon)
     {
         var list = Get(listId);
 
@@ -107,7 +108,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         };
     }
 
-    public TodoListDetails InsertNewItemOnTopOfCategory(
+    public TodoListDetailsState InsertNewItemOnTopOfCategory(
         TodoListId listId,
         TimeHorizons timeHorizon,
         CategoryId categoryId
@@ -135,7 +136,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         };
     }
 
-    public TodoListDetails UpdateCategories(TodoListId listId, IReadOnlyCollection<CategoryReadModel> categories)
+    public TodoListDetailsState UpdateCategories(TodoListId listId, IReadOnlyCollection<CategoryReadModel> categories)
     {
         var list = Get(listId);
 
@@ -145,7 +146,7 @@ public record TodoListDetails(List<TodoListDetailState> Details)
         };
     }
 
-    public TodoListDetails UpdateItems(TodoListId listId, IReadOnlyCollection<TodoListItemReadModel> items)
+    public TodoListDetailsState UpdateItems(TodoListId listId, IReadOnlyCollection<TodoListItemReadModel> items)
     {
         var list = Get(listId);
 

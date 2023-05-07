@@ -1,7 +1,7 @@
 ﻿@page "/"
-@using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Pages.TodoListPage.Actions.List
 @using TimeOnion.Pages.TodoListPage.Components
+@using TimeOnion.Domain.Todo.Core
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 <PageTitle>Time Onion</PageTitle>
@@ -10,7 +10,7 @@
 
 <div class="d-flex align-center justify-center gap-3 mb-4">
     <MudText Typo="Typo.h4">
-        @State.CurrentTimeHorizon.ToText()
+        @TodoListDetailsState.CurrentTimeHorizon.ToText()
     </MudText>
 
     <MudTooltip Text="Ajouter une nouvelle liste">
@@ -37,6 +37,7 @@
 @code {
 
     TodoListState State => GetState<TodoListState>();
+    TodoListDetailsState TodoListDetailsState => GetState<TodoListDetailsState>();
 
     protected override async Task OnInitializedAsync()
         => await Execute(new LoadListsAction());

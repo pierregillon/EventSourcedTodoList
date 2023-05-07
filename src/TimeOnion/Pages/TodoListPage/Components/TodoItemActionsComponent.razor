@@ -52,6 +52,6 @@
 
     private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
 
-    private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
+    private TimeHorizons CurrentTimeHorizons => GetState<TodoListDetailsState>().CurrentTimeHorizon;
 
 }

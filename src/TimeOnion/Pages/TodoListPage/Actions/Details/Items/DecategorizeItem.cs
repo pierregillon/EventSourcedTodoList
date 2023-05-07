@@ -9,10 +9,10 @@ namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 internal record DecategorizeItemAction(
     TodoListId ListId,
     TodoItemId ItemId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
 internal class DecategorizeItemActionHandler :
-    ActionHandlerBase<TodoListState, DecategorizeItemAction>
+    ActionHandlerBase<TodoListDetailsState, DecategorizeItemAction>
 {
     public DecategorizeItemActionHandler(
         IStore store,
@@ -22,15 +22,12 @@ internal class DecategorizeItemActionHandler :
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, DecategorizeItemAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, DecategorizeItemAction action)
     {
         await Dispatch(new DecategorizeTodoItemCommand(action.ListId, action.ItemId));
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

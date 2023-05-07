@@ -6,9 +6,9 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-internal record CreateNewCategoryAction(TodoListId ListId) : IAction<TodoListState>;
+internal record CreateNewCategoryAction(TodoListId ListId) : IAction<TodoListDetailsState>;
 
-internal class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListState, CreateNewCategoryAction>
+internal class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListDetailsState, CreateNewCategoryAction>
 {
     public CreateNewCategoryActionHandler(
         IStore aStore,
@@ -18,16 +18,12 @@ internal class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListState,
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, CreateNewCategoryAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, CreateNewCategoryAction action)
     {
         await Dispatch(new CreateNewCategoryCommand(new CategoryName("Nouvelle Catégorie"), action.ListId));
 
         var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateCategories(action.ListId,
-                categories)
-        };
+        return state.UpdateCategories(action.ListId, categories);
     }
 }

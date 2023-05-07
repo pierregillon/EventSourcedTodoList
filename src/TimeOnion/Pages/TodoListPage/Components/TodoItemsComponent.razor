@@ -71,11 +71,11 @@
     [Parameter]
     public TodoListId? TodoListId { get; set; }
 
-    TodoListState State => GetState<TodoListState>();
+    TodoListDetailsState State => GetState<TodoListDetailsState>();
 
-    IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListDetails.Get(TodoListId!).TodoListItems;
+    IReadOnlyCollection<TodoListItemReadModel> Items => State.Get(TodoListId!).TodoListItems;
 
-    IReadOnlyCollection<CategoryReadModel> Categories => State.TodoListDetails.Get(TodoListId!).Categories;
+    IReadOnlyCollection<CategoryReadModel> Categories => State.Get(TodoListId!).Categories;
 
     private MudDropContainer<TodoListItemReadModel>? _container;
 
@@ -85,6 +85,7 @@
         {
             return;
         }
+        
         await Execute(new LoadCategoriesAction(TodoListId));
         await Execute(new LoadTodoListItemsAction(TodoListId));
 
@@ -107,11 +108,15 @@
         {
             if (newId is not null && newId != TodoListId)
             {
+                await base.SetParametersAsync(parameters);
+                
                 await Execute(new LoadCategoriesAction(newId));
                 await Execute(new LoadTodoListItemsAction(newId));
             }
-
-            await base.SetParametersAsync(parameters);
+            else
+            {
+                await base.SetParametersAsync(parameters);
+            }
 
             _container?.Refresh();
         }

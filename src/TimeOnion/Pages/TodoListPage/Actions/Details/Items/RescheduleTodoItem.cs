@@ -6,10 +6,10 @@ using TimeOnion.Shared.MVU;
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
 internal record RescheduleTodoItemAction
-    (TodoListId ListId, TodoItemId ItemId, TimeHorizons TimeHorizons) : IAction<TodoListState>;
+    (TodoListId ListId, TodoItemId ItemId, TimeHorizons TimeHorizons) : IAction<TodoListDetailsState>;
 
 internal class RescheduleTodoItemActionHandler
-    : ActionHandlerBase<TodoListState, RescheduleTodoItemAction>
+    : ActionHandlerBase<TodoListDetailsState, RescheduleTodoItemAction>
 {
     public RescheduleTodoItemActionHandler(
         IStore store,
@@ -19,7 +19,7 @@ internal class RescheduleTodoItemActionHandler
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, RescheduleTodoItemAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, RescheduleTodoItemAction action)
     {
         await Dispatch(new RescheduleTodoItemCommand(
             action.ListId,
@@ -29,9 +29,6 @@ internal class RescheduleTodoItemActionHandler
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

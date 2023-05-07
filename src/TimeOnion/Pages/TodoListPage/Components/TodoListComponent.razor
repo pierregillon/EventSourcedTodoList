@@ -21,7 +21,7 @@
             <TextEditor
                 Class="title"
                 Text="@TodoList.Name"
-                TextChanged="newName => Rename(TodoList.Id, newName)">
+                TextChanged="newName => Execute(new RenameTodoListAction(TodoList.Id, newName))">
             </TextEditor>
 
             <TodoListActionsComponent
@@ -41,8 +41,5 @@
 
     [Parameter]
     public TodoListReadModel? TodoList { get; set; }
-
-    private async Task Rename(TodoListId listId, string newName)
-        => await Execute(new RenameTodoListAction(listId, newName));
 
 }

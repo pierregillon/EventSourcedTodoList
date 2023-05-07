@@ -5,11 +5,13 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
-internal record InsertNewItemToDoOnTopOfCategoryAction
-    (TodoListId ListId, CategoryId CategoryId) : IAction<TodoListState>;
+internal record InsertNewItemToDoOnTopOfCategoryAction(
+    TodoListId ListId,
+    CategoryId CategoryId
+) : IAction<TodoListDetailsState>;
 
 internal class InsertNewItemToDoOnTopOfCategoryActionHandler :
-    ActionHandlerBase<TodoListState, InsertNewItemToDoOnTopOfCategoryAction>
+    ActionHandlerBase<TodoListDetailsState, InsertNewItemToDoOnTopOfCategoryAction>
 {
     public InsertNewItemToDoOnTopOfCategoryActionHandler(
         IStore store,
@@ -19,20 +21,17 @@ internal class InsertNewItemToDoOnTopOfCategoryActionHandler :
     {
     }
 
-    protected override async Task<TodoListState> Apply(
-        TodoListState state,
+    protected override async Task<TodoListDetailsState> Apply(
+        TodoListDetailsState state,
         InsertNewItemToDoOnTopOfCategoryAction action
     )
     {
         await Task.Delay(0);
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.InsertNewItemOnTopOfCategory(
-                action.ListId,
-                state.CurrentTimeHorizon,
-                action.CategoryId
-            )
-        };
+        return state.InsertNewItemOnTopOfCategory(
+            action.ListId,
+            state.CurrentTimeHorizon,
+            action.CategoryId
+        );
     }
 }

@@ -11,9 +11,9 @@ internal record CategorizeItemAction(
     TodoListId ListId,
     TodoItemId ItemId,
     CategoryId CategoryId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
-internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListState, CategorizeItemAction>
+internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListDetailsState, CategorizeItemAction>
 {
     public CategorizeItemActionHandler(
         IStore store,
@@ -23,7 +23,7 @@ internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListState, Ca
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, CategorizeItemAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, CategorizeItemAction action)
     {
         await Dispatch(new CategorizeTodoItemCommand(
             action.ListId,
@@ -33,9 +33,6 @@ internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListState, Ca
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

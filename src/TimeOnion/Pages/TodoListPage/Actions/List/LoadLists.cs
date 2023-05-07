@@ -19,8 +19,7 @@ internal class LoadListsActionHandler : ActionHandlerBase<TodoListState, LoadLis
 
         return state with
         {
-            TodoLists = todoLists,
-            TodoListDetails = TodoListDetails.From(todoLists)
+            TodoLists = todoLists
         };
     }
 }

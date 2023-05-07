@@ -6,10 +6,10 @@ using TimeOnion.Shared.MVU;
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
 internal record EditItemDescriptionAction
-    (TodoListId ListId, TodoItemId ItemId, string NewDescription) : IAction<TodoListState>;
+    (TodoListId ListId, TodoItemId ItemId, string NewDescription) : IAction<TodoListDetailsState>;
 
 internal class EditItemDescriptionActionHandler :
-    ActionHandlerBase<TodoListState, EditItemDescriptionAction>
+    ActionHandlerBase<TodoListDetailsState, EditItemDescriptionAction>
 {
     public EditItemDescriptionActionHandler(
         IStore store,
@@ -19,13 +19,13 @@ internal class EditItemDescriptionActionHandler :
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, EditItemDescriptionAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, EditItemDescriptionAction action)
     {
-        var item = state.TodoListDetails.GetItem(action.ListId, action.ItemId);
+        var item = state.GetItem(action.ListId, action.ItemId);
 
         if (item is TodoListItemReadModelBeingCreated)
         {
-            var aboveItem = state.TodoListDetails.GetAboveItem(item);
+            var aboveItem = state.GetAboveItem(item);
 
             var command =
                 new AddItemToDoCommand(
@@ -53,9 +53,6 @@ internal class EditItemDescriptionActionHandler :
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

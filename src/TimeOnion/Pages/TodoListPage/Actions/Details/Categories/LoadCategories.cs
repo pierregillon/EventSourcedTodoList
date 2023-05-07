@@ -7,9 +7,9 @@ namespace TimeOnion.Pages.TodoListPage.Actions.Details.Categories;
 
 internal record LoadCategoriesAction(
     TodoListId ListId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
-internal class LoadCategoriesActionHandler : ActionHandlerBase<TodoListState, LoadCategoriesAction>
+internal class LoadCategoriesActionHandler : ActionHandlerBase<TodoListDetailsState, LoadCategoriesAction>
 {
     public LoadCategoriesActionHandler(
         IStore store,
@@ -19,13 +19,10 @@ internal class LoadCategoriesActionHandler : ActionHandlerBase<TodoListState, Lo
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, LoadCategoriesAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, LoadCategoriesAction action)
     {
         var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateCategories(action.ListId, categories)
-        };
+        return state.UpdateCategories(action.ListId, categories);
     }
 }

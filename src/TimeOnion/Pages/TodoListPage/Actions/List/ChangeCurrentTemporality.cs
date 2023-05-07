@@ -5,38 +5,39 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.List;
 
-internal record ChangeCurrentTemporalityAction(TimeHorizons TimeHorizons) : IAction<TodoListState>;
+internal record ChangeCurrentTemporalityAction(TimeHorizons TimeHorizons) : IAction<TodoListDetailsState>;
 
 internal class ChangeCurrentTemporalityActionHandler :
-    ActionHandlerBase<TodoListState, ChangeCurrentTemporalityAction>
+    ActionHandlerBase<TodoListDetailsState, ChangeCurrentTemporalityAction>
 {
+    private readonly IStore _store;
+
     public ChangeCurrentTemporalityActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
     ) : base(store, commandDispatcher, queryDispatcher)
     {
+        _store = store;
     }
 
-    protected override async Task<TodoListState> Apply(
-        TodoListState state,
+    protected override async Task<TodoListDetailsState> Apply(
+        TodoListDetailsState state,
         ChangeCurrentTemporalityAction action
     )
     {
+        var todoListState = _store.GetState<TodoListState>();
+        
         state = state with
         {
-            CurrentTimeHorizon = action.TimeHorizons,
-            TodoLists = await Dispatch(new ListTodoListsQuery())
+            CurrentTimeHorizon = action.TimeHorizons
         };
 
-        foreach (var todoList in state.TodoLists)
+        foreach (var todoList in todoListState.TodoLists)
         {
             var items = await Dispatch(new ListTodoItemsQuery(todoList.Id, state.CurrentTimeHorizon));
 
-            state = state with
-            {
-                TodoListDetails = state.TodoListDetails.UpdateItems(todoList.Id, items)
-            };
+            state = state.UpdateItems(todoList.Id, items);
         }
 
         return state;

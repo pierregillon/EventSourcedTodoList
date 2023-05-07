@@ -10,9 +10,9 @@ internal record RenameCategoryAction(
     CategoryId Id,
     string Name,
     TodoListId ListId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
-internal class RenameCategoryActionHandler : ActionHandlerBase<TodoListState, RenameCategoryAction>
+internal class RenameCategoryActionHandler : ActionHandlerBase<TodoListDetailsState, RenameCategoryAction>
 {
     public RenameCategoryActionHandler(
         IStore store,
@@ -22,15 +22,12 @@ internal class RenameCategoryActionHandler : ActionHandlerBase<TodoListState, Re
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, RenameCategoryAction action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, RenameCategoryAction action)
     {
         await Dispatch(new RenameCategoryCommand(action.Id, new CategoryName(action.Name)));
 
         var categories = await Dispatch(new ListCategoriesQuery(action.ListId));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateCategories(action.ListId, categories)
-        };
+        return state.UpdateCategories(action.ListId, categories);
     }
 }

@@ -10,10 +10,10 @@ internal record RepositionItemAboveAnotherAction(
     TodoListId ListId,
     TodoItemId ItemId,
     TodoItemId ReferenceItemId
-) : IAction<TodoListState>;
+) : IAction<TodoListDetailsState>;
 
-internal class
-    RepositionItemAboveAnotherActionHandler : ActionHandlerBase<TodoListState, RepositionItemAboveAnotherAction>
+internal class RepositionItemAboveAnotherActionHandler : 
+    ActionHandlerBase<TodoListDetailsState, RepositionItemAboveAnotherAction>
 {
     public RepositionItemAboveAnotherActionHandler(
         IStore store,
@@ -23,8 +23,8 @@ internal class
     {
     }
 
-    protected override async Task<TodoListState> Apply(
-        TodoListState state,
+    protected override async Task<TodoListDetailsState> Apply(
+        TodoListDetailsState state,
         RepositionItemAboveAnotherAction action
     )
     {
@@ -36,9 +36,6 @@ internal class
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
 }

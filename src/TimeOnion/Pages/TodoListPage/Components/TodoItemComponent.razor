@@ -21,7 +21,7 @@
             T="bool"
             UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
             Checked="Item.IsDone"
-            CheckedChanged="isChecked => isChecked ? Execute(new MarkItemAsDoneAction(Item.ListId, Item.Id)) : Execute(new MarkAsToDoActionHandler.MarkItemAsToDo(Item.ListId, Item.Id))"
+            CheckedChanged="isChecked => isChecked ? Execute(new MarkItemAsDoneAction(Item.ListId, Item.Id)) : Execute(new MarkItemAsToDoAction(Item.ListId, Item.Id))"
             Class="compact"
             Color="Color.Primary">
         </MudCheckBox>

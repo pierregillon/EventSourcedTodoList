@@ -5,9 +5,11 @@ using TimeOnion.Shared.MVU;
 
 namespace TimeOnion.Pages.TodoListPage.Actions.Details.Items;
 
-public class MarkAsToDoActionHandler : ActionHandlerBase<TodoListState, MarkAsToDoActionHandler.MarkItemAsToDo>
+internal record MarkItemAsToDoAction(TodoListId ListId, TodoItemId ItemId) : IAction<TodoListDetailsState>;
+
+internal class MarkItemAsToDoActionHandler : ActionHandlerBase<TodoListDetailsState, MarkItemAsToDoAction>
 {
-    public MarkAsToDoActionHandler(
+    public MarkItemAsToDoActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
@@ -16,17 +18,12 @@ public class MarkAsToDoActionHandler : ActionHandlerBase<TodoListState, MarkAsTo
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, MarkItemAsToDo action)
+    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, MarkItemAsToDoAction action)
     {
         await Dispatch(new MarkItemAsToDoCommand(action.ListId, action.ItemId));
 
         var items = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon));
 
-        return state with
-        {
-            TodoListDetails = state.TodoListDetails.UpdateItems(action.ListId, items)
-        };
+        return state.UpdateItems(action.ListId, items);
     }
-
-    public record MarkItemAsToDo(TodoListId ListId, TodoItemId ItemId) : IAction<TodoListState>;
 }
