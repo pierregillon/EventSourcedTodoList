@@ -1,0 +1,63 @@
+@using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodoListPage.Details.Actions
+@using TimeOnion.Pages.TodoListPage.Details.Actions.Items
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+
+@if (Item is not null)
+{
+    <div class="d-flex gap-1 align-top overlay-parent">
+        @if (Item.CategoryId is not null)
+        {
+            <div class="ml-12 mr-1 border-l-2 border-dotted mud-border-primary d-none d-md-flex"></div>
+            <div class="ml-4 mr-2 border-l-2 border-dotted mud-border-primary d-flex d-md-none"></div>
+        }
+
+        <TodoItemActionsComponent
+            Class="invisible overlay align-self-start d-none d-md-flex"
+            Item="@Item">
+        </TodoItemActionsComponent>
+
+        <MudCheckBox
+            T="bool"
+            UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
+            Checked="Item.IsDone"
+            CheckedChanged="isChecked => isChecked ? Execute(new MarkItemAsDoneAction(Item.ListId, Item.Id)) : Execute(new MarkItemAsToDoAction(Item.ListId, Item.Id))"
+            Class="compact"
+            Color="Color.Primary">
+        </MudCheckBox>
+
+
+        <TextEditor
+            @ref="_textEditor"
+            Text="@Item.Description"
+            TextChanged="async text => await Execute(new EditItemDescriptionAction(Item.ListId, Item.Id, text))"
+            EnterPressed="newDescription => Execute(new AddNewItemTodoAfterItemAction(Item.ListId, Item.Id, newDescription))"
+            DeletionTriggered="() => Execute(new DeleteItemAction(Item.ListId, Item.Id))"
+            IsStrikeThrough="@Item.IsDone">
+        </TextEditor>
+
+        <TodoItemActionsComponent
+            Class="d-flex d-md-none"
+            Item="@Item">
+        </TodoItemActionsComponent>
+    </div>
+}
+
+@code {
+
+    TextEditor _textEditor = default!;
+
+    [Parameter]
+    public TodoListItemReadModel? Item { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (Item is TodoListItemReadModelBeingCreated)
+        {
+            await _textEditor.Focus();
+        }
+    }
+
+}

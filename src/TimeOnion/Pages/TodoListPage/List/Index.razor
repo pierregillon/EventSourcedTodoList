@@ -1,0 +1,45 @@
+﻿@page "/"
+@using TimeOnion.Domain.Todo.Core
+@using TimeOnion.Pages.TodoListPage.List.Actions
+@using TimeOnion.Pages.TodoListPage.List.Components
+@using TimeOnion.Pages.TodoListPage.Details
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+
+<PageTitle>Time Onion</PageTitle>
+
+<TimeHorizonSelector></TimeHorizonSelector>
+
+<div class="d-flex align-center justify-center gap-3 mb-4">
+    <MudText Typo="Typo.h4">
+        @State.CurrentTimeHorizon.ToText()
+    </MudText>
+
+    <MudTooltip Text="Ajouter une nouvelle liste">
+        <MudIconButton
+            Icon="@Icons.Material.Filled.PlaylistAdd"
+            OnClick="() => Execute(new CreateNewTodoListAction())"
+            Color="Color.Primary">
+        </MudIconButton>
+    </MudTooltip>
+
+</div>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <div class="d-flex align-start justify-space-around flex-wrap flex-grow-1 gap-8">
+        @foreach (var todoList in State.TodoLists)
+        {
+            <TodoListComponent @key="todoList.Id" TodoList="@todoList"></TodoListComponent>
+        }
+    </div>
+</MudContainer>
+
+<div class="mb-10"></div>
+
+@code {
+
+    TodoListState State => GetState<TodoListState>();
+
+    protected override async Task OnInitializedAsync()
+        => await Execute(new LoadListsAction());
+
+}

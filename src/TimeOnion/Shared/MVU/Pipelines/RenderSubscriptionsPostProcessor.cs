@@ -9,27 +9,38 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
 
     public RenderSubscriptionsPostProcessor(Subscriptions aSubscriptions) => _subscriptions = aSubscriptions;
 
-    public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
+    public Task Process(TRequest request, TResponse aResponse, CancellationToken aCancellationToken)
     {
-        if (aRequest is not IAction)
+        if (request is not IAction action)
         {
             return Task.CompletedTask;
         }
 
-        var actionInterface = aRequest
-            .GetType()
-            .FindInterfaces(
-                (interfaceType, _) => interfaceType.IsGenericType
-                    && interfaceType.GetGenericTypeDefinition() == typeof(IAction<>), null)
-            .SingleOrDefault();
+        var actionInterface = GetActionInterface(action);
 
-        if (actionInterface is not null)
+        if (actionInterface is null)
         {
-            var stateType = actionInterface.GetGenericArguments().Single();
+            return Task.CompletedTask;
+        }
 
+        var stateType = actionInterface.GetGenericArguments().Single();
+
+        if (action is IActionOnScopedState actionOnScopedState)
+        {
+            _subscriptions.ReRenderSubscribers(stateType, actionOnScopedState.Scope);
+        }
+        else
+        {
             _subscriptions.ReRenderSubscribers(stateType);
         }
 
         return Task.CompletedTask;
     }
+
+    private static Type? GetActionInterface(IAction action) => action
+        .GetType()
+        .FindInterfaces(
+            (interfaceType, _) => interfaceType.IsGenericType
+                && interfaceType.GetGenericTypeDefinition() == typeof(IAction<>), null)
+        .SingleOrDefault();
 }

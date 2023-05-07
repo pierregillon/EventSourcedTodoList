@@ -43,15 +43,28 @@ public static class ListExtensions
             {
                 yield return newElement;
             }
-            
+
             yield return enumerator.Current;
 
             currentIndex++;
         }
-        
+
         if (currentIndex == index)
         {
             yield return newElement;
+        }
+    }
+
+    public static IEnumerable<T> InsertAfter<T>(this IEnumerable<T> enumerable, T previousElement, T newElement)
+    {
+        foreach (var element in enumerable)
+        {
+            yield return element;
+
+            if (Equals(element, previousElement))
+            {
+                yield return newElement;
+            }
         }
     }
 }

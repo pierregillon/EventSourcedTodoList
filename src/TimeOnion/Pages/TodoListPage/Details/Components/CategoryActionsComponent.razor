@@ -1,0 +1,39 @@
+@using TimeOnion.Domain.Categories
+@using TimeOnion.Pages.TodoListPage.Details.Actions.Categories
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+@inject IDialogService DialogService
+
+<MudMenu
+    Class="@Class"
+    Icon="@Icons.Material.Filled.MoreHoriz"
+    Size="Size.Small"
+    AnchorOrigin="Origin.BottomCenter">
+
+    <MudMenuItem
+        Icon="@Icons.Material.Filled.Delete"
+        IconColor="Color.Warning"
+        OnClick="ConfirmDeletion"
+        OnTouch="ConfirmDeletion"
+        @ontouchstart:preventDefault="true">
+        Supprimer
+    </MudMenuItem>
+
+</MudMenu>
+
+@code {
+
+    [Parameter]
+    public CategoryReadModel Category { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private async Task ConfirmDeletion()
+    {
+        if (await DialogService.ShowConfirmationDialog("Confirmation", $"Êtes-vous sûr de vouloir supprimer la catégorie \"{Category.Name}\" ? Ses tâches seront conservées."))
+        {
+            await Execute(new DeleteCategoryAction(Category.Id, Category.ListId));
+        }
+    }
+
+}

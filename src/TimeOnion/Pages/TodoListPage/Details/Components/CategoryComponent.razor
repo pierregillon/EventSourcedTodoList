@@ -1,0 +1,37 @@
+@using TimeOnion.Domain.Categories
+@using TimeOnion.Pages.TodoListPage.Details.Actions.Categories
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+
+@if (Category is not null)
+{
+    <div class="overlay-parent d-flex gap-1 align-center">
+        <CategoryActionsComponent
+            Class="invisible overlay d-none d-md-flex"
+            Category="@Category">
+        </CategoryActionsComponent>
+
+        <MudIcon
+            Icon="@Icons.Material.Filled.Folder"
+            Color="Color.Primary"
+            Size="Size.Large">
+        </MudIcon>
+
+        <TextEditor
+            Text="@Category.Name"
+            TextChanged="@(text => Execute(new RenameCategoryAction(Category.Id, text, Category.ListId)))"
+            EnterPressed="@(() => Execute(new InsertNewItemToDoOnTopOfCategoryAction(Category.ListId, Category.Id)))">
+        </TextEditor>
+
+        <CategoryActionsComponent
+            Class="d-flex d-md-none"
+            Category="@Category">
+        </CategoryActionsComponent>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public CategoryReadModel? Category { get; set; }
+
+}

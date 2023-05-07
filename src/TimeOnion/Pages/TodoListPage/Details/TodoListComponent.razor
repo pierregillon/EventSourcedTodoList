@@ -1,0 +1,61 @@
+@using TimeOnion.Domain.Todo.UseCases
+@using TimeOnion.Pages.TodoListPage.Details.Actions.Items
+@using TimeOnion.Pages.TodoListPage.Details.Components
+@using TimeOnion.Pages.TodoListPage.List.Actions
+@using TimeOnion.Domain.Categories
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+
+<div class="flex-grow-1" style="max-width: 700px">
+    <div class="overlay-parent d-flex align-center gap-3">
+        <TodoListActionsComponent
+            TodoList="@TodoList"
+            Class="invisible overlay d-none d-md-flex">
+        </TodoListActionsComponent>
+
+        <MudIcon
+            Icon="@Icons.Material.Filled.Checklist"
+            Color="Color.Primary"
+            Size="Size.Large">
+        </MudIcon>
+
+        <TextEditor
+            Class="title"
+            Text="@TodoList.Name"
+            TextChanged="newName => Execute(new RenameTodoListAction(TodoList.Id, newName))">
+        </TextEditor>
+
+        <TodoListActionsComponent
+            TodoList="@TodoList"
+            Class="d-flex d-md-none">
+        </TodoListActionsComponent>
+
+    </div>
+
+    <MudDivider Class="mt-2 mb-2"/>
+
+    <TodoItemsComponent
+        TodoListId="@TodoList.Id"
+        Items="@Items"
+        Categories="@Categories">
+    </TodoItemsComponent>
+</div>
+
+@code {
+
+    [Parameter]
+    public TodoListReadModel TodoList { get; set; } = default!;
+
+    TodoListDetailsState State => GetState<TodoListDetailsState>(TodoList.Id);
+
+    IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListItems;
+
+    IReadOnlyCollection<CategoryReadModel> Categories => State.Categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Execute(new LoadTodoListDetailsAction(TodoList.Id));
+
+        await base.OnInitializedAsync();
+    }
+
+}

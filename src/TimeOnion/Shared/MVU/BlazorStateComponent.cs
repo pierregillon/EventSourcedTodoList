@@ -25,8 +25,15 @@ public class BlazorStateComponent : ComponentBase, IBlazorStateComponent, IDispo
     protected T GetState<T>() where T : IState
     {
         var stateType = typeof(T);
-        Subscriptions.Add(stateType, this);
-        return Store.GetState<T>();
+        Subscriptions.Add(stateType, Subscriptions.DefaultScope, this);
+        return Store.GetState<T>(Subscriptions.DefaultScope);
+    }
+
+    protected T GetState<T>(object scope) where T : IState
+    {
+        var stateType = typeof(T);
+        Subscriptions.Add(stateType, scope, this);
+        return Store.GetState<T>(scope);
     }
 
     public void ReRender() => InvokeAsync(StateHasChanged);

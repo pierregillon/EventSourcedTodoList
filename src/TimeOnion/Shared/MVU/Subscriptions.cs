@@ -2,25 +2,25 @@ namespace TimeOnion.Shared.MVU;
 
 public class Subscriptions
 {
+    public static readonly object DefaultScope = new();
+
     private readonly List<Subscription> _subscriptions;
 
     public Subscriptions() => _subscriptions = new List<Subscription>();
 
-    public Subscriptions Add<T>(IBlazorStateComponent aBlazorStateComponent)
-    {
-        var type = typeof(T);
-        return Add(type, aBlazorStateComponent);
-    }
 
-    public Subscriptions Add(Type aType, IBlazorStateComponent aBlazorStateComponent)
+    public Subscriptions Add(Type stateType, object stateScope, IBlazorStateComponent component)
     {
         if (!_subscriptions.Any(subscription =>
-                subscription.StateType == aType && subscription.ComponentId == aBlazorStateComponent.Id))
+                subscription.StateType == stateType
+                && subscription.StateScope == stateScope
+                && subscription.ComponentId == component.Id))
         {
             var subscription = new Subscription(
-                aType,
-                aBlazorStateComponent.Id,
-                new WeakReference<IBlazorStateComponent>(aBlazorStateComponent));
+                component.Id,
+                stateType,
+                stateScope,
+                new WeakReference<IBlazorStateComponent>(component));
 
             _subscriptions.Add(subscription);
         }
@@ -45,7 +45,20 @@ public class Subscriptions
     public void ReRenderSubscribers(Type stateType)
     {
         var subscriptions = _subscriptions.Where(aRecord => aRecord.StateType == stateType);
-        
+
+        ReRender(subscriptions);
+    }
+
+    public void ReRenderSubscribers(Type stateType, object stateScope)
+    {
+        var subscriptions = _subscriptions
+            .Where(subscription => subscription.StateType == stateType && Equals(subscription.StateScope, stateScope));
+
+        ReRender(subscriptions);
+    }
+
+    private void ReRender(IEnumerable<Subscription> subscriptions)
+    {
         foreach (var subscription in subscriptions.ToList())
         {
             if (subscription.BlazorStateComponentReference.TryGetTarget(out var target))
@@ -59,39 +72,10 @@ public class Subscriptions
         }
     }
 
-    private readonly struct Subscription : IEquatable<Subscription>
-    {
-        public WeakReference<IBlazorStateComponent> BlazorStateComponentReference { get; }
-
-        public string ComponentId { get; }
-
-        public Type StateType { get; }
-
-        public Subscription(
-            Type aStateType,
-            string aComponentId,
-            WeakReference<IBlazorStateComponent> aBlazorStateComponentReference
-        )
-        {
-            StateType = aStateType;
-            ComponentId = aComponentId;
-            BlazorStateComponentReference = aBlazorStateComponentReference;
-        }
-
-        public static bool operator !=(Subscription aLeftSubscription, Subscription aRightSubscription) =>
-            !(aLeftSubscription == aRightSubscription);
-
-        public static bool operator ==(Subscription aLeftSubscription, Subscription aRightSubscription) =>
-            aLeftSubscription.Equals(aRightSubscription);
-
-        public bool Equals(Subscription aSubscription) =>
-            EqualityComparer<Type>.Default.Equals(StateType, aSubscription.StateType)
-            && ComponentId == aSubscription.ComponentId
-            && EqualityComparer<WeakReference<IBlazorStateComponent>>.Default.Equals(BlazorStateComponentReference,
-                aSubscription.BlazorStateComponentReference);
-
-        public override bool Equals(object? aObject) => aObject is not null && Equals((Subscription)aObject);
-
-        public override int GetHashCode() => ComponentId.GetHashCode();
-    }
+    private record Subscription(
+        string ComponentId,
+        Type StateType,
+        object StateScope,
+        WeakReference<IBlazorStateComponent> BlazorStateComponentReference
+    );
 }

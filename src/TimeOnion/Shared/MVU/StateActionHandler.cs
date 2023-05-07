@@ -10,11 +10,22 @@ public abstract class StateActionHandler<TState, TAction> : IActionHandler<TActi
 
     public async Task Handle(TAction action)
     {
-        var state = _store.GetState<TState>();
+        if (action is IActionOnScopedState actionOnScopedState)
+        {
+            var state = _store.GetState<TState>(actionOnScopedState.Scope);
 
-        var newState = await Apply(state, action);
+            var newState = await Apply(state, action);
 
-        _store.SetState(newState);
+            _store.SetState(newState, actionOnScopedState.Scope);
+        }
+        else
+        {
+            var state = _store.GetState<TState>(Subscriptions.DefaultScope);
+
+            var newState = await Apply(state, action);
+
+            _store.SetState(newState, Subscriptions.DefaultScope);
+        }
     }
 
     protected abstract Task<TState> Apply(TState state, TAction action);
