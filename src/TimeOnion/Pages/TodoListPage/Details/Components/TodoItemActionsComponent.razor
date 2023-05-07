@@ -5,6 +5,7 @@
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 <MudMenu
+    @ref="_mudMenu"
     UserAttributes="@(new Dictionary<string, object> { { "draggable", "true" } })"
     Class="@Class"
     Icon="@Icons.Material.Filled.MoreHoriz"
@@ -13,35 +14,34 @@
 
     @if (NextTimeHorizons != CurrentTimeHorizons)
     {
-        <MudMenuItem
+        <MudListItem
             Icon="@Icons.Material.Filled.Redo"
-            OnClick="() => Execute(new RescheduleTodoItemAction(Item.ListId, Item.Id, NextTimeHorizons))"
-            OnTouch="() => Execute(new RescheduleTodoItemAction(Item.ListId, Item.Id, NextTimeHorizons))">
+            OnClick="() => Reschedule(Item.ListId, Item.Id, NextTimeHorizons)">
             Reporter à @NextTimeHorizons.ToText().ToLower()
-        </MudMenuItem>
+        </MudListItem>
     }
 
     @if (PreviousTimeHorizons != CurrentTimeHorizons)
     {
-        <MudMenuItem
+        <MudListItem
             Icon="@Icons.Material.Filled.Undo"
-            OnClick="() => Execute(new RescheduleTodoItemAction(Item.ListId, Item.Id, PreviousTimeHorizons))"
-            OnTouch="() => Execute(new RescheduleTodoItemAction(Item.ListId, Item.Id, PreviousTimeHorizons))">
+            OnClick="() => Reschedule(Item.ListId, Item.Id, PreviousTimeHorizons)">
             Avancer à @PreviousTimeHorizons.ToText().ToLower()
-        </MudMenuItem>
+        </MudListItem>
     }
 
-    <MudMenuItem
+    <MudListItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Warning"
-        OnClick="() => Execute(new DeleteItemAction(Item.ListId, Item.Id))"
-        OnTouch="() => Execute(new DeleteItemAction(Item.ListId, Item.Id))">
+        OnClick="Delete">
         Supprimer
-    </MudMenuItem>
+    </MudListItem>
 
 </MudMenu>
 
 @code {
+
+    private MudMenu _mudMenu = default!;
 
     [Parameter]
     public TodoListItemReadModel Item { get; set; } = default!;
@@ -54,5 +54,19 @@
     private TimeHorizons PreviousTimeHorizons => CurrentTimeHorizons.Previous();
 
     private TimeHorizons CurrentTimeHorizons => GetState<TodoListState>().CurrentTimeHorizon;
+
+    private async Task Reschedule(TodoListId itemListId, TodoItemId itemId, TimeHorizons timeHorizon)
+    {
+        _mudMenu.CloseMenu();
+
+        await Execute(new RescheduleTodoItemAction(Item.ListId, Item.Id, timeHorizon));
+    }
+
+    private async Task Delete()
+    {
+        _mudMenu.CloseMenu();
+
+        await Execute(new DeleteItemAction(Item.ListId, Item.Id));
+    }
 
 }

@@ -14,13 +14,11 @@
         @State.CurrentTimeHorizon.ToText()
     </MudText>
 
-    <MudTooltip Text="Ajouter une nouvelle liste">
-        <MudIconButton
-            Icon="@Icons.Material.Filled.PlaylistAdd"
-            OnClick="() => Execute(new CreateNewTodoListAction())"
-            Color="Color.Primary">
-        </MudIconButton>
-    </MudTooltip>
+    <MudIconButton
+        Icon="@Icons.Material.Filled.PlaylistAdd"
+        OnClick="() => Execute(new CreateNewTodoListAction())"
+        Color="Color.Primary">
+    </MudIconButton>
 
 </div>
 
