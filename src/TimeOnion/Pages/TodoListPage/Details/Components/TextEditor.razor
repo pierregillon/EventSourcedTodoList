@@ -50,10 +50,7 @@
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (!firstRender)
-        {
-            await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", _textArea);
-        }
+        await JavascriptRuntime.InvokeAsync<string>("autoResizeTextArea", _textArea);
     }
 
     private void OnInput(ChangeEventArgs args) => _boundedText = (string?)args.Value ?? string.Empty;

@@ -82,7 +82,7 @@
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (!firstRender)
+        if (firstRender)
         {
             await JavascriptRuntime.InvokeAsync<string>("enableTouchOnMudDropItems", Array.Empty<object?>());
         }
