@@ -4,22 +4,24 @@
 @inject IDialogService DialogService
 
 <MudMenu
+    @ref="_mudMenu"
     Class="@Class"
     Icon="@Icons.Material.Filled.MoreHoriz"
     Size="Size.Small"
     AnchorOrigin="Origin.BottomCenter">
 
-    <MudMenuItem
+    <MudListItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Warning"
-        OnClick="ConfirmDeletion"
-        OnTouch="ConfirmDeletion">
+        OnClick="ConfirmDeletion">
         Supprimer
-    </MudMenuItem>
+    </MudListItem>
 
 </MudMenu>
 
 @code {
+
+    private MudMenu _mudMenu = default!;
 
     [Parameter]
     public CategoryReadModel Category { get; set; } = default!;
@@ -29,6 +31,8 @@
 
     private async Task ConfirmDeletion()
     {
+        _mudMenu.CloseMenu();
+
         if (await DialogService.ShowConfirmationDialog("Confirmation", $"Êtes-vous sûr de vouloir supprimer la catégorie \"{Category.Name}\" ? Ses tâches seront conservées."))
         {
             await Execute(new DeleteCategoryAction(Category.Id, Category.ListId));

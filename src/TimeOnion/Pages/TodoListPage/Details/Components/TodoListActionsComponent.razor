@@ -5,30 +5,31 @@
 @inject IDialogService DialogService
 
 <MudMenu
+    @ref="_mudMenu"
     Class="@Class"
     Icon="@Icons.Material.Filled.MoreHoriz"
     Size="Size.Small"
     AnchorOrigin="Origin.BottomCenter">
 
-    <MudMenuItem
+    <MudListItem
         Icon="@Icons.Material.Filled.CreateNewFolder"
         IconColor="Color.Primary"
-        OnClick="@(() => Execute(new CreateNewCategoryAction(TodoList.Id)))"
-        OnTouch="@(() => Execute(new CreateNewCategoryAction(TodoList.Id)))">
+        OnClick="CreateNewCategory">
         Créer une catégorie
-    </MudMenuItem>
+    </MudListItem>
 
-    <MudMenuItem
+    <MudListItem
         Icon="@Icons.Material.Filled.Delete"
         IconColor="Color.Error"
-        OnClick="ConfirmDeletion"
-        OnTouch="ConfirmDeletion">
+        OnClick="ConfirmDeletion">
         Supprimer la liste
-    </MudMenuItem>
+    </MudListItem>
 
 </MudMenu>
 
 @code {
+
+    private MudMenu _mudMenu = default!;
 
     [Parameter]
     public TodoListReadModel TodoList { get; set; } = default!;
@@ -38,10 +39,19 @@
 
     private async Task ConfirmDeletion()
     {
+        _mudMenu.CloseMenu();
+
         if (await DialogService.ShowConfirmationDialog("Confirmation", $"Êtes-vous sûr de vouloir supprimer la liste \"{TodoList.Name}\" ainsi que toutes ses tâches ?"))
         {
             await Execute(new DeleteTodoListAction(TodoList.Id));
         }
+    }
+
+    private async Task CreateNewCategory()
+    {
+        _mudMenu.CloseMenu();
+
+        await Execute(new CreateNewCategoryAction(TodoList.Id));
     }
 
 }
