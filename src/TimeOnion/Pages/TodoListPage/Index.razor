@@ -27,7 +27,7 @@
     <div class="d-flex align-start justify-space-around flex-wrap flex-grow-1 gap-8">
         @foreach (var todoList in State.TodoLists)
         {
-            <TodoListComponent TodoList="@todoList"></TodoListComponent>
+            <TodoListComponent @key="todoList.Id" TodoList="@todoList"></TodoListComponent>
         }
     </div>
 </MudContainer>

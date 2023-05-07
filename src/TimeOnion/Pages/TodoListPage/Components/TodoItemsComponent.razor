@@ -1,6 +1,5 @@
 @using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Todo.UseCases
-@using TimeOnion.Pages.TodoListPage.Actions.Details.Categories
 @using TimeOnion.Pages.TodoListPage.Actions.Details.Items
 @using TimeOnion.Domain.Categories
 @using TimeOnion.Domain.Categories.Core
@@ -71,26 +70,13 @@
     [Parameter]
     public TodoListId? TodoListId { get; set; }
 
-    TodoListDetailsState State => GetState<TodoListDetailsState>();
+    [Parameter]
+    public IReadOnlyCollection<TodoListItemReadModel> Items { get; set; } = Array.Empty<TodoListItemReadModel>();
 
-    IReadOnlyCollection<TodoListItemReadModel> Items => State.Get(TodoListId!).TodoListItems;
-
-    IReadOnlyCollection<CategoryReadModel> Categories => State.Get(TodoListId!).Categories;
+    [Parameter]
+    public IReadOnlyCollection<CategoryReadModel> Categories { get; set; } = Array.Empty<CategoryReadModel>();
 
     private MudDropContainer<TodoListItemReadModel>? _container;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (TodoListId is null)
-        {
-            return;
-        }
-        
-        await Execute(new LoadCategoriesAction(TodoListId));
-        await Execute(new LoadTodoListItemsAction(TodoListId));
-
-        await base.OnInitializedAsync();
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -104,26 +90,8 @@
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
-        if (parameters.TryGetValue<TodoListId?>(nameof(TodoListId), out var newId))
-        {
-            if (newId is not null && newId != TodoListId)
-            {
-                await base.SetParametersAsync(parameters);
-                
-                await Execute(new LoadCategoriesAction(newId));
-                await Execute(new LoadTodoListItemsAction(newId));
-            }
-            else
-            {
-                await base.SetParametersAsync(parameters);
-            }
-
-            _container?.Refresh();
-        }
-        else
-        {
-            await base.SetParametersAsync(parameters);
-        }
+        _container?.Refresh();
+        await base.SetParametersAsync(parameters);
     }
 
     private async Task UpdateItem(TodoListId listId, TodoItemId itemId, int indexInCategory, string targetCategoryIdString)
