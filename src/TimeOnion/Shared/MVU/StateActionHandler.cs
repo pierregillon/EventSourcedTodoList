@@ -20,13 +20,27 @@ public abstract class StateActionHandler<TState, TAction> : IActionHandler<TActi
         }
         else
         {
-            var state = _store.GetState<TState>(Subscriptions.DefaultScope);
+            var state = _store.GetState<TState>();
 
             var newState = await Apply(state, action);
 
-            _store.SetState(newState, Subscriptions.DefaultScope);
+            _store.SetState(newState);
         }
     }
 
     protected abstract Task<TState> Apply(TState state, TAction action);
+}
+
+public abstract class SynchronousStateActionHandler<TState, TAction> : StateActionHandler<TState, TAction>
+    where TState : IState
+    where TAction : IAction<TState>
+{
+    protected SynchronousStateActionHandler(IStore store) : base(store)
+    {
+    }
+
+    protected override Task<TState> Apply(TState state, TAction action) =>
+        Task.FromResult(ApplySynchronously(state, action));
+
+    protected abstract TState ApplySynchronously(TState state, TAction action);
 }

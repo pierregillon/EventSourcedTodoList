@@ -1,8 +1,8 @@
 ﻿@page "/"
 @using TimeOnion.Domain.Todo.Core
+@using TimeOnion.Pages.TodoListPage.Details
 @using TimeOnion.Pages.TodoListPage.List.Actions
 @using TimeOnion.Pages.TodoListPage.List.Components
-@using TimeOnion.Pages.TodoListPage.Details
 @inherits TimeOnion.Shared.MVU.BlazorStateComponent
 
 <PageTitle>Time Onion</PageTitle>
@@ -28,7 +28,7 @@
     <div class="d-flex align-start justify-space-around flex-wrap flex-grow-1 gap-8">
         @foreach (var todoList in State.TodoLists)
         {
-            <TodoListComponent @key="todoList.Id" TodoList="@todoList"></TodoListComponent>
+            <TodoListComponent @key="todoList.Id" TodoList="@todoList" TimeHorizon="@State.CurrentTimeHorizon"></TodoListComponent>
         }
     </div>
 </MudContainer>
@@ -39,7 +39,6 @@
 
     TodoListState State => GetState<TodoListState>();
 
-    protected override async Task OnInitializedAsync()
-        => await Execute(new LoadListsAction());
+    protected override async Task OnInitializedAsync() => await Execute(new LoadListsAction());
 
 }

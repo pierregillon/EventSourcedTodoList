@@ -1,9 +1,11 @@
 @using TimeOnion.Domain.Todo.UseCases
-@using TimeOnion.Pages.TodoListPage.Details.Actions.Items
+@using TimeOnion.Pages.TodoListPage.Details.Actions
 @using TimeOnion.Pages.TodoListPage.Details.Components
 @using TimeOnion.Pages.TodoListPage.List.Actions
+@using TimeOnion.Shared.MVU
+@using TimeOnion.Domain.Todo.Core
 @using TimeOnion.Domain.Categories
-@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+@inherits BlazorStateComponent
 
 <div class="flex-grow-1" style="max-width: 700px">
     <div class="overlay-parent d-flex align-center gap-3">
@@ -45,17 +47,15 @@
     [Parameter]
     public TodoListReadModel TodoList { get; set; } = default!;
 
+    [Parameter]
+    public TimeHorizons TimeHorizon { get; set; }
+
     TodoListDetailsState State => GetState<TodoListDetailsState>(TodoList.Id);
 
     IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListItems;
 
     IReadOnlyCollection<CategoryReadModel> Categories => State.Categories;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await Execute(new LoadTodoListDetailsAction(TodoList.Id));
-
-        await base.OnInitializedAsync();
-    }
+    protected override async Task OnParametersChangedAsync(IReadOnlyCollection<ChangedParameters> parameters) => await Execute(new LoadTodoListDetailsAction(TodoList.Id, TimeHorizon));
 
 }

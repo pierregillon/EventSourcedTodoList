@@ -18,7 +18,10 @@ internal class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListDetail
     {
     }
 
-    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, CreateNewCategoryAction action)
+    protected override async Task<TodoListDetailsState> Apply(
+        TodoListDetailsState state,
+        CreateNewCategoryAction action
+    )
     {
         await Dispatch(new CreateNewCategoryCommand(new CategoryName("Nouvelle Catégorie"), action.ListId));
 

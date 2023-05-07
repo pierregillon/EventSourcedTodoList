@@ -2,12 +2,9 @@ namespace TimeOnion.Shared.MVU;
 
 public class Subscriptions
 {
-    public static readonly object DefaultScope = new();
-
     private readonly List<Subscription> _subscriptions;
 
     public Subscriptions() => _subscriptions = new List<Subscription>();
-
 
     public Subscriptions Add(Type stateType, object stateScope, IBlazorStateComponent component)
     {

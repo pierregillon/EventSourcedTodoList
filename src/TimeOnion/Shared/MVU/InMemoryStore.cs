@@ -19,6 +19,8 @@ public class InMemoryStore : IStore
         return (T)state;
     }
 
+    public T GetState<T>() where T : IState => GetState<T>(DefaultScope.Value);
+
     private static IState CreateDefaultState<T>() where T : IState
     {
         var initializeMethod = typeof(T).GetMethod("Initialize", BindingFlags.Static | BindingFlags.Public);
@@ -32,6 +34,7 @@ public class InMemoryStore : IStore
     }
 
     public void SetState<T>(T state, object scope) where T : IState => _states[(typeof(T), scope)] = state;
+    public void SetState<T>(T state) where T : IState => SetState(state, DefaultScope.Value);
 
     public IReadOnlyCollection<T> GetAllStates<T>() where T : IState =>
         _states.Values.Where(x => x is T).Cast<T>().ToList();

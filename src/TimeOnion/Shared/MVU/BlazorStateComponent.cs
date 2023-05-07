@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 
@@ -20,14 +21,10 @@ public class BlazorStateComponent : ComponentBase, IBlazorStateComponent, IDispo
     [Inject] private IMediator Mediator { get; set; } = default!;
     [Inject] private IStore Store { get; set; } = default!;
     [Inject] private Subscriptions Subscriptions { get; set; } = default!;
+
     protected Task Execute(IAction action) => Mediator.Send(action);
 
-    protected T GetState<T>() where T : IState
-    {
-        var stateType = typeof(T);
-        Subscriptions.Add(stateType, Subscriptions.DefaultScope, this);
-        return Store.GetState<T>(Subscriptions.DefaultScope);
-    }
+    protected T GetState<T>() where T : IState => GetState<T>(DefaultScope.Value);
 
     protected T GetState<T>(object scope) where T : IState
     {
@@ -43,4 +40,34 @@ public class BlazorStateComponent : ComponentBase, IBlazorStateComponent, IDispo
         Subscriptions.Remove(this);
         GC.SuppressFinalize(this);
     }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        var initialValues = GetInitialParameterValues().OrderBy(x => x.Key);
+
+        await base.SetParametersAsync(parameters);
+
+        var newValues = parameters.ToDictionary().OrderBy(x => x.Key);
+
+        List<ChangedParameters> changedParameters =
+            (from element in initialValues.Zip(newValues)
+                where !Equals(element.First.Value, element.Second.Value)
+                select new ChangedParameters(element.First.Key, element.First.Value, element.Second.Value)
+            ).ToList();
+
+        if (changedParameters.Any())
+        {
+            await OnParametersChangedAsync(changedParameters);
+        }
+    }
+
+    private Dictionary<string, object?> GetInitialParameterValues() => GetType()
+        .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        .Where(x => x.GetCustomAttribute<ParameterAttribute>() != null)
+        .ToDictionary(x => x.Name, x => x.GetValue(this));
+
+    protected virtual Task OnParametersChangedAsync(IReadOnlyCollection<ChangedParameters> parameters) =>
+        Task.CompletedTask;
 }
+
+public record ChangedParameters(string ParameterName, object? PreviousValue, object NewValue);

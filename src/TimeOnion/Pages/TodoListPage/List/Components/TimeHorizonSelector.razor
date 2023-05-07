@@ -21,8 +21,7 @@
                 <MudText
                     Class="@(isCurrent ? "cursor-pointer important" : "cursor-pointer")"
                     Color="isCurrent ? Color.Primary : Color.Dark"
-                    Align="Align.Center"
-                    @onclick="() => Execute(new ChangeCurrentTemporalityAction(temporality))">
+                    Align="Align.Center">
                     @temporality.ToText()
                 </MudText>
 

@@ -4,9 +4,9 @@ using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
 
-namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
+namespace TimeOnion.Pages.TodoListPage.Details.Actions;
 
-internal record LoadTodoListDetailsAction(TodoListId ListId) : TodoItemAction(ListId);
+internal record LoadTodoListDetailsAction(TodoListId ListId, TimeHorizons TimeHorizon) : TodoItemAction(ListId);
 
 internal class LoadTodoListDetailsActionHandler :
     ActionHandlerBase<TodoListDetailsState, LoadTodoListDetailsAction>
@@ -25,7 +25,8 @@ internal class LoadTodoListDetailsActionHandler :
     ) => state with
     {
         TodoListId = action.ListId,
-        TodoListItems = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon)),
+        CurrentTimeHorizon = action.TimeHorizon,
+        TodoListItems = await Dispatch(new ListTodoItemsQuery(action.ListId, action.TimeHorizon)),
         Categories = await Dispatch(new ListCategoriesQuery(action.ListId))
     };
 }
