@@ -3,13 +3,14 @@ using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions;
 
 internal record LoadTodoListDetailsAction(TodoListId ListId, TimeHorizons TimeHorizon) : TodoItemAction(ListId);
 
 internal class LoadTodoListDetailsActionHandler :
-    ActionHandlerBase<TodoListDetailsState, LoadTodoListDetailsAction>
+    ActionApplier<LoadTodoListDetailsAction, TodoListDetailsState>
 {
     public LoadTodoListDetailsActionHandler(
         IStore store,
@@ -20,8 +21,8 @@ internal class LoadTodoListDetailsActionHandler :
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        LoadTodoListDetailsAction action
+        LoadTodoListDetailsAction action,
+        TodoListDetailsState state
     ) => state with
     {
         TodoListId = action.ListId,

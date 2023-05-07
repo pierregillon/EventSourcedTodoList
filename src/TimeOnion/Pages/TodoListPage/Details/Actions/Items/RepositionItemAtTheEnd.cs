@@ -3,6 +3,7 @@ using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Positionning;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
@@ -12,7 +13,7 @@ internal record RepositionItemAtTheEndAction(
 ) : TodoItemAction(ListId);
 
 internal class RepositionItemAtTheEndActionHandler :
-    ActionHandlerBase<TodoListDetailsState, RepositionItemAtTheEndAction>
+    ActionApplier<RepositionItemAtTheEndAction, TodoListDetailsState>
 {
     public RepositionItemAtTheEndActionHandler(
         IStore store,
@@ -23,8 +24,8 @@ internal class RepositionItemAtTheEndActionHandler :
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        RepositionItemAtTheEndAction action
+        RepositionItemAtTheEndAction action,
+        TodoListDetailsState state
     )
     {
         await Dispatch(new RepositionItemAtTheEndCommand(

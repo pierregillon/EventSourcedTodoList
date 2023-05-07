@@ -3,6 +3,7 @@ using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Categorization;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
@@ -12,7 +13,7 @@ internal record DecategorizeItemAction(
 ) : TodoItemAction(ListId);
 
 internal class DecategorizeItemActionHandler :
-    ActionHandlerBase<TodoListDetailsState, DecategorizeItemAction>
+    ActionApplier<DecategorizeItemAction, TodoListDetailsState>
 {
     public DecategorizeItemActionHandler(
         IStore store,
@@ -22,7 +23,7 @@ internal class DecategorizeItemActionHandler :
     {
     }
 
-    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, DecategorizeItemAction action)
+    protected override async Task<TodoListDetailsState> Apply(DecategorizeItemAction action, TodoListDetailsState state)
     {
         await Dispatch(new DecategorizeTodoItemCommand(action.ListId, action.ItemId));
 

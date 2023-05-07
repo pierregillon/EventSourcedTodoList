@@ -2,6 +2,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
@@ -12,7 +13,7 @@ internal record AddNewItemTodoAfterItemAction(
 ) : TodoItemAction(ListId);
 
 internal class AddNewItemTodoAfterItemActionHandler :
-    ActionHandlerBase<TodoListDetailsState, AddNewItemTodoAfterItemAction>
+    ActionApplier<AddNewItemTodoAfterItemAction, TodoListDetailsState>
 {
     public AddNewItemTodoAfterItemActionHandler(
         IStore store,
@@ -23,8 +24,8 @@ internal class AddNewItemTodoAfterItemActionHandler :
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        AddNewItemTodoAfterItemAction action
+        AddNewItemTodoAfterItemAction action,
+        TodoListDetailsState state
     )
     {
         var item = state.TodoListItems.Single(x => x.Id == action.ItemId);

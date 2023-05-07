@@ -2,13 +2,14 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Pages.TodayTaskPreparation.Steps;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
 internal record LoadTodayTaskPreparationAction : IAction<TodayTaskPreparationState>;
 
 internal class LoadTodayTaskPreparationActionHandler :
-    ActionHandlerBase<TodayTaskPreparationState, LoadTodayTaskPreparationAction>
+    ActionApplier<LoadTodayTaskPreparationAction, TodayTaskPreparationState>
 {
     private readonly ICommandDispatcher _commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher;
@@ -24,8 +25,8 @@ internal class LoadTodayTaskPreparationActionHandler :
     }
 
     protected override async Task<TodayTaskPreparationState> Apply(
-        TodayTaskPreparationState state,
-        LoadTodayTaskPreparationAction action
+        LoadTodayTaskPreparationAction action,
+        TodayTaskPreparationState state
     )
     {
         var items = (await Dispatch(new ListYesterdayUndoneTasksQuery()))

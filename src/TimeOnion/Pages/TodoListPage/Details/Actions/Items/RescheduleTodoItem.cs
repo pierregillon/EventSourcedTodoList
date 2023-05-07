@@ -2,6 +2,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
@@ -12,7 +13,7 @@ internal record RescheduleTodoItemAction(
 ) : TodoItemAction(ListId);
 
 internal class RescheduleTodoItemActionHandler
-    : ActionHandlerBase<TodoListDetailsState, RescheduleTodoItemAction>
+    : ActionApplier<RescheduleTodoItemAction, TodoListDetailsState>
 {
     public RescheduleTodoItemActionHandler(
         IStore store,
@@ -23,8 +24,8 @@ internal class RescheduleTodoItemActionHandler
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        RescheduleTodoItemAction action
+        RescheduleTodoItemAction action,
+        TodoListDetailsState state
     )
     {
         await Dispatch(new RescheduleTodoItemCommand(

@@ -3,12 +3,13 @@ using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Categories;
 
 internal record CreateNewCategoryAction(TodoListId ListId) : TodoItemAction(ListId);
 
-internal class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListDetailsState, CreateNewCategoryAction>
+internal class CreateNewCategoryActionHandler : ActionApplier<CreateNewCategoryAction, TodoListDetailsState>
 {
     public CreateNewCategoryActionHandler(
         IStore aStore,
@@ -19,8 +20,8 @@ internal class CreateNewCategoryActionHandler : ActionHandlerBase<TodoListDetail
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        CreateNewCategoryAction action
+        CreateNewCategoryAction action,
+        TodoListDetailsState state
     )
     {
         await Dispatch(new CreateNewCategoryCommand(new CategoryName("Nouvelle Catégorie"), action.ListId));

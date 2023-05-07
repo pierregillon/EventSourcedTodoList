@@ -2,12 +2,13 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
 internal record MarkItemAsToDoAction(TodoListId ListId, TodoItemId ItemId) : TodoItemAction(ListId);
 
-internal class MarkItemAsToDoActionHandler : ActionHandlerBase<TodoListDetailsState, MarkItemAsToDoAction>
+internal class MarkItemAsToDoActionHandler : ActionApplier<MarkItemAsToDoAction, TodoListDetailsState>
 {
     public MarkItemAsToDoActionHandler(
         IStore store,
@@ -18,7 +19,7 @@ internal class MarkItemAsToDoActionHandler : ActionHandlerBase<TodoListDetailsSt
     {
     }
 
-    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, MarkItemAsToDoAction action)
+    protected override async Task<TodoListDetailsState> Apply(MarkItemAsToDoAction action, TodoListDetailsState state)
     {
         await Dispatch(new MarkItemAsToDoCommand(action.ListId, action.ItemId));
 

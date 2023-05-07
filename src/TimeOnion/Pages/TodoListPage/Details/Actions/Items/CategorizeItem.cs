@@ -4,6 +4,7 @@ using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Domain.Todo.UseCases.Categorization;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
@@ -13,7 +14,7 @@ internal record CategorizeItemAction(
     CategoryId CategoryId
 ) : TodoItemAction(ListId);
 
-internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListDetailsState, CategorizeItemAction>
+internal class CategorizeItemActionHandler : ActionApplier<CategorizeItemAction, TodoListDetailsState>
 {
     public CategorizeItemActionHandler(
         IStore store,
@@ -23,7 +24,7 @@ internal class CategorizeItemActionHandler : ActionHandlerBase<TodoListDetailsSt
     {
     }
 
-    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, CategorizeItemAction action)
+    protected override async Task<TodoListDetailsState> Apply(CategorizeItemAction action, TodoListDetailsState state)
     {
         await Dispatch(new CategorizeTodoItemCommand(
             action.ListId,

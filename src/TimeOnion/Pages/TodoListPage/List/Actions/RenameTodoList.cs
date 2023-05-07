@@ -2,12 +2,13 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.List.Actions;
 
 internal record RenameTodoListAction(TodoListId ListId, string NewName) : IAction<TodoListState>;
 
-internal class RenameTodoListActionHandler : ActionHandlerBase<TodoListState, RenameTodoListAction>
+internal class RenameTodoListActionHandler : ActionApplier<RenameTodoListAction, TodoListState>
 {
     public RenameTodoListActionHandler(
         IStore store,
@@ -17,7 +18,7 @@ internal class RenameTodoListActionHandler : ActionHandlerBase<TodoListState, Re
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, RenameTodoListAction action)
+    protected override async Task<TodoListState> Apply(RenameTodoListAction action, TodoListState state)
     {
         await Dispatch(new RenameTodoListCommand(
             action.ListId,

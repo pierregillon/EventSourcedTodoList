@@ -2,12 +2,13 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.List.Actions;
 
 internal record DeleteTodoListAction(TodoListId ListId) : IAction<TodoListState>;
 
-internal class DeleteTodoListActionHandler : ActionHandlerBase<TodoListState, DeleteTodoListAction>
+internal class DeleteTodoListActionHandler : ActionApplier<DeleteTodoListAction, TodoListState>
 {
     public DeleteTodoListActionHandler(
         IStore store,
@@ -17,7 +18,7 @@ internal class DeleteTodoListActionHandler : ActionHandlerBase<TodoListState, De
     {
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, DeleteTodoListAction action)
+    protected override async Task<TodoListState> Apply(DeleteTodoListAction action, TodoListState state)
     {
         await Dispatch(new DeleteTodoListCommand(action.ListId));
 

@@ -3,6 +3,7 @@ using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Categories;
 
@@ -12,7 +13,7 @@ internal record RenameCategoryAction(
     TodoListId ListId
 ) : TodoItemAction(ListId);
 
-internal class RenameCategoryActionHandler : ActionHandlerBase<TodoListDetailsState, RenameCategoryAction>
+internal class RenameCategoryActionHandler : ActionApplier<RenameCategoryAction, TodoListDetailsState>
 {
     public RenameCategoryActionHandler(
         IStore store,
@@ -22,7 +23,7 @@ internal class RenameCategoryActionHandler : ActionHandlerBase<TodoListDetailsSt
     {
     }
 
-    protected override async Task<TodoListDetailsState> Apply(TodoListDetailsState state, RenameCategoryAction action)
+    protected override async Task<TodoListDetailsState> Apply(RenameCategoryAction action, TodoListDetailsState state)
     {
         await Dispatch(new RenameCategoryCommand(action.Id, new CategoryName(action.Name)));
 

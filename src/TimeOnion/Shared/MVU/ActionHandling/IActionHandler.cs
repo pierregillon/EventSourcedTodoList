@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace TimeOnion.Shared.MVU;
+namespace TimeOnion.Shared.MVU.ActionHandling;
 
 public interface IActionHandler<in TAction, TState> : IRequestHandler<TAction>
     where TState : IState

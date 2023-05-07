@@ -2,13 +2,14 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
 internal record InsertNewItemToDoAtTheEndAction(TodoListId ListId) : TodoItemAction(ListId);
 
 internal class InsertNewItemToDoAtTheEndActionHandler :
-    ActionHandlerBase<TodoListDetailsState, InsertNewItemToDoAtTheEndAction>
+    ActionApplier<InsertNewItemToDoAtTheEndAction, TodoListDetailsState>
 {
     public InsertNewItemToDoAtTheEndActionHandler(
         IStore store,
@@ -19,8 +20,8 @@ internal class InsertNewItemToDoAtTheEndActionHandler :
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        InsertNewItemToDoAtTheEndAction action
+        InsertNewItemToDoAtTheEndAction action,
+        TodoListDetailsState state
     )
     {
         await Task.Delay(0);

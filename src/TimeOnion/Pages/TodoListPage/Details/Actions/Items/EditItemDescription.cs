@@ -2,6 +2,7 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
@@ -9,7 +10,7 @@ internal record EditItemDescriptionAction
     (TodoListId ListId, TodoItemId ItemId, string NewDescription) : TodoItemAction(ListId);
 
 internal class EditItemDescriptionActionHandler :
-    ActionHandlerBase<TodoListDetailsState, EditItemDescriptionAction>
+    ActionApplier<EditItemDescriptionAction, TodoListDetailsState>
 {
     public EditItemDescriptionActionHandler(
         IStore store,
@@ -20,8 +21,8 @@ internal class EditItemDescriptionActionHandler :
     }
 
     protected override async Task<TodoListDetailsState> Apply(
-        TodoListDetailsState state,
-        EditItemDescriptionAction action
+        EditItemDescriptionAction action,
+        TodoListDetailsState state
     )
     {
         var item = state.TodoListItems.Single(x => x.Id == action.ItemId);

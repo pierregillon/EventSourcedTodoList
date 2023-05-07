@@ -1,12 +1,13 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodayTaskPreparation.Actions;
 
 internal record MoveToNextPreparationStepAction : IAction<TodayTaskPreparationState>;
 
 internal class MoveToNextPreparationStepActionHandler :
-    ActionHandlerBase<TodayTaskPreparationState, MoveToNextPreparationStepAction>
+    ActionApplier<MoveToNextPreparationStepAction, TodayTaskPreparationState>
 {
     public MoveToNextPreparationStepActionHandler(
         IStore store,
@@ -17,8 +18,8 @@ internal class MoveToNextPreparationStepActionHandler :
     }
 
     protected override async Task<TodayTaskPreparationState> Apply(
-        TodayTaskPreparationState state,
-        MoveToNextPreparationStepAction action
+        MoveToNextPreparationStepAction action,
+        TodayTaskPreparationState state
     )
     {
         if (state.CurrentStep is not null)

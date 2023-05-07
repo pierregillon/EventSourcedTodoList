@@ -2,29 +2,37 @@ using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.Todo.UseCases;
 using TimeOnion.Shared.MVU;
+using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.List.Actions;
 
 internal record CreateNewTodoListAction : IAction<TodoListState>;
 
 internal class CreateNewTodoListActionHandler :
-    ActionHandlerBase<TodoListState, CreateNewTodoListAction>
+    IActionApplier<CreateNewTodoListAction, TodoListState>
 {
+    private readonly ICommandDispatcher _commandDispatcher;
+    private readonly IQueryDispatcher _queryDispatcher;
+    public IStore Store { get; }
+
     public CreateNewTodoListActionHandler(
         IStore store,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher
-    ) : base(store, commandDispatcher, queryDispatcher)
+    )
     {
+        Store = store;
+        _commandDispatcher = commandDispatcher;
+        _queryDispatcher = queryDispatcher;
     }
 
-    protected override async Task<TodoListState> Apply(TodoListState state, CreateNewTodoListAction action)
+    public async Task<TodoListState> Apply(CreateNewTodoListAction action, TodoListState state)
     {
-        await Dispatch(new CreateNewTodoListCommand(new TodoListName("Nouvelle todo liste")));
+        await _commandDispatcher.Dispatch(new CreateNewTodoListCommand(new TodoListName("Nouvelle todo liste")));
 
         return state with
         {
-            TodoLists = await Dispatch(new ListTodoListsQuery())
+            TodoLists = await _queryDispatcher.Dispatch(new ListTodoListsQuery())
         };
     }
 }
