@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace TimeOnion.Shared.MVU;
+namespace TimeOnion.Shared.MVU.Pipelines;
 
 internal sealed class LogExceptionPreProcessor<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull

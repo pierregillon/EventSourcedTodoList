@@ -1,6 +1,6 @@
 using MediatR.Pipeline;
 
-namespace TimeOnion.Shared.MVU;
+namespace TimeOnion.Shared.MVU.Pipelines;
 
 internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
     where TRequest : notnull
