@@ -79,6 +79,7 @@ public class TodoItemSteps
         await AddItemToDo(todoListId, description, timeHorizon, categoryId: categoryId);
     }
 
+    [Given(@"the item ""(.*)"" in my (.*) list has been marked as done")]
     [When(@"I mark the item ""(.*)"" in my (.*) list as done")]
     public async Task WhenIMarkTheItemAsCompleted(string itemDescription, string listName)
     {

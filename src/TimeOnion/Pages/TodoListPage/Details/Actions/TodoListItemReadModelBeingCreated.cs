@@ -8,7 +8,7 @@ public record TodoListItemReadModelBeingCreated(
     TodoItemId Id,
     TodoListId ListId,
     string Description,
-    bool IsDone,
+    DateTime? DoneDate,
     TimeHorizons TimeHorizons,
     CategoryId? CategoryId
-) : TodoListItemReadModel(Id, ListId, Description, IsDone, TimeHorizons, CategoryId);
+) : TodoListItemReadModel(Id, ListId, Description, DoneDate, TimeHorizons, CategoryId);

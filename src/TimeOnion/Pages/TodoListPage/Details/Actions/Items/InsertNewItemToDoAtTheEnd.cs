@@ -30,7 +30,7 @@ internal class InsertNewItemToDoAtTheEndActionHandler :
             TodoItemId.New(),
             action.ListId,
             string.Empty,
-            false,
+            null,
             state.CurrentTimeHorizon,
             CategoryId.None
         );

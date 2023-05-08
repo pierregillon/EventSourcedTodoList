@@ -14,10 +14,16 @@ public record TodoListItemReadModel(
     TodoItemId Id,
     TodoListId ListId,
     string Description,
-    bool IsDone,
+    DateTime? DoneDate,
     TimeHorizons TimeHorizons,
     CategoryId? CategoryId
-);
+)
+{
+    public bool IsDone => DoneDate.HasValue;
+
+    public bool IsDoneForLong(DateTime now) =>
+        DoneDate.HasValue && now >= DoneDate.Value.Add(TimeHorizons.ToTimeSpan());
+}
 
 public record TodoListEntry(TodoListId ListId, IReadOnlyCollection<TodoListItemReadModel> Items);
 
@@ -38,8 +44,13 @@ internal class ListTodoItemsQueryHandler :
     IDomainEventListener<CategoryDeleted>
 {
     private readonly IReadModelDatabase _database;
+    private readonly IClock _clock;
 
-    public ListTodoItemsQueryHandler(IReadModelDatabase database) => _database = database;
+    public ListTodoItemsQueryHandler(IReadModelDatabase database, IClock clock)
+    {
+        _database = database;
+        _clock = clock;
+    }
 
     public async Task<IReadOnlyCollection<TodoListItemReadModel>> Handle(ListTodoItemsQuery query)
     {
@@ -47,7 +58,10 @@ internal class ListTodoItemsQueryHandler :
 
         var todoList = list.Single(x => x.ListId == query.ListId);
 
-        return todoList.Items.Where(item => item.TimeHorizons == query.TimeHorizon).ToArray();
+        return todoList.Items
+            .Where(item => item.TimeHorizons == query.TimeHorizon)
+            .Where(item => !item.IsDoneForLong(_clock.Now()))
+            .ToArray();
     }
 
     public async Task On(TodoListCreated domainEvent)
@@ -66,7 +80,7 @@ internal class ListTodoItemsQueryHandler :
             domainEvent.ItemId,
             domainEvent.ListId,
             domainEvent.Description.Value,
-            false,
+            null,
             domainEvent.TimeHorizon,
             domainEvent.CategoryId
         );
@@ -99,12 +113,12 @@ internal class ListTodoItemsQueryHandler :
 
     public async Task On(TodoItemCompleted domainEvent) => await _database.Update(
         x => x.ListId == domainEvent.ListId,
-        UpdateItem(domainEvent.ItemId, item => item with { IsDone = true })
+        UpdateItem(domainEvent.ItemId, item => item with { DoneDate = ((IDomainEvent)domainEvent).CreatedAt })
     );
 
     public async Task On(ItemReadyTodo domainEvent) => await _database.Update(
         x => x.ListId == domainEvent.ListId,
-        UpdateItem(domainEvent.ItemId, item => item with { IsDone = false })
+        UpdateItem(domainEvent.ItemId, item => item with { DoneDate = null })
     );
 
     public async Task On(TodoItemDeleted domainEvent) => await _database.Update<TodoListEntry>(

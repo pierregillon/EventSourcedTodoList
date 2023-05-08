@@ -33,7 +33,7 @@ internal class InsertNewItemToDoOnTopOfCategoryActionHandler :
             TodoItemId.New(),
             action.ListId,
             string.Empty,
-            false,
+            null,
             state.CurrentTimeHorizon,
             action.CategoryId
         );

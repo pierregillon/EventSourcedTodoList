@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using TimeOnion.Domain;
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Infrastructure;
 
 namespace TimeOnion.Tests.Acceptance.Configuration;
@@ -14,15 +16,17 @@ public class TestApplication
     public TestApplication(ErrorDriver errorDriver)
     {
         _errorDriver = errorDriver;
+
         _serviceProvider = new ServiceCollection()
             .AddScoped<IConfiguration>(_ => new ConfigurationBuilder().Build())
             .AddDomain()
             .AddInfrastructure()
             .AddSingleton<IEventStore, InMemoryEventStore>()
+            .AddSingleton(GetClockSubstitute())
             .BuildServiceProvider();
     }
 
-    private T GetService<T>() where T : notnull => _serviceProvider.GetRequiredService<T>();
+    public T GetService<T>() where T : notnull => _serviceProvider.GetRequiredService<T>();
 
     public async Task Dispatch<TCommand>(TCommand command) where TCommand : ICommand
     {
@@ -43,5 +47,12 @@ public class TestApplication
         var dispatcher = GetService<IQueryDispatcher>();
 
         return await _errorDriver.TryExecute(() => dispatcher.Dispatch(query));
+    }
+
+    private static IClock GetClockSubstitute()
+    {
+        var clock = Substitute.For<IClock>();
+        clock.Now().Returns(new SystemClock().Now());
+        return clock;
     }
 }

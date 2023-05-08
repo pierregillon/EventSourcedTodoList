@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-preview.3.23174.8" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.3.23174.8" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+        <PackageReference Include="NSubstitute" Version="5.0.0" />
         <PackageReference Include="SpecFlow" Version="4.0.31-beta" />
         <PackageReference Include="SpecFlow.xUnit" Version="4.0.31-beta" />
         <PackageReference Include="xunit" Version="2.4.2" />
