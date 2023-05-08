@@ -20,13 +20,77 @@
         Color="Color.Primary">
     </MudIconButton>
 
+    <MudMenu
+        @ref="_mudMenu"
+        Icon="@Icons.Material.Filled.MoreHoriz"
+        Size="Size.Small"
+        AnchorOrigin="Origin.BottomCenter">
+
+        <ActivatorContent>
+            @switch (State.CurrentCategoryVisibility)
+            {
+                case CategoryVisibility.ShowAll:
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Folder"
+                        Color="Color.Success">
+                    </MudIconButton>
+                    break;
+                case CategoryVisibility.HideWithoutItems:
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.RuleFolder"
+                        Color="Color.Primary">
+                    </MudIconButton>
+                    break;
+                case CategoryVisibility.HideAll:
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.FolderOff"
+                        Color="Color.Warning">
+                    </MudIconButton>
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+        </ActivatorContent>
+
+        <ChildContent>
+            <MudListItem
+                Icon="@Icons.Material.Filled.Folder"
+                IconColor="Color.Success"
+                OnClick="ShowAllCategories">
+                Afficher les catégories
+            </MudListItem>
+
+            <MudListItem
+                Icon="@Icons.Material.Filled.RuleFolder"
+                IconColor="Color.Primary"
+                OnClick="HideCategoriesWithNotItems">
+                Masquer les catégories sans tâches
+            </MudListItem>
+
+            <MudListItem
+                Icon="@Icons.Material.Filled.FolderOff"
+                IconColor="Color.Warning"
+                OnClick="HideAllCategories">
+                Masquer toutes les catégories
+            </MudListItem>
+        </ChildContent>
+
+
+    </MudMenu>
+
 </div>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
     <div class="d-flex align-start justify-space-around flex-wrap flex-grow-1 gap-8">
         @foreach (var todoList in State.TodoLists)
         {
-            <TodoListComponent @key="todoList.Id" TodoList="@todoList" TimeHorizon="@State.CurrentTimeHorizon"></TodoListComponent>
+            <TodoListComponent
+                @key="todoList.Id"
+                TodoList="@todoList"
+                TimeHorizon="@State.CurrentTimeHorizon"
+                CategoryVisibility="@State.CurrentCategoryVisibility">
+            </TodoListComponent>
         }
     </div>
 </MudContainer>
@@ -38,5 +102,28 @@
     TodoListState State => GetState<TodoListState>();
 
     protected override async Task OnInitializedAsync() => await Execute(new LoadListsAction());
+
+    private MudMenu _mudMenu = default!;
+
+    private async Task ShowAllCategories()
+    {
+        _mudMenu.CloseMenu();
+
+        await Execute(new ShowAllCategoriesAction());
+    }
+
+    private async Task HideCategoriesWithNotItems()
+    {
+        _mudMenu.CloseMenu();
+
+        await Execute(new HideCategoriesWithoutItemsAction());
+    }
+
+    private async Task HideAllCategories()
+    {
+        _mudMenu.CloseMenu();
+
+        await Execute(new HideAllCategoriesAction());
+    }
 
 }

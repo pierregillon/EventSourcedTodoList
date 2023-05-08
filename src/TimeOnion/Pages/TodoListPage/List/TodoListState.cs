@@ -6,13 +6,22 @@ namespace TimeOnion.Pages.TodoListPage.List;
 
 public record TodoListState(
     TimeHorizons CurrentTimeHorizon,
-    IEnumerable<TodoListReadModel> TodoLists
+    IEnumerable<TodoListReadModel> TodoLists,
+    CategoryVisibility CurrentCategoryVisibility
 ) : IState
 {
     // ReSharper disable once UnusedMember.Global
     public static TodoListState Initialize() =>
         new(
             TimeHorizons.ThisDay,
-            new List<TodoListReadModel>()
+            new List<TodoListReadModel>(),
+            CategoryVisibility.ShowAll
         );
+}
+
+public enum CategoryVisibility
+{
+    ShowAll,
+    HideWithoutItems,
+    HideAll
 }
