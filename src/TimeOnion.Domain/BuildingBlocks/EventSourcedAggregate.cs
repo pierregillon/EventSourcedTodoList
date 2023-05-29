@@ -42,5 +42,7 @@ public abstract class EventSourcedAggregate<TId> : IEventSourcedAggregate where 
 
     public void MarkAsCommitted() => _uncommittedDomainEvents.Clear();
 
-    protected abstract void Apply(IDomainEvent domainEvent);
+    protected virtual void Apply(IDomainEvent domainEvent)
+    {
+    }
 }

@@ -1,0 +1,127 @@
+@page "/register"
+@layout EmptyLayout
+@using TimeOnion.Domain.UserManagement.Core
+@using TimeOnion.Pages.Authentication.Register.Actions
+@using System.ComponentModel.DataAnnotations
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+
+@inject NavigationManager NavigationManager
+
+<MudContainer MaxWidth="MaxWidth.Small">
+
+    <h1 class="ma-4" style="text-align: center">
+        Time onion
+    </h1>
+
+    <MudPaper Class="pa-4">
+
+        <div class="d-flex align-center gap-2">
+            <MudIcon
+                Icon="@Icons.Material.Filled.Add"
+                Color="Color.Primary">
+            </MudIcon>
+            <h2>Créer un compte</h2>
+            <MudSpacer></MudSpacer>
+            <MudLink Href="/login">
+                Se connecter
+            </MudLink>
+        </div>
+
+        <MudForm
+            @ref="_form"
+            @bind-IsValid="@_success"
+            @bind-Errors="@_errors">
+
+            <MudTextField
+                T="string"
+                Label="Email"
+                Required="true"
+                RequiredError="L'email est requis"
+                Text="@State.Email"
+                TextChanged="email => Execute(new DefineRegisterEmailAction(email))"
+                Validation="@(new EmailAddressAttribute { ErrorMessage = "L'email saisi est invalide." })"/>
+
+            <MudTextField
+                T="string"
+                Label="Mot de passe"
+                InputType="InputType.Password"
+                Text="@State.Password"
+                TextChanged="password => Execute(new DefineRegisterPasswordAction(password))"
+                Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))"
+                Required="true"
+                RequiredError="Le mot de passe est requis"/>
+
+            <MudTextField
+                T="string"
+                Label="Password"
+                InputType="InputType.Password"
+                Text="@State.PasswordRepeat"
+                TextChanged="passwordRepeat => Execute(new DefineRegisterPasswordRepeatAction(passwordRepeat))"
+                Validation="@(new Func<string, string?>(PasswordMatch))"/>
+
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                Disabled="@(!_success)"
+                Class="ml-auto mt-2"
+                OnClick="() => Execute(new RegisterAction(State.Email, State.Password))">
+                @if (State.IsLoading)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">M'enregistrer</MudText>
+                }
+                else
+                {
+                    <MudText>M'enregistrer</MudText>
+                }
+
+            </MudButton>
+
+        </MudForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+
+    bool _success;
+    string[] _errors = { };
+    MudForm? _form;
+
+    RegisterState State => GetState<RegisterState>();
+
+    private IEnumerable<string> PasswordStrength(string value)
+    {
+        try
+        {
+            _ = new Password(value);
+        }
+        catch (ArgumentException)
+        {
+            return new[] { "Le password est requis" };
+        }
+        catch (TooWeakPasswordException ex)
+        {
+            var error = ex.Reason switch
+            {
+                TooWeakPasswordException.Reasons.TooShort => "Le mot de passe est trop court (< 8 caractères)",
+                TooWeakPasswordException.Reasons.MissingCapitalLetter => "Le mot de passe doit contenir un lettre majuscule",
+                TooWeakPasswordException.Reasons.MissingLowerLetter => "Le mot de passe doit contenir une lettre minuscule",
+                TooWeakPasswordException.Reasons.MissingDigit => "Le mot de passe doit contenir un nombre",
+                _ => throw new ArgumentOutOfRangeException()
+                };
+            return new[] { "error" };
+        }
+
+        return Array.Empty<string>();
+    }
+
+    private string? PasswordMatch(string arg) => State.PasswordRepeat != arg ? "Les mots de passe sont différents" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Execute(new InitializeRegisterAction());
+    }
+
+}

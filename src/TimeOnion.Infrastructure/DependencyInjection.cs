@@ -4,6 +4,7 @@ using Minio;
 using TimeOnion.Domain;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Infrastructure;
 
@@ -31,6 +32,8 @@ public static class DependencyInjection
             .AddOptions<S3StorageConfiguration>()
             .BindConfiguration(S3StorageConfiguration.SectionName)
             .ValidateDataAnnotations();
+
+        services.AddScoped<IPasswordHasher, AspNetCoreIdentityPasswordHasher>();
 
         return services;
     }

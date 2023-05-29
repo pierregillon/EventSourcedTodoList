@@ -1,7 +1,7 @@
 using TimeOnion.Shared.MVU;
 using TimeOnion.Shared.MVU.ActionHandling;
 
-namespace TimeOnion.Pages.Authentication.Actions;
+namespace TimeOnion.Pages.Authentication.Login.Actions;
 
 public record DefineEmailAction(string Email) : IAction<LoginState>;
 

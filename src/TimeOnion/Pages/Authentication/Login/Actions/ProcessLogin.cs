@@ -5,7 +5,7 @@ using TimeOnion.Configuration.Blazor;
 using TimeOnion.Shared.MVU;
 using TimeOnion.Shared.MVU.ActionHandling;
 
-namespace TimeOnion.Pages.Authentication.Actions;
+namespace TimeOnion.Pages.Authentication.Login.Actions;
 
 public record LoginAction(string Login, string Password) : IAction<LoginState>;
 

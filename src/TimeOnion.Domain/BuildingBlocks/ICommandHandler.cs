@@ -8,3 +8,11 @@ internal interface ICommandHandler<in TCommand> : IRequestHandler<TCommand> wher
 
     Task Handle(TCommand command);
 }
+
+internal interface ICommandHandler<in TCommand, TResult> : IRequestHandler<TCommand, TResult>
+    where TCommand : ICommand<TResult>
+{
+    Task<TResult> IRequestHandler<TCommand, TResult>.Handle(TCommand request, CancellationToken _) => Handle(request);
+
+    Task<TResult> Handle(TCommand command);
+}

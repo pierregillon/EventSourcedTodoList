@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using TimeOnion.Domain.BuildingBlocks;
+using TimeOnion.Domain.UserManagement;
 
 namespace TimeOnion.Domain;
 
@@ -13,6 +14,8 @@ public static class DependencyInjection
             .AddScoped<IQueryDispatcher, MediatorDispatcher>()
             .AddScoped<IDomainEventPublisher, MediatorDispatcher>()
             ;
+
+        services.AddScoped<IUserFinder, InMemoryUserFinder>();
 
         return services;
     }

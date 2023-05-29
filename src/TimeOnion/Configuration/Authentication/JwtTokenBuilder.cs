@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TimeOnion.Domain.Todo.Core;
-using TimeOnion.Domain.UserManagement;
+using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Configuration.Authentication;
 
