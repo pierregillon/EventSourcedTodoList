@@ -1,0 +1,46 @@
+@page "/login"
+@layout EmptyLayout
+@using TimeOnion.Configuration.Blazor
+@using TimeOnion.Pages.Authentication.Actions
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+@inject NavigationManager NavigationManager
+
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudForm Class="d-flex flex-column gap-2">
+
+        <MudTextField
+            T="string"
+            Label="Email"
+            Text="@State.Email"
+            TextChanged="email => Execute(new DefineEmailAction(email))"/>
+
+        <MudTextField
+            T="string"
+            Label="Password"
+            InputType="InputType.Password"
+            Text="@State.Password"
+            TextChanged="password => Execute(new DefinePasswordAction(password))"/>
+
+        <MudButton
+            Color="Color.Primary"
+            Variant="Variant.Filled"
+            Class="ma-auto"
+            OnClick="() => Execute(new LoginAction(State.Email, State.Password))">
+            Login
+        </MudButton>
+
+    </MudForm>
+</MudContainer>
+
+@code {
+    LoginState State => GetState<LoginState>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var returnUrl = NavigationManager.QueryString("returnUrl");
+        await Execute(new InitializeLoginState(returnUrl));
+    }
+
+}

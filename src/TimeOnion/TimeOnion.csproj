@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
         <PackageReference Include="MudBlazor" Version="6.2.1" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
     </ItemGroup>

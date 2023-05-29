@@ -6,33 +6,21 @@ using TimeOnion.Shared.MVU.ActionHandling;
 
 namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
-internal record ReloadTodoListItemsAction : IAction<TodoListState>;
+internal record ReloadTodoListItemsAction : IAction;
 
-internal class ReloadTodoListItemsActionHandler : IActionHandler<ReloadTodoListItemsAction, TodoListState>
+internal record ReloadTodoListItemsActionHandler(IStore Store, IQueryDispatcher QueryDispatcher) : IActionHandler<ReloadTodoListItemsAction>
 {
-    private readonly IStore _store;
-    private readonly IQueryDispatcher _queryDispatcher;
-
-    public ReloadTodoListItemsActionHandler(
-        IStore store,
-        IQueryDispatcher queryDispatcher
-    )
-    {
-        _store = store;
-        _queryDispatcher = queryDispatcher;
-    }
-
     public async Task Handle(ReloadTodoListItemsAction action)
     {
-        var detailStates = _store.GetAllStates<TodoListDetailsState>();
+        var detailStates = Store.GetAllStates<TodoListDetailsState>();
 
         foreach (var details in detailStates)
         {
             var query = new ListTodoItemsQuery(details.TodoListId, details.CurrentTimeHorizon);
 
-            var items = await _queryDispatcher.Dispatch(query);
+            var items = await QueryDispatcher.Dispatch(query);
 
-            _store.UpdateState(details, details with { TodoListItems = items });
+            Store.UpdateState(details, details with { TodoListItems = items });
         }
     }
 }
