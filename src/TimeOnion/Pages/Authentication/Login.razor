@@ -6,30 +6,39 @@
 @inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.Small">
-    <MudForm Class="d-flex flex-column gap-2">
+    <h1 class="ma-4" style="text-align: center"> Time onion </h1>
+    <MudPaper Class="pa-4">
+        <div class="d-flex">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Primary"></MudIcon>
+            <h2>Se connecter</h2>
+        </div>
+        <MudForm Class="d-flex flex-column gap-2">
 
-        <MudTextField
-            T="string"
-            Label="Email"
-            Text="@State.Email"
-            TextChanged="email => Execute(new DefineEmailAction(email))"/>
+            <MudTextField
+                T="string"
+                Label="Email"
+                Text="@State.Email"
+                TextChanged="email => Execute(new DefineEmailAction(email))"/>
 
-        <MudTextField
-            T="string"
-            Label="Password"
-            InputType="InputType.Password"
-            Text="@State.Password"
-            TextChanged="password => Execute(new DefinePasswordAction(password))"/>
+            <MudTextField
+                T="string"
+                Label="Mot de passe"
+                InputType="InputType.Password"
+                Text="@State.Password"
+                TextChanged="password => Execute(new DefinePasswordAction(password))"/>
 
-        <MudButton
-            Color="Color.Primary"
-            Variant="Variant.Filled"
-            Class="ma-auto"
-            OnClick="() => Execute(new LoginAction(State.Email, State.Password))">
-            Login
-        </MudButton>
+            <div class="d-flex flex-row justify-end">
+                <MudButton
+                    Color="Color.Primary"
+                    Variant="Variant.Filled"
+                    OnClick="() => Execute(new LoginAction(State.Email, State.Password))"
+                    Disabled="string.IsNullOrWhiteSpace(State.Email) || string.IsNullOrWhiteSpace(State.Password)">
+                    Login
+                </MudButton>
+            </div>
 
-    </MudForm>
+        </MudForm>
+    </MudPaper>
 </MudContainer>
 
 @code {
