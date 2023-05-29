@@ -23,16 +23,16 @@
             Color="Color.Warning">
         </MudIconButton>
         <MudSpacer></MudSpacer>
-        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft">
+        <MudMenu @ref="_mudMenu" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft">
             <ActivatorContent>
                 <MudAvatar Color="Color.Primary" Variant="Variant.Filled">
                     <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"/>
                 </MudAvatar>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem OnClick="() => Mediator.Send(new LogoutAction())">
+                <MudListItem OnClick="Logout">
                     Se déconnecter
-                </MudMenuItem>
+                </MudListItem>
             </ChildContent>
         </MudMenu>
 
@@ -53,5 +53,14 @@
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
 
     private void OpenDialog() => Dialog.Show<TodayTaskPreparation>("Préparation des tâches du jour", new DialogOptions { FullScreen = true, CloseButton = true });
+
+    private MudMenu _mudMenu = default!;
+
+    private async Task Logout()
+    {
+        _mudMenu.CloseMenu();
+
+        await Mediator.Send(new LogoutAction());
+    }
 
 }
