@@ -12,6 +12,9 @@ public class ClockSteps
 
     public ClockSteps(TestApplication application) => _application = application;
 
+    [Given(@"the current date is (.*)")]
+    public void GivenTheCurrentDateIs(DateTime date) => _application.GetService<IClock>().Now().Returns(date);
+
     [When(@"(.*) days? passed")]
     public void WhenDayPassed(int dayCount)
     {
@@ -25,6 +28,7 @@ public class ClockSteps
     {
         var clock = _application.GetService<IClock>();
         var currentDate = clock.Now();
-        clock.Now().Returns(currentDate.AddMonths(monthCount));
+        var newDate = currentDate.AddMonths(monthCount);
+        clock.Now().Returns(newDate);
     }
 }

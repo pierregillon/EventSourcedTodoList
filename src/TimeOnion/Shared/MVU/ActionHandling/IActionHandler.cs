@@ -8,7 +8,9 @@ public interface IActionHandler<in TAction, TState> : IRequestHandler<TAction>
 {
     Task IRequestHandler<TAction>.Handle(TAction request, CancellationToken _)
     {
-        var state = Store.GetState<TState>();
+        var state = request is IActionOnScopedState actionOnScopedState
+            ? Store.GetState<TState>(actionOnScopedState.Scope)
+            : Store.GetState<TState>();
         return Handle(request, state);
     }
 

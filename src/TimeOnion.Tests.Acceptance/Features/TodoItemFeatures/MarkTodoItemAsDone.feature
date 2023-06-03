@@ -37,7 +37,8 @@ Examples:
   | this week    | 7         |
 
 Scenario: Done items not listed anymore after month-scoped time horizon period passed
-    Given the item "call dad" has been added to do <time horizon> in my personal list
+    Given the current date is 2023-05-01
+    And the item "call dad" has been added to do <time horizon> in my personal list
     And the item "call dad" in my personal list has been marked as done
     When <month count> months passed
     Then my personal todo list of <time horizon> is
