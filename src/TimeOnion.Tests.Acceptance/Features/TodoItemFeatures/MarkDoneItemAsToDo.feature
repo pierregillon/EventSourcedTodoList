@@ -4,7 +4,14 @@ I want to mark a done item to do
 In order to re do it
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot mark an item as to do when not authenticated
+    Given I am disconnected
+    When I try to mark the item "call dad" in my personal list as to do
+    Then an error occurred with the message "You are not authorized to execute the request 'MarkItemAsToDoCommand'."
 
 @ErrorHandling
 Scenario: Cannot mark an unknown item as to do

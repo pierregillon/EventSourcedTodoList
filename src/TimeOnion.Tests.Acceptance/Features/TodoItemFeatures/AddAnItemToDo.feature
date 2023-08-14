@@ -4,7 +4,14 @@ I want to add a new item to do in a certain temporality
 In order to remember it
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot add an item to do when not authenticated
+    Given I am disconnected
+    When I try to add the item "test" to do this day in my professional list
+    Then an error occurred with the message "You are not authorized to execute the request 'AddItemToDoCommand'."
 
 @ErrorHandling
 Scenario: Cannot add an item on unknown todo list

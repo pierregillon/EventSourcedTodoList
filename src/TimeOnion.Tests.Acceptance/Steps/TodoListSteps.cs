@@ -25,6 +25,17 @@ public class TodoListSteps
 
         await _application.Dispatch(() => new RenameTodoListCommand(listId, new TodoListName(newListName)));
     }
+    [When(@"I try to rename my (.*) todo list into ""(.*)""")]
+    public async Task WhenITryToRenameMyPersonalTodoListIntoProfessional(string listName, string newListName)
+    {
+        await _application.Dispatch(() => new RenameTodoListCommand(TodoListId.New(), new TodoListName(newListName)));
+    }
+
+    [When(@"I try to rename any list")]
+    public async Task WhenITryToRenameAnyList()
+    {
+        await _application.Dispatch(() => new RenameTodoListCommand(TodoListId.New(), new TodoListName("test")));
+    }
 
     [When(@"I delete my (.*) todo list")]
     public async Task WhenIDeleteMyPersonalTodoList(string listName)
@@ -32,6 +43,18 @@ public class TodoListSteps
         var listId = await FindListId(listName) ?? TodoListId.New();
 
         await _application.Dispatch(new DeleteTodoListCommand(listId));
+    }
+
+    [When(@"I try to delete my (.*) todo list")]
+    public async Task WhenTryIDeleteMyPersonalTodoList(string listName)
+    {
+        await _application.Dispatch(new DeleteTodoListCommand(TodoListId.New()));
+    }
+
+    [When(@"I try to delete any list")]
+    public async Task WhenITryToDeleteAnyList()
+    {
+        await _application.Dispatch(new DeleteTodoListCommand(TodoListId.New()));
     }
 
     [Then(@"the todo list are")]

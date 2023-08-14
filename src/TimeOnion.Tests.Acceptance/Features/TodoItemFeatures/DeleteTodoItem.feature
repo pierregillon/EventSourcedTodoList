@@ -4,7 +4,14 @@ I want to delete a todo item
 In order to stop seeing it because it is no longer a item to do
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot delete an item when not authenticated
+    Given I am disconnected
+    When I try to delete the item "call dad" on my personal list
+    Then an error occurred with the message "You are not authorized to execute the request 'DeleteTodoItemCommand'."
 
 @ErrorHandling
 Scenario: Cannot delete an unknown item

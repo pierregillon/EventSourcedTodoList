@@ -1,6 +1,4 @@
-using TimeOnion.Domain.UserManagement.Core;
-
-namespace TimeOnion.Domain.UserManagement;
+namespace TimeOnion.Domain.UserManagement.Core;
 
 internal interface IUserFinder
 {

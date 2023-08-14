@@ -4,7 +4,8 @@ I want to list yesterday undone tasks
 In order to choose which to keep for today
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
 
 Scenario: Just added tasks to today are listed
     When I add the item "call daddy" to do this day in my personal list

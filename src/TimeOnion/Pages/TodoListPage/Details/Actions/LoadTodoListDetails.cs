@@ -43,18 +43,18 @@ internal class LoadTodoListDetailsActionHandler :
         };
     }
 
-    private async Task<IReadOnlyCollection<CategoryReadModel>> FilterCategories(
+    private async Task<IReadOnlyCollection<CategoryListItem>> FilterCategories(
         LoadTodoListDetailsAction action,
         IReadOnlyCollection<TodoListItemReadModel> items
     ) => action.CategoryVisibility switch
     {
         CategoryVisibility.ShowAll => await Dispatch(new ListCategoriesQuery(action.ListId)),
         CategoryVisibility.HideWithoutItems => await GetCategoriesWithAtLeastOneItem(action.ListId, items),
-        CategoryVisibility.HideAll => Array.Empty<CategoryReadModel>(),
+        CategoryVisibility.HideAll => Array.Empty<CategoryListItem>(),
         _ => throw new ArgumentOutOfRangeException()
     };
 
-    private async Task<IReadOnlyCollection<CategoryReadModel>> GetCategoriesWithAtLeastOneItem(
+    private async Task<IReadOnlyCollection<CategoryListItem>> GetCategoriesWithAtLeastOneItem(
         TodoListId listId,
         IReadOnlyCollection<TodoListItemReadModel> items
     )

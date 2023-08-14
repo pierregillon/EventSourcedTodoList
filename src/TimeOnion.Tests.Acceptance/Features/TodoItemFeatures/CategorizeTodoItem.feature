@@ -4,7 +4,14 @@ I want to categorize a todo item
 In order to regroup item with the same thematic
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot categorize an item when not authenticated
+    Given I am disconnected
+    When I try to categorize "call dad" to family category on my professional list
+    Then an error occurred with the message "You are not authorized to execute the request 'CategorizeTodoItemCommand'."
 
 @ErrorHandling
 Scenario: Cannot categorize an item on an unknown todo list

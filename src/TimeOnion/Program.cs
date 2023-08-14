@@ -1,6 +1,7 @@
 using TimeOnion.Configuration;
 using TimeOnion.Configuration.Authentication;
 using TimeOnion.Configuration.Blazor;
+using TimeOnion.Configuration.GlobalContext;
 using TimeOnion.Configuration.HostedServices;
 using TimeOnion.Domain;
 using TimeOnion.Infrastructure;
@@ -16,7 +17,8 @@ builder.Services.AddServiceHealthChecks();
 builder.Services
     .AddDomain()
     .AddInfrastructure()
-    .AddBlazor();
+    .AddBlazor()
+    .AddGlobalContextServices();
 
 builder.Services.AddCommitterHostedService();
 

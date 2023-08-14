@@ -1,38 +1,25 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core;
-using TimeOnion.Domain.Categories.Core.Events;
 using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Domain.Categories;
 
-public record ListCategoriesQuery(TodoListId ListId) : IQuery<IReadOnlyCollection<CategoryReadModel>>;
+public record ListCategoriesQuery(TodoListId ListId) : IQuery<IReadOnlyCollection<CategoryListItem>>;
 
-public record CategoryReadModel(CategoryId Id, string Name, TodoListId ListId);
-
-internal class ListCategoriesQueryHandler : IQueryHandler<ListCategoriesQuery, IReadOnlyCollection<CategoryReadModel>>,
-    IDomainEventListener<CategoryCreated>,
-    IDomainEventListener<CategoryRenamed>,
-    IDomainEventListener<CategoryDeleted>
+public record ListCategoriesQueryHandler(IUserScopedReadModelDatabase Database) :
+    IQueryHandler<ListCategoriesQuery, IReadOnlyCollection<CategoryListItem>>
 {
-    private readonly IReadModelDatabase _database;
-
-    public ListCategoriesQueryHandler(IReadModelDatabase database) => _database = database;
-
-    public async Task<IReadOnlyCollection<CategoryReadModel>> Handle(ListCategoriesQuery query) =>
-        (await _database.GetAll<CategoryReadModel>())
+    public async Task<IReadOnlyCollection<CategoryListItem>> Handle(ListCategoriesQuery query) =>
+        (await Database.GetAll<CategoryProjectionItem>())
         .Where(x => x.ListId == query.ListId)
         .OrderBy(x => x.Name)
+        .Select(x => new CategoryListItem(x.Id, x.Name, x.ListId))
         .ToList();
-
-    public async Task On(CategoryCreated domainEvent) =>
-        await _database.Add(new CategoryReadModel(domainEvent.CategoryId, domainEvent.Name.Value, domainEvent.ListId));
-
-    public async Task On(CategoryRenamed domainEvent) => await _database.Update<CategoryReadModel>(
-        category => category.Id == domainEvent.CategoryId,
-        category => category with { Name = domainEvent.NewName.Value }
-    );
-
-    public async Task On(CategoryDeleted domainEvent) => await _database.Delete<CategoryReadModel>(
-        category => category.Id == domainEvent.CategoryId
-    );
 }
+
+public record CategoryListItem(
+    CategoryId Id,
+    string Name,
+    TodoListId ListId
+);

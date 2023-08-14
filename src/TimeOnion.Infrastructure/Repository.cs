@@ -1,3 +1,4 @@
+using TimeOnion.Domain;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core;
 
@@ -8,12 +9,14 @@ public class Repository<TAggregate, TAggregateId> : IRepository<TAggregate, TAgg
     where TAggregateId : IAggregateId
 {
     private readonly IDomainEventPublisher _domainEventPublisher;
+    private readonly IUserContextProvider _userContextProvider;
     private readonly IEventStore _eventStore;
 
-    public Repository(IEventStore eventStore, IDomainEventPublisher domainEventPublisher)
+    public Repository(IEventStore eventStore, IDomainEventPublisher domainEventPublisher, IUserContextProvider userContextProvider)
     {
         _eventStore = eventStore;
         _domainEventPublisher = domainEventPublisher;
+        _userContextProvider = userContextProvider;
     }
 
     public async Task<TAggregate> Get(TAggregateId id)
@@ -30,8 +33,23 @@ public class Repository<TAggregate, TAggregateId> : IRepository<TAggregate, TAgg
 
     public async Task Save(TAggregate aggregate)
     {
-        await _eventStore.Save(aggregate.UncommittedChanges);
-        await _domainEventPublisher.Publish(aggregate.UncommittedChanges);
+        var domainEvents = aggregate.UncommittedChanges.ToArray();
+
+        if (!domainEvents.Any())
+        {
+            return;
+        }
+
+        foreach (var domainEvent in domainEvents)
+        {
+            if (domainEvent is IUserDomainEvent { UserId: null } userDomainEvent)
+            {
+                userDomainEvent.UserId = _userContextProvider.GetUserContext().UserId;
+            }
+        }
+        
+        await _eventStore.Save(domainEvents);
+        await _domainEventPublisher.Publish(domainEvents);
         aggregate.MarkAsCommitted();
     }
 }

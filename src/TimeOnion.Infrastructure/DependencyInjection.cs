@@ -16,6 +16,7 @@ public static class DependencyInjection
             .AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
             .AddScoped<IClock, SystemClock>()
             .AddSingleton<IReadModelDatabase, InMemoryReadModelDatabase>()
+            .AddTransient<IUserScopedReadModelDatabase, ScopeToUserReadModelDatabase>()
             .AddSingleton<DomainEventsCache>()
             .AddScoped<IEventStore, S3StorageEventStore>()
             .Decorate<IEventStore, CachedEventStore>()

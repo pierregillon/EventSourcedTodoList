@@ -4,7 +4,14 @@ I want to rename a category
 In order to adjust the name if I misspelled it
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot rename a category when not authenticated
+    Given I am disconnected
+    When I try to rename any category
+    Then an error occurred with the message "You are not authorized to execute the request 'RenameCategoryCommand'."
 
 @ErrorHandling
 Scenario: Cannot rename an unknown category

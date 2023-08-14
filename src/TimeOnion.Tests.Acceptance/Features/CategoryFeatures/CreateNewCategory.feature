@@ -4,7 +4,14 @@ I want to create new categories
 In order to categorize my todo items
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot create a category when not authenticated
+    Given I am disconnected
+    When I create the "test" empty category
+    Then an error occurred with the message "You are not authorized to execute the request 'CreateNewCategoryCommand'."
 
 @ErrorHandling
 Scenario: Cannot create a category with empty name

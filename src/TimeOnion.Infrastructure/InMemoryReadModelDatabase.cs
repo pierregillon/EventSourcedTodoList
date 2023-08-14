@@ -8,7 +8,7 @@ public class InMemoryReadModelDatabase : IReadModelDatabase
 {
     private readonly IDictionary<Type, IList> _elements = new ConcurrentDictionary<Type, IList>();
 
-    public async Task<IEnumerable<T>> GetAll<T>()
+    public async Task<IEnumerable<T>> GetAll<T>() where T : IProjection
     {
         await Task.Delay(0);
 
@@ -20,7 +20,29 @@ public class InMemoryReadModelDatabase : IReadModelDatabase
         return Enumerable.Empty<T>();
     }
 
-    public Task Add<T>(T element)
+    public Task<T?> Find<T>(Predicate<T> predicate) where T : IProjection
+    {
+        if (_elements.TryGetValue(typeof(T), out var list))
+        {
+            var result = list.Cast<T>().FirstOrDefault(item => predicate(item));
+            return Task.FromResult(result);
+        }
+
+        return Task.FromResult(default(T?));
+    }
+    
+    public Task<IReadOnlyCollection<T>> FindAll<T>(Predicate<T> predicate) where T : IProjection
+    {
+        if (_elements.TryGetValue(typeof(T), out var list))
+        {
+            IReadOnlyCollection<T> result = list.Cast<T>().Where(item => predicate(item)).ToArray();
+            return Task.FromResult(result);
+        }
+
+        return Task.FromResult((IReadOnlyCollection<T>)new List<T>());
+    }
+
+    public Task Add<T>(T element) where T : IProjection
     {
         if (!_elements.TryGetValue(typeof(T), out var list))
         {
@@ -33,7 +55,7 @@ public class InMemoryReadModelDatabase : IReadModelDatabase
         return Task.CompletedTask;
     }
 
-    public Task Update<T>(Predicate<T> predicate, Func<T, T> update)
+    public Task Update<T>(Predicate<T> predicate, Func<T, T> update) where T : IProjection
     {
         if (!_elements.TryGetValue(typeof(T), out var list))
         {
@@ -56,7 +78,7 @@ public class InMemoryReadModelDatabase : IReadModelDatabase
         return Task.CompletedTask;
     }
 
-    public Task Delete<T>(Predicate<T> predicate)
+    public Task Delete<T>(Predicate<T> predicate) where T : IProjection
     {
         if (!_elements.TryGetValue(typeof(T), out var list))
         {

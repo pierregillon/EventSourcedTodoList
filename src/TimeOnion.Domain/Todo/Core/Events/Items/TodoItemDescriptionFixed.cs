@@ -1,3 +1,5 @@
+using TimeOnion.Domain.BuildingBlocks;
+
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
 
 public record TodoItemDescriptionFixed(
@@ -5,4 +7,4 @@ public record TodoItemDescriptionFixed(
     TodoItemId ItemId,
     TodoItemDescription PreviousItemDescription,
     TodoItemDescription NewItemDescription
-) : TodoListDomainEvent(ListId);
+) : UserDomainEvent(ListId.Value);

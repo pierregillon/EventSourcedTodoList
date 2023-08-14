@@ -29,6 +29,7 @@
     <ItemGroup>
         <ProjectReference Include="..\TimeOnion.Domain\TimeOnion.Domain.csproj" />
         <ProjectReference Include="..\TimeOnion.Infrastructure\TimeOnion.Infrastructure.csproj" />
+        <ProjectReference Include="..\TimeOnion\TimeOnion.csproj" />
     </ItemGroup>
 
     <ItemGroup>

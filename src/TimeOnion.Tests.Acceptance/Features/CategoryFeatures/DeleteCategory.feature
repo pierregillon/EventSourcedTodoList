@@ -4,7 +4,14 @@ I want to delete a category
 In order to remove the ones I don't use anymore
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot delete a category when not authenticated
+    Given I am disconnected
+    When I try to delete any category
+    Then an error occurred with the message "You are not authorized to execute the request 'DeleteCategoryCommand'."
 
 @ErrorHandling
 Scenario: Cannot delete an unknown category

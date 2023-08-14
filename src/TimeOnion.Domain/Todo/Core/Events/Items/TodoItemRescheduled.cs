@@ -1,3 +1,5 @@
+using TimeOnion.Domain.BuildingBlocks;
+
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
 
 public record TodoItemRescheduled(
@@ -5,4 +7,4 @@ public record TodoItemRescheduled(
     TodoItemId ItemId,
     TimeHorizons PreviousTimeHorizon,
     TimeHorizons NewTimeHorizon
-) : TodoListDomainEvent(ListId);
+) : UserDomainEvent(ListId.Value);

@@ -4,7 +4,14 @@ I want to reschedule a todo item
 In order to better organize my items across time ranges
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot reschedule an item in list when not authenticated
+    Given I am disconnected
+    When I try to reschedule the item "call dad" in my personal list to this day
+    Then an error occurred with the message "You are not authorized to execute the request 'RescheduleTodoItemCommand'."
 
 @ErrorHandling
 Scenario: Cannot reschedule an unknown todo item

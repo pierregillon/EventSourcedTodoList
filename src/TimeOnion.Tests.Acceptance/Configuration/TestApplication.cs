@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using TimeOnion.Configuration.Authentication;
+using TimeOnion.Configuration.GlobalContext;
 using TimeOnion.Domain;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
@@ -21,6 +23,8 @@ public class TestApplication
             .AddScoped<IConfiguration>(_ => new ConfigurationBuilder().Build())
             .AddDomain()
             .AddInfrastructure()
+            .AddCustomAuthentication()
+            .AddGlobalContextServices()
             .AddSingleton<IEventStore, InMemoryEventStore>()
             .AddSingleton(GetClockSubstitute())
             .BuildServiceProvider();

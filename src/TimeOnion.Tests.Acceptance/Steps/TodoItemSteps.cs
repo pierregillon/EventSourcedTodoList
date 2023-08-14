@@ -28,6 +28,12 @@ public class TodoItemSteps
         await AddItemToDo(todoListId, description, timeHorizons);
     }
 
+    [When(@"I try to add the item ""(.*)"" to do (.*) in my (.*) list")]
+    public async Task WhenITryToAddTheItemToDoThisDayInMyProfessionalList(string description, TimeHorizons timeHorizons, string todoListName)
+    {
+        await AddItemToDo(TodoListId.New(), description, timeHorizons);
+    }
+
     [Given(@"the following items have been added to do (.*) in my (.*) list")]
     public async Task GivenTheFollowingItemsHaveBeenAddedToDoThisDayInMyPersonalList(
         TimeHorizons timeHorizons,
@@ -91,6 +97,14 @@ public class TodoItemSteps
         await _application.Dispatch(command);
     }
 
+    [When(@"I try to mark the item ""(.*)"" in my (.*) list as done")]
+    public async Task WhenTryToIMarkTheItemAsCompleted(string itemDescription, string listName)
+    {
+        var command = new MarkItemAsDoneCommand(TodoListId.New(), TodoItemId.New());
+
+        await _application.Dispatch(command);
+    }
+
     [When(@"I mark the item ""(.*)"" in my (.*) list as to do")]
     public async Task WhenIMarkTheItemAsToDo(string itemDescription, string listName)
     {
@@ -98,6 +112,14 @@ public class TodoItemSteps
         var itemId = await FindItemId(listId, itemDescription) ?? TodoItemId.New();
 
         var command = new MarkItemAsToDoCommand(listId, itemId);
+
+        await _application.Dispatch(command);
+    }
+
+    [When(@"I try to mark the item ""(.*)"" in my (.*) list as to do")]
+    public async Task WhenTryToIMarkTheItemAsToDo(string itemDescription, string listName)
+    {
+        var command = new MarkItemAsToDoCommand(TodoListId.New(), TodoItemId.New());
 
         await _application.Dispatch(command);
     }
@@ -110,6 +132,17 @@ public class TodoItemSteps
 
         await _application.Dispatch(() =>
             new FixItemDescriptionCommand(listId, itemId, new TodoItemDescription(newItemDescription)));
+    }
+
+    [When(@"I try to fix description of the item ""(.*)"" to ""(.*)"" in my (.*) list")]
+    public async Task WhenTryIFixDescriptionOfTheItemTo(string itemDescription, string newItemDescription, string listName)
+    {
+        var command = new FixItemDescriptionCommand(
+            TodoListId.New(),
+            TodoItemId.New(),
+            new TodoItemDescription(newItemDescription));
+        
+        await _application.Dispatch(command);
     }
 
     [When(@"I reschedule the item ""(.*)"" in my (.*) list to (.*)")]
@@ -131,6 +164,22 @@ public class TodoItemSteps
         await _application.Dispatch(command);
     }
 
+    [When(@"I try to reschedule the item ""(.*)"" in my (.*) list to (.*)")]
+    public async Task WhenITryToRescheduleTheItemToThisDay(
+        string itemDescription,
+        string listName,
+        TimeHorizons timeHorizons
+    )
+    {
+        var command = new RescheduleTodoItemCommand(
+            TodoListId.New(),
+            TodoItemId.New(),
+            timeHorizons
+        );
+
+        await _application.Dispatch(command);
+    }
+
     [Given(@"the item ""(.*)"" has been deleted on my (.*) list")]
     [When(@"I delete the item ""(.*)"" on my (.*) list")]
     public async Task WhenIDeleteTheItem(string itemDescription, string listName)
@@ -144,6 +193,15 @@ public class TodoItemSteps
         );
 
         await _application.Dispatch(command);
+    }
+
+    [When(@"I try to delete the item ""(.*)"" on my (.*) list")]
+    public async Task WhenITryToDeleteTheItemOnMyPersonalList(string itemDescription, string listName)
+    {
+        await _application.Dispatch(new DeleteTodoItemCommand(
+            TodoListId.New(), 
+            TodoItemId.New()
+        ));    
     }
 
     [When(@"I reposition ""(.*)"" above ""(.*)"" on my (.*) list")]
@@ -166,6 +224,18 @@ public class TodoItemSteps
 
             await _application.Dispatch(new RepositionItemAboveAnotherCommand(listId, itemId, referenceId));
         }
+    }
+
+    [When(@"I try to reposition ""(.*)"" above ""(.*)"" on my (.*) list")]
+    public async Task WhenITryToRepositionAboveOnMyProfessionalList(
+        string itemDescription,
+        string referenceItemDescription,
+        string listName
+    )
+    {
+        await _application.Dispatch(
+            new RepositionItemAboveAnotherCommand(TodoListId.New(), TodoItemId.New(), TodoItemId.New())
+        );
     }
 
     [When(@"I reposition ""(.*)"" at the end of my (.*) list")]
@@ -206,6 +276,15 @@ public class TodoItemSteps
 
             await _application.Dispatch(new CategorizeTodoItemCommand(listId, itemId, categoryId));
         }
+    }
+    
+    [When(@"I try to categorize ""(.*)"" to (.*) category on my (.*) list")]
+    public async Task WhenITryToCategorizeToFamilyCategoryOnMyProfessionalList(
+        string itemDescription,
+        string categoryName,
+        string listName)
+    {
+        await _application.Dispatch(new CategorizeTodoItemCommand(TodoListId.New(), TodoItemId.New(), CategoryId.New()));
     }
 
     [When(@"I decategorize ""(.*)"" in my (.*) list")]

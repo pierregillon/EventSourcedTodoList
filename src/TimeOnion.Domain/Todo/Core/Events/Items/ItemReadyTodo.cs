@@ -1,3 +1,8 @@
+using TimeOnion.Domain.BuildingBlocks;
+
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
 
-public record ItemReadyTodo(TodoListId ListId, TodoItemId ItemId) : TodoListDomainEvent(ListId);
+public record ItemReadyTodo(
+    TodoListId ListId, 
+    TodoItemId ItemId
+) : UserDomainEvent(ListId.Value);

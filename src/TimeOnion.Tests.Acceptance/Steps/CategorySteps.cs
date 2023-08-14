@@ -41,6 +41,13 @@ public class CategorySteps
         var newName = newCategoryName.Replace("\"", string.Empty);
         await _application.Dispatch(() => new RenameCategoryCommand(categoryId, new CategoryName(newName)));
     }
+    
+
+    [When(@"I try to rename any category")]
+    public async Task WhenITryToRenameAnyCategory()
+    {
+        await _application.Dispatch(new RenameCategoryCommand(CategoryId.New(), new CategoryName("test")));
+    }
 
     [When(@"I delete the (.*) category in my (.*) list")]
     public async Task WhenIDeleteTheHealthCategoryInMyPersonalList(string categoryName, string listName)
@@ -49,6 +56,12 @@ public class CategorySteps
             ?? throw new InvalidOperationException($"Specflow: unable to find the list {listName}.");
         var categoryId = await FindCategoryId(listId, categoryName) ?? CategoryId.New();
         await _application.Dispatch(() => new DeleteCategoryCommand(categoryId));
+    }
+
+    [When(@"I try to delete any category")]
+    public async Task WhenITryToDeleteAnyList()
+    {
+        await _application.Dispatch(new DeleteCategoryCommand(CategoryId.New()));
     }
 
     [Then(@"my (.*) list categories are")]
@@ -63,6 +76,12 @@ public class CategorySteps
             .Select(x => x.Name)
             .Should()
             .BeEquivalentTo(expectedCategoryNames, options => options.WithStrictOrdering());
+    }
+
+    [When(@"I try to list categories of any list")]
+    public async Task WhenITryToListCategoriesOfAnyList()
+    {
+        await _application.Dispatch(new ListCategoriesQuery(TodoListId.New()));
     }
 
     private async Task<TodoListId?> FindListId(string todoListName)

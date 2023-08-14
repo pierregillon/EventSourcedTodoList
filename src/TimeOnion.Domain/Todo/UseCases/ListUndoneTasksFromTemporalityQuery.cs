@@ -1,5 +1,6 @@
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.Todo.Projections;
 
 namespace TimeOnion.Domain.Todo.UseCases;
 
@@ -11,9 +12,9 @@ public record ThisWeekUndoneTodoItem(TodoListId ListId, TodoItemId ItemId, strin
 internal class ListUndoneTasksFromTemporalityQueryHandler : IQueryHandler<ListUndoneTasksFromTemporalityQuery,
     IReadOnlyCollection<ThisWeekUndoneTodoItem>>
 {
-    private readonly IReadModelDatabase _database;
+    private readonly IUserScopedReadModelDatabase _database;
 
-    public ListUndoneTasksFromTemporalityQueryHandler(IReadModelDatabase database) => _database = database;
+    public ListUndoneTasksFromTemporalityQueryHandler(IUserScopedReadModelDatabase database) => _database = database;
 
     public async Task<IReadOnlyCollection<ThisWeekUndoneTodoItem>> Handle(ListUndoneTasksFromTemporalityQuery query)
     {

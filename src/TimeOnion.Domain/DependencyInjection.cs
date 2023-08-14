@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.UserManagement;
+using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Domain;
 

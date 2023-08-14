@@ -27,7 +27,7 @@ public class Authenticator
         
         var loginDetails = await _queryDispatcher.Dispatch(query);
 
-        if (loginDetails is null)
+        if (loginDetails is null || !loginDetails.IsPasswordValid)
         {
             throw new BadLoginCredentialsException("Unable to find a user with email and password");
         }

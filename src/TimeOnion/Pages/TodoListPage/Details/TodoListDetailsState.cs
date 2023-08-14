@@ -8,7 +8,7 @@ namespace TimeOnion.Pages.TodoListPage.Details;
 public record TodoListDetailsState(
     TodoListId TodoListId,
     TimeHorizons CurrentTimeHorizon,
-    IReadOnlyCollection<CategoryReadModel> Categories,
+    IReadOnlyCollection<CategoryListItem> Categories,
     IReadOnlyCollection<TodoListItemReadModel> TodoListItems
 ) : IState
 {
@@ -17,7 +17,7 @@ public record TodoListDetailsState(
         new(
             null!,
             TimeHorizons.ThisDay,
-            new List<CategoryReadModel>(),
+            new List<CategoryListItem>(),
             new List<TodoListItemReadModel>()
         );
 

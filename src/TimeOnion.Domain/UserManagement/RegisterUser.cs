@@ -3,7 +3,10 @@ using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Domain.UserManagement;
 
-public record RegisterUserCommand(EmailAddress EmailAddress, Password Password) : ICommand<UserId>;
+public record RegisterUserCommand(
+    EmailAddress EmailAddress,
+    Password Password
+) : ICommand<UserId>, IAnonymousCommand;
 
 internal record RegisterUserCommandHandler(
     IPasswordHasher PasswordHasher,

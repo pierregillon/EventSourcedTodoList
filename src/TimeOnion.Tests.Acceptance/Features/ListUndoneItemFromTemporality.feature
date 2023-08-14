@@ -4,7 +4,8 @@ I want to list the undone items from temporality
 In order to choose the one I want to move into lower temporality
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
 
 Scenario: Undone tasks from temporality are listed
     When I add the item "call daddy" to do this week in my personal list

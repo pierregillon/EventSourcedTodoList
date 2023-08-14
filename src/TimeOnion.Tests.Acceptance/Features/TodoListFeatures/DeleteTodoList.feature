@@ -3,6 +3,15 @@ As a user
 I want to delete a todo list
 In order to remove all todo items and todo list
 
+Background: 
+    Given I am registered and logged in
+    
+@ErrorHandling
+Scenario: Cannot delete a todo list when not authenticated
+    Given I am disconnected
+    When I try to delete my personal todo list
+    Then an error occurred with the message "You are not authorized to execute the request 'DeleteTodoListCommand'."
+
 @ErrorHandling
 Scenario: Cannot delete an unknown todo list
     When I delete my personal todo list

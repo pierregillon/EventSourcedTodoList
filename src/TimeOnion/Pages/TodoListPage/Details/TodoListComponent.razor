@@ -59,7 +59,7 @@
 
     IReadOnlyCollection<TodoListItemReadModel> Items => State.TodoListItems;
 
-    IReadOnlyCollection<CategoryReadModel> Categories => State.Categories;
+    IReadOnlyCollection<CategoryListItem> Categories => State.Categories;
 
     protected override async Task OnParametersChangedAsync(IReadOnlyCollection<ChangedParameters> parameters) => await Execute(new LoadTodoListDetailsAction(TodoList.Id, TimeHorizon, CategoryVisibility));
 

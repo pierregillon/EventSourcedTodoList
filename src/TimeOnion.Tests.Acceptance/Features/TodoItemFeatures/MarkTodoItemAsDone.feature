@@ -4,7 +4,14 @@ I want to mark a todo item as done
 In order to track items a completed
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot mark an item as done when not authenticated
+    Given I am disconnected
+    When I try to mark the item "call dad" in my personal list as done
+    Then an error occurred with the message "You are not authorized to execute the request 'MarkItemAsDoneCommand'."
 
 @ErrorHandling
 Scenario: Cannot mark an unknown item as done

@@ -4,7 +4,14 @@ I want to fix a spelling mistake or complete an item description
 In order to have the correct description on my todo list
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot fix item description when not authenticated
+    Given I am disconnected
+    When I try to fix description of the item "call dad" to "call daddy" in my personal list
+    Then an error occurred with the message "You are not authorized to execute the request 'FixItemDescriptionCommand'."
 
 @ErrorHandling
 Scenario: Cannot fix description of an unknown item

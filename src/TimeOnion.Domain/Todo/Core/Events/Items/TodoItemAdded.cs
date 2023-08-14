@@ -1,3 +1,4 @@
+using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core;
 
 namespace TimeOnion.Domain.Todo.Core.Events.Items;
@@ -9,4 +10,4 @@ public record TodoItemAdded(
     TimeHorizons TimeHorizon,
     CategoryId? CategoryId,
     TodoItemId? AboveItemId
-) : TodoListDomainEvent(ListId);
+) : UserDomainEvent(ListId.Value);

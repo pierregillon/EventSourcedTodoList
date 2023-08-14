@@ -4,7 +4,14 @@ I want to reposition an item in my todo list
 In order to reorder items and have more important on top
 
 Background:
-    Given a personal todo list has been created
+    Given I am registered and logged in
+    And a personal todo list has been created
+    
+@ErrorHandling
+Scenario: Cannot reposition an item in list when not authenticated
+    Given I am disconnected
+    When I try to reposition "call dad" above "call mum" on my professional list
+    Then an error occurred with the message "You are not authorized to execute the request 'RepositionItemAboveAnotherCommand'."
 
 @ErrorHandling
 Scenario: Cannot reposition an item in an unknown todo list
