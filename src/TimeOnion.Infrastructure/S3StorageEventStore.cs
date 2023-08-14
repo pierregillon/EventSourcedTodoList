@@ -6,6 +6,7 @@ using Minio;
 using Minio.Exceptions;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Todo.Core;
+using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Infrastructure;
 
@@ -89,15 +90,25 @@ public class S3StorageEventStore : IEventStore
         domainEvent.Version = storedEvent.Version;
         domainEvent.CreatedAt = storedEvent.CreatedAt;
 
+        if (domainEvent is IUserDomainEvent userDomainEvent)
+        {
+            userDomainEvent.UserId = storedEvent.UserId.HasValue 
+                ? new UserId(storedEvent.UserId.Value)
+                : null!;
+        }
+
         return domainEvent;
     }
 
-    public record StoredEvent(Guid AggregateId, string Type, int Version, DateTime CreatedAt, JsonElement JsonData)
+    public record StoredEvent(Guid AggregateId, string Type, int Version, Guid? UserId, DateTime CreatedAt, JsonElement JsonData)
     {
         public static StoredEvent From(IDomainEvent domainEvent, IClock clock) => new(
             domainEvent.AggregateId,
             domainEvent.GetType().Name,
             domainEvent.Version,
+            domainEvent is IUserDomainEvent userDomainEvent
+                ? userDomainEvent.UserId.Value
+                : null,
             clock.Now(),
             JsonSerializer.SerializeToElement(domainEvent, domainEvent.GetType())
         );
