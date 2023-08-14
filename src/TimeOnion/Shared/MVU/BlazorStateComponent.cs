@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
-using MediatR;
 using Microsoft.AspNetCore.Components;
+using TimeOnion.Configuration.Blazor;
 
 namespace TimeOnion.Shared.MVU;
 
@@ -18,11 +18,11 @@ public class BlazorStateComponent : ComponentBase, IBlazorStateComponent, IDispo
     }
 
     public string Id { get; }
-    [Inject] private IMediator Mediator { get; set; } = default!;
+    [Inject] private IActionDispatcher ActionDispatcher { get; set; } = default!;
     [Inject] private IStore Store { get; set; } = default!;
     [Inject] private Subscriptions Subscriptions { get; set; } = default!;
 
-    protected Task Execute(IAction action) => Mediator.Send(action);
+    protected Task Execute(IAction action) => ActionDispatcher.Dispatch(action);
 
     protected T GetState<T>() where T : IState => GetState<T>(DefaultScope.Value);
 

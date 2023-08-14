@@ -25,14 +25,16 @@
                 T="string"
                 Label="Email"
                 Text="@State.Email"
-                TextChanged="email => Execute(new DefineEmailAction(email))"/>
+                TextChanged="email => Execute(new DefineEmailAction(email))"
+                Immediate="true"/>
 
             <MudTextField
                 T="string"
                 Label="Mot de passe"
                 InputType="InputType.Password"
                 Text="@State.Password"
-                TextChanged="password => Execute(new DefinePasswordAction(password))"/>
+                TextChanged="password => Execute(new DefinePasswordAction(password))"
+                Immediate="true"/>
 
             <div class="d-flex flex-row justify-end mt-2">
                 <MudButton

@@ -17,14 +17,19 @@ public static class DependencyInjection
         services.AddMudServices();
         services.AddBlazoredLocalStorage();
 
+        return services.AddMvuServices();
+    }
+
+    internal static IServiceCollection AddMvuServices(this IServiceCollection services)
+    {
         services.AddMediatR(configuration => { configuration.RegisterServicesFromAssembly(typeof(IStore).Assembly); });
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DisplayExceptionWithSnackbar<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LogActionsPreProcessor<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LogExceptionPreProcessor<,>));
 
-        services.AddSingleton<IStore, InMemoryStore>();
-        services.AddSingleton<IActionDispatcher, MediatorActionDispatcher>();
-        services.AddSingleton<Subscriptions>();
+        services.AddScoped<IStore, InMemoryStore>();
+        services.AddScoped<IActionDispatcher, MediatorActionDispatcher>();
+        services.AddScoped<Subscriptions>();
 
         services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
         services.AddScoped<CustomAuthenticationStateProvider>();

@@ -23,4 +23,8 @@
         <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="TimeOnion.WebApp.Tests.Unit" />
+    </ItemGroup>
+
 </Project>
