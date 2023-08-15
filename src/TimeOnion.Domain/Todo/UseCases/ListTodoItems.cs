@@ -36,5 +36,5 @@ public record TodoListItemReadModel(
     public bool IsDone => DoneDate.HasValue;
 
     public bool TimeHorizonStillRunning(DateTime now) =>
-        DoneDate.HasValue && now >= DoneDate.Value.Add(TimeHorizons.ToTimeSpan());
+        DoneDate.HasValue && now >= TimeHorizons.GetEndDate(DoneDate.Value);
 }

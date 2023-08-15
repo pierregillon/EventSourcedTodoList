@@ -13,21 +13,32 @@ public static class TimeHorizonsExtensions
         _ => throw new ArgumentOutOfRangeException(nameof(timeHorizons), timeHorizons, null)
     };
 
-    public static TimeSpan ToTimeSpan(this TimeHorizons timeHorizon)
-    {
-        var reference = new DateTime();
+    public static DateTime GetEndDate(this TimeHorizons timeHorizon, DateTime date) => 
+        date
+            .GetStartDate(timeHorizon)
+            .Add(timeHorizon);
 
-        return timeHorizon switch
-        {
-            TimeHorizons.ThisLife => TimeSpan.MaxValue,
-            TimeHorizons.ThisYear => reference.AddYears(1).Subtract(reference),
-            TimeHorizons.ThisQuarter => reference.AddMonths(3).Subtract(reference),
-            TimeHorizons.ThisMonth => reference.AddMonths(1).Subtract(reference),
-            TimeHorizons.ThisWeek => TimeSpan.FromDays(7),
-            TimeHorizons.ThisDay => TimeSpan.FromDays(1),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
+    private static DateTime GetStartDate(this DateTime date, TimeHorizons timeHorizon) => timeHorizon switch
+    {
+        TimeHorizons.ThisLife => default,
+        TimeHorizons.ThisYear => new DateTime(date.Year, 1, 1),
+        TimeHorizons.ThisQuarter => date.GetQuarterBegin(),
+        TimeHorizons.ThisMonth => new DateTime(date.Year, date.Month, 1),
+        TimeHorizons.ThisWeek => date.GetWeekBegin(),
+        TimeHorizons.ThisDay => date.Date,
+        _ => throw new ArgumentOutOfRangeException()
+    };
+
+    private static DateTime Add(this DateTime date, TimeHorizons timeHorizon) => timeHorizon switch
+    {
+        TimeHorizons.ThisLife => DateTime.MaxValue,
+        TimeHorizons.ThisYear => date.AddYears(1),
+        TimeHorizons.ThisQuarter => date.AddMonths(3),
+        TimeHorizons.ThisMonth => date.AddMonths(1),
+        TimeHorizons.ThisWeek => date.AddDays(7),
+        TimeHorizons.ThisDay => date.AddDays(1),
+        _ => throw new ArgumentOutOfRangeException()
+    };
 
     public static TimeHorizons Next(this TimeHorizons timeHorizons)
     {

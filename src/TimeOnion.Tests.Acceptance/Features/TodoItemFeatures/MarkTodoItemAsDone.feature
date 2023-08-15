@@ -32,50 +32,59 @@ Scenario: Marking an already done item as done do nothing
     And I mark the item "call dad" in my personal list as done
     Then no error occurred
 
-Scenario: Done items are still listed when day-scoped time horizon still running
-    Given the item "call dad" has been added to do <time horizon> in my personal list
-    And the item "call dad" in my personal list has been marked as done
-    When <hour count> hour passed
-    Then my personal todo list of <time horizon> is
-      | Description | Is done? |
-      | call dad    | true     |
-Examples:
-  | time horizon | hour count |
-  | this day     | 2          |
-  | this week    | 90         |
-
 Scenario: Done items not listed anymore after day-scoped time horizon period passed
-    Given the item "call dad" has been added to do <time horizon> in my personal list
-    And the item "call dad" in my personal list has been marked as done
-    When <day count> day passed
-    Then my personal todo list of <time horizon> is
-      | Description | Is done? |
-Examples:
-  | time horizon | day count |
-  | this day     | 1         |
-  | this week    | 7         |
-
-Scenario: Done items not listed anymore after month-scoped time horizon period passed
-    Given the current date is 2023-05-01
+    Given the current date is 2023-05-03 12:00
     And the item "call dad" has been added to do <time horizon> in my personal list
     And the item "call dad" in my personal list has been marked as done
-    When <month count> months passed
+    When the current date is now the <new date>
     Then my personal todo list of <time horizon> is
       | Description | Is done? |
 Examples:
-  | time horizon | month count |
-  | this month   | 1           |
-  | this quarter | 3           |
-  | this year    | 12          |
+  | time horizon | new date   |
+  | this day     | 2023-05-04 |
+  | this week    | 2023-05-08 |
 
-Scenario: Done items are still listed when month-scoped time horizon period not passed yet
-    Given the item "call dad" has been added to do <time horizon> in my personal list
+Scenario: Done items are still listed when day-scoped time horizon still running
+    Given the current date is 2023-05-03 12:00
+    And the item "call dad" has been added to do <time horizon> in my personal list
     And the item "call dad" in my personal list has been marked as done
-    When <month count> months passed
+    When the current date is now the <new date>
     Then my personal todo list of <time horizon> is
       | Description | Is done? |
       | call dad    | true     |
 Examples:
-  | time horizon | month count |
-  | this quarter | 2           |
-  | this year    | 11          |
+  | time horizon | new date            |
+  | this day     | 2023-05-03 13:00    |
+  | this day     | 2023-05-03 23:59:59 |
+  | this week    | 2023-05-05 13:00    |
+  | this week    | 2023-05-07 23:59:59 |
+
+Scenario: Done items are not listed anymore after month-scoped time horizon period passed
+    Given the current date is 2023-05-03
+    And the item "call dad" has been added to do <time horizon> in my personal list
+    And the item "call dad" in my personal list has been marked as done
+    When the current date is now the <new date>
+    Then my personal todo list of <time horizon> is
+      | Description | Is done? |
+Examples:
+  | time horizon | new date   |
+  | this month   | 2023-06-01 |
+  | this quarter | 2023-07-01 |
+  | this year    | 2024-01-01 |
+
+Scenario: Done items are still listed when month-scoped time horizon period still running
+    Given the current date is 2023-05-03
+    And the item "call dad" has been added to do <time horizon> in my personal list
+    And the item "call dad" in my personal list has been marked as done
+    When the current date is now the <new date>
+    Then my personal todo list of <time horizon> is
+      | Description | Is done? |
+      | call dad    | true     |
+Examples:
+  | time horizon | new date            |
+  | this month   | 2023-05-15          |
+  | this month   | 2023-05-31 23:59:59 |
+  | this quarter | 2023-06-15          |
+  | this quarter | 2023-06-30 23:59:59 |
+  | this year    | 2023-12-15          |
+  | this year    | 2023-12-31 23:59:59 |
