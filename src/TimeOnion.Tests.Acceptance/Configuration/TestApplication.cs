@@ -21,6 +21,7 @@ public class TestApplication
 
         _serviceProvider = new ServiceCollection()
             .AddScoped<IConfiguration>(_ => new ConfigurationBuilder().Build())
+            .AddLogging()
             .AddDomain()
             .AddInfrastructure()
             .AddCustomAuthentication()

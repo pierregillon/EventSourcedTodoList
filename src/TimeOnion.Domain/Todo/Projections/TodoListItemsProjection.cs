@@ -73,7 +73,7 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, ILogger<Tod
 
     private async Task<TodoListItemReadModel?> GetAboveItem(TodoItemAdded domainEvent)
     {
-        if (domainEvent.AboveItemId is not null)
+        if (domainEvent.AboveItemId is null)
         {
             return null;
         }
