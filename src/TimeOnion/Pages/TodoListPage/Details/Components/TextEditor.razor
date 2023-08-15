@@ -7,6 +7,7 @@
         @oninput="@OnInput"
         onblur="@OnBlur"
         onkeydown="@OnKeyDown"
+        data-test="@DataTest"
     >
     </textarea>
 </div>
@@ -32,6 +33,9 @@
 
     [Parameter]
     public bool IsStrikeThrough { get; set; }
+
+    [Parameter]
+    public string DataTest { get; set; } = string.Empty;
 
     string _boundedText = string.Empty;
     private ElementReference _textArea;

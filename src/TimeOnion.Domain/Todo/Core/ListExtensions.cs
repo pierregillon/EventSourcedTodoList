@@ -55,8 +55,10 @@ public static class ListExtensions
         }
     }
 
-    public static IEnumerable<T> InsertAfter<T>(this IEnumerable<T> enumerable, T previousElement, T newElement)
+    public static IEnumerable<T> InsertAfter<T>(this IEnumerable<T> enumerable, T newElement, T previousElement)
     {
+        var inserted = false;
+
         foreach (var element in enumerable)
         {
             yield return element;
@@ -64,7 +66,13 @@ public static class ListExtensions
             if (Equals(element, previousElement))
             {
                 yield return newElement;
+                inserted = true;
             }
+        }
+
+        if (!inserted)
+        {
+            throw new InvalidOperationException($"The element '{previousElement}' was not found in the collection");
         }
     }
 }

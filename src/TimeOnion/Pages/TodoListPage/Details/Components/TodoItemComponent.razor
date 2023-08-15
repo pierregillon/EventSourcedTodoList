@@ -26,14 +26,14 @@
             Color="Color.Primary">
         </MudCheckBox>
 
-
         <TextEditor
             @ref="_textEditor"
             Text="@Item.Description"
             TextChanged="async text => await Execute(new EditItemDescriptionAction(Item.ListId, Item.Id, text))"
             EnterPressed="newDescription => Execute(new AddNewItemTodoAfterItemAction(Item.ListId, Item.Id, newDescription))"
             DeletionTriggered="() => Execute(new DeleteItemAction(Item.ListId, Item.Id))"
-            IsStrikeThrough="@Item.IsDone">
+            IsStrikeThrough="@Item.IsDone"
+            DataTest="todo-item-description">
         </TextEditor>
 
         <TodoItemActionsComponent

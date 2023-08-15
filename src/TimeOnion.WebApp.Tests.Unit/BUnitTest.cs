@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Services;
 using NSubstitute;
@@ -23,6 +24,7 @@ public abstract class BUnitTest : TestContext
         Services
             .AddMvuServices()
             .AddCustomAuthentication()
+            .AddScoped<IJSRuntime>(_ => Substitute.For<IJSRuntime>())
             .AddSingleton<IClock>(_ => Substitute.For<IClock>())
             .AddScoped<ICommandDispatcher>(_ => Substitute.For<ICommandDispatcher>())
             .AddScoped<IQueryDispatcher>(_ => Substitute.For<IQueryDispatcher>())

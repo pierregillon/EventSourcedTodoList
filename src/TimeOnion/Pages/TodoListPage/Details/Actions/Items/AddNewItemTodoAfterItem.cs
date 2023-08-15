@@ -32,18 +32,18 @@ internal class AddNewItemTodoAfterItemActionHandler :
 
         if (string.IsNullOrWhiteSpace(action.NewDescription))
         {
-            var clone = new TodoListItemReadModelBeingCreated(
-                TodoItemId.New(),
-                item.ListId,
-                string.Empty,
-                null,
-                item.TimeHorizons,
-                item.CategoryId
-            );
+            var newElement = item with
+            {
+                Id = TodoItemId.New(),
+                Description = string.Empty,
+                DoneDate = null
+            };
 
             return state with
             {
-                TodoListItems = state.TodoListItems.InsertAfter(clone, item).ToList()
+                TodoListItems = state.TodoListItems
+                    .InsertAfter(newElement, item)
+                    .ToList()
             };
         }
 
