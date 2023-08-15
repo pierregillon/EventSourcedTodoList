@@ -1,9 +1,8 @@
 ﻿@using TimeOnion.Pages.TodayTaskPreparation
-@using MediatR
-@using TimeOnion.Pages.Authentication.Login.Actions
+@using TimeOnion.Pages.Authentication.UserInformation
+
 @inherits LayoutComponentBase
 @inject IDialogService Dialog
-@inject IMediator Mediator;
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -11,36 +10,17 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton
-            Icon="@Icons.Material.Filled.Menu"
-            Color="Color.Inherit"
-            Edge="Edge.Start"
-            OnClick="@(e => DrawerToggle())"/>
         L'oignon du temps
         <MudIconButton
             Icon="@Icons.Material.Filled.Bolt"
-            OnClick="@(e => OpenDialog())"
+            OnClick="@(_ => OpenDialog())"
             Color="Color.Warning">
         </MudIconButton>
         <MudSpacer></MudSpacer>
-        <MudMenu @ref="_mudMenu" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft">
-            <ActivatorContent>
-                <MudAvatar Color="Color.Primary" Variant="Variant.Filled">
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"/>
-                </MudAvatar>
-            </ActivatorContent>
-            <ChildContent>
-                <MudListItem OnClick="Logout">
-                    Se déconnecter
-                </MudListItem>
-            </ChildContent>
-        </MudMenu>
-
+        <AuthorizeView>
+            <UserInformationComponent></UserInformationComponent>
+        </AuthorizeView>
     </MudAppBar>
-
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu/>
-    </MudDrawer>
 
     <MudMainContent MaxWidth="MaxWidth.Medium">
         @Body
@@ -48,19 +28,5 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen;
-
-    void DrawerToggle() => _drawerOpen = !_drawerOpen;
-
     private void OpenDialog() => Dialog.Show<TodayTaskPreparation>("Préparation des tâches du jour", new DialogOptions { FullScreen = true, CloseButton = true });
-
-    private MudMenu _mudMenu = default!;
-
-    private async Task Logout()
-    {
-        _mudMenu.CloseMenu();
-
-        await Mediator.Send(new LogoutAction());
-    }
-
 }

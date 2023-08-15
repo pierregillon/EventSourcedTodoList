@@ -1,0 +1,30 @@
+@inherits TimeOnion.Shared.MVU.BlazorStateComponent
+
+@attribute [Authorize]
+
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft">
+    <ActivatorContent>
+        <MudButton>
+            <MudAvatar Size="Size.Medium" Color="Color.Transparent">
+                @State.UserAcronym
+            </MudAvatar>
+        </MudButton>
+    </ActivatorContent>
+    <ChildContent>
+        <h4 class="pa-3" style="text-align: center">
+            @State.EmailAddress
+        </h4>
+        <MudListItem
+            OnClick="() => Execute(new UserInformationState.Logout())"
+            Icon="@Icons.Material.Filled.Logout">
+            Se déconnecter
+        </MudListItem>
+    </ChildContent>
+</MudMenu>
+
+@code {
+
+    private UserInformationState State => GetState<UserInformationState>();
+
+    protected override async Task OnAfterInitialRenderAsync() => await Execute(new UserInformationState.Load());
+}

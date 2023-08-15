@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using TimeOnion.Domain.BuildingBlocks;
 using TimeOnion.Domain.Categories.Core.Events;
 using TimeOnion.Domain.Todo.Core;
@@ -8,7 +9,7 @@ using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Domain.Todo.Projections;
 
-internal record TodoListItemsProjection(IReadModelDatabase Database, IClock Clock) :
+internal record TodoListItemsProjection(IReadModelDatabase Database, ILogger<TodoListItemsProjection> Logger) :
     IDomainEventListener<TodoListCreated>,
     IDomainEventListener<TodoListDeleted>,
     IDomainEventListener<TodoItemAdded>,
@@ -46,14 +47,18 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, IClock Cloc
             domainEvent.TimeHorizon,
             domainEvent.CategoryId
         );
+        
+        var aboveItem = await GetAboveItem(domainEvent);
 
-        if (domainEvent.AboveItemId is not null)
+        if (aboveItem is null)
         {
-            var aboveItem = (await Database.GetAll<TodoListEntry>())
-                .Where(x => x.ListId == domainEvent.ListId)
-                .SelectMany(x => x.Items)
-                .Single(x => x.Id == domainEvent.AboveItemId);
-
+            await Database.Update<TodoListEntry>(
+                x => x.ListId == domainEvent.ListId,
+                list => list with { Items = list.Items.Append(newItem).ToArray() }
+            );
+        }
+        else
+        {
             await Database.Update<TodoListEntry>(
                 x => x.ListId == domainEvent.ListId,
                 list =>
@@ -64,13 +69,30 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, IClock Cloc
                     return list with { Items = items };
                 });
         }
-        else
+    }
+
+    private async Task<TodoListItemReadModel?> GetAboveItem(TodoItemAdded domainEvent)
+    {
+        if (domainEvent.AboveItemId is not null)
         {
-            await Database.Update<TodoListEntry>(
-                x => x.ListId == domainEvent.ListId,
-                list => list with { Items = list.Items.Append(newItem).ToArray() }
+            return null;
+        }
+
+        var aboveItem = (await Database.GetAll<TodoListEntry>())
+            .Where(x => x.ListId == domainEvent.ListId)
+            .SelectMany(x => x.Items)
+            .SingleOrDefault(x => x.Id == domainEvent.AboveItemId);
+
+        if (aboveItem is null)
+        {
+            Logger.LogWarning(
+                "Cannot find above item {0}: adding the item {1} to the end.",
+                domainEvent.AboveItemId, 
+                domainEvent.ItemId
             );
         }
+
+        return aboveItem;
     }
 
     public async Task On(TodoItemCompleted domainEvent) => await Database.Update(
