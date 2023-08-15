@@ -108,15 +108,8 @@
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (firstRender)
-        {
-            await JavascriptRuntime.InvokeAsync<string>("enableTouchOnMudDropItems", Array.Empty<object?>());
-        }
-    }
+        await JavascriptRuntime.InvokeAsync<string>("enableTouchOnMudDropItems", Array.Empty<object?>());
 
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        await base.SetParametersAsync(parameters);
         _container?.Refresh();
     }
 

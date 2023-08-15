@@ -22,7 +22,7 @@ internal class ListUndoneTasksFromTemporalityQueryHandler : IQueryHandler<ListUn
 
         return items
             .SelectMany(x => x.Items)
-            .Where(x => x.TimeHorizons == query.TimeHorizons)
+            .Where(x => x.TimeHorizon == query.TimeHorizons)
             .Where(x => !x.IsDone)
             .Select(x => new ThisWeekUndoneTodoItem(x.ListId, x.Id, x.Description))
             .ToArray();

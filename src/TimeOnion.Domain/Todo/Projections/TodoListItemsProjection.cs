@@ -47,7 +47,7 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, ILogger<Tod
             domainEvent.TimeHorizon,
             domainEvent.CategoryId
         );
-        
+
         var aboveItem = await GetAboveItem(domainEvent);
 
         if (aboveItem is null)
@@ -87,7 +87,7 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, ILogger<Tod
         {
             Logger.LogWarning(
                 "Cannot find above item {0}: adding the item {1} to the end.",
-                domainEvent.AboveItemId, 
+                domainEvent.AboveItemId,
                 domainEvent.ItemId
             );
         }
@@ -117,7 +117,7 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, ILogger<Tod
 
     public async Task On(TodoItemRescheduled domainEvent) => await Database.Update(
         x => x.ListId == domainEvent.ListId,
-        UpdateItem(domainEvent.ItemId, item => item with { TimeHorizons = domainEvent.NewTimeHorizon })
+        UpdateItem(domainEvent.ItemId, item => item with { TimeHorizon = domainEvent.NewTimeHorizon })
     );
 
     public async Task On(TodoItemRepositionedAboveAnother domainEvent) => await Database.Update<TodoListEntry>(
@@ -215,10 +215,8 @@ internal record TodoListItemsProjection(IReadModelDatabase Database, ILogger<Tod
     };
 }
 
-
-
 public record TodoListEntry(
-    TodoListId ListId, 
+    TodoListId ListId,
     IReadOnlyCollection<TodoListItemReadModel> Items,
     UserId UserId
 ) : IUserScopedProjection;

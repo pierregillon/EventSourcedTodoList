@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Specflow.Extensions.FluentTableAsserter;
 using TechTalk.SpecFlow;
 using TimeOnion.Domain.Categories;
 using TimeOnion.Domain.Categories.Core;
@@ -29,10 +29,11 @@ public class TodoItemSteps
     }
 
     [When(@"I try to add the item ""(.*)"" to do (.*) in my (.*) list")]
-    public async Task WhenITryToAddTheItemToDoThisDayInMyProfessionalList(string description, TimeHorizons timeHorizons, string todoListName)
-    {
-        await AddItemToDo(TodoListId.New(), description, timeHorizons);
-    }
+    public async Task WhenITryToAddTheItemToDoThisDayInMyProfessionalList(
+        string description,
+        TimeHorizons timeHorizons,
+        string todoListName
+    ) => await AddItemToDo(TodoListId.New(), description, timeHorizons);
 
     [Given(@"the following items have been added to do (.*) in my (.*) list")]
     public async Task GivenTheFollowingItemsHaveBeenAddedToDoThisDayInMyPersonalList(
@@ -135,13 +136,17 @@ public class TodoItemSteps
     }
 
     [When(@"I try to fix description of the item ""(.*)"" to ""(.*)"" in my (.*) list")]
-    public async Task WhenTryIFixDescriptionOfTheItemTo(string itemDescription, string newItemDescription, string listName)
+    public async Task WhenTryIFixDescriptionOfTheItemTo(
+        string itemDescription,
+        string newItemDescription,
+        string listName
+    )
     {
         var command = new FixItemDescriptionCommand(
             TodoListId.New(),
             TodoItemId.New(),
             new TodoItemDescription(newItemDescription));
-        
+
         await _application.Dispatch(command);
     }
 
@@ -196,13 +201,11 @@ public class TodoItemSteps
     }
 
     [When(@"I try to delete the item ""(.*)"" on my (.*) list")]
-    public async Task WhenITryToDeleteTheItemOnMyPersonalList(string itemDescription, string listName)
-    {
+    public async Task WhenITryToDeleteTheItemOnMyPersonalList(string itemDescription, string listName) =>
         await _application.Dispatch(new DeleteTodoItemCommand(
-            TodoListId.New(), 
+            TodoListId.New(),
             TodoItemId.New()
-        ));    
-    }
+        ));
 
     [When(@"I reposition ""(.*)"" above ""(.*)"" on my (.*) list")]
     public async Task WhenIRepositionAboveOnMyProfessionalList(
@@ -231,12 +234,9 @@ public class TodoItemSteps
         string itemDescription,
         string referenceItemDescription,
         string listName
-    )
-    {
-        await _application.Dispatch(
-            new RepositionItemAboveAnotherCommand(TodoListId.New(), TodoItemId.New(), TodoItemId.New())
-        );
-    }
+    ) => await _application.Dispatch(
+        new RepositionItemAboveAnotherCommand(TodoListId.New(), TodoItemId.New(), TodoItemId.New())
+    );
 
     [When(@"I reposition ""(.*)"" at the end of my (.*) list")]
     public async Task WhenIRepositionAtTheEndOfMyPersonalList(string itemDescription, string listName)
@@ -277,15 +277,14 @@ public class TodoItemSteps
             await _application.Dispatch(new CategorizeTodoItemCommand(listId, itemId, categoryId));
         }
     }
-    
+
     [When(@"I try to categorize ""(.*)"" to (.*) category on my (.*) list")]
     public async Task WhenITryToCategorizeToFamilyCategoryOnMyProfessionalList(
         string itemDescription,
         string categoryName,
-        string listName)
-    {
-        await _application.Dispatch(new CategorizeTodoItemCommand(TodoListId.New(), TodoItemId.New(), CategoryId.New()));
-    }
+        string listName
+    ) => await _application.Dispatch(
+        new CategorizeTodoItemCommand(TodoListId.New(), TodoItemId.New(), CategoryId.New()));
 
     [When(@"I decategorize ""(.*)"" in my (.*) list")]
     public async Task WhenIDecategorizeInMyPersonalList(string itemDescription, string listName)
@@ -305,50 +304,23 @@ public class TodoItemSteps
         var items = await _application.Dispatch(new ListTodoItemsQuery(listId, timeHorizons))
             ?? throw new InvalidOperationException("Specflow: unable to load items");
 
-        items.Should().HaveCount(table.RowCount);
-
-        for (var index = 0; index < table.Rows.Count; index++)
-        {
-            var item = items.ElementAt(index);
-            var tableRow = table.Rows[index];
-            foreach (var cell in tableRow)
-            {
-                if (cell.Key == "Description")
-                {
-                    Assert.Equal(cell.Value, item.Description);
-                }
-                else if (cell.Key == "Is done?")
-                {
-                    Assert.Equal(bool.Parse(cell.Value), item.IsDone);
-                }
-                else if (cell.Key == "Temporality")
-                {
-                    var normalized = cell.Value
-                        .Replace(" ", string.Empty)
-                        .Trim();
-                    Assert.Equal(Enum.Parse<TimeHorizons>(normalized, true), item.TimeHorizons);
-                }
-                else if (cell.Key == "Category")
-                {
-                    var categoryName = cell.Value;
-                    if (string.IsNullOrWhiteSpace(categoryName))
-                    {
-                        item.CategoryId.Should().BeNull();
-                    }
-                    else
-                    {
-                        var categoryId = await FindCategoryId(item.ListId, categoryName)
-                            ?? throw new InvalidOperationException("Specflow: unknown category");
-                        item.CategoryId.Should().Be(categoryId);
-                    }
-                }
-                else
-                {
-                    throw new NotImplementedException("Unknown cell");
-                }
-            }
-        }
+        items
+            .CollectionShouldBeEquivalentToTable(table)
+            .WithProperty(item => item.Description)
+            .WithProperty(item => item.IsDone)
+            .WithProperty(item => item.TimeHorizon)
+            .WithProperty(
+                item => item.CategoryId,
+                options => options
+                    .ComparedToColumn("Category")
+                    .WithColumnValueConversion(cellValue => FindCategoryId(listId, cellValue).Result)
+            )
+            .Assert();
     }
+
+    [When(@"I try to list items of my (.*) todo list")]
+    public async Task WhenITryToListItemsOfMyPersonalTodoList(string _) =>
+        await _application.Dispatch(new ListTodoItemsQuery(TodoListId.New(), TimeHorizons.ThisDay));
 
     [Then(@"the yesterday undone tasks are")]
     public async Task ThenTheYesterdayUndoneTasksAre(Table table)

@@ -37,7 +37,7 @@ internal class AddNewItemTodoAfterItemActionHandler :
                 item.ListId,
                 string.Empty,
                 null,
-                item.TimeHorizons,
+                item.TimeHorizon,
                 item.CategoryId
             );
 
@@ -54,7 +54,7 @@ internal class AddNewItemTodoAfterItemActionHandler :
                 action.ListId,
                 TodoItemId.New(),
                 new TodoItemDescription(action.NewDescription),
-                item.TimeHorizons,
+                item.TimeHorizon,
                 item.CategoryId,
                 item.Id
             );

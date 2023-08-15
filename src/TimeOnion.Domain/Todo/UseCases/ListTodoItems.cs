@@ -18,7 +18,7 @@ public record ListTodoItems(IUserScopedReadModelDatabase Database, IClock Clock)
         var todoList = list.Single(x => x.ListId == query.ListId);
 
         return todoList.Items
-            .Where(item => item.TimeHorizons == query.TimeHorizon)
+            .Where(item => item.TimeHorizon == query.TimeHorizon)
             .Where(item => !item.IsDone || !item.TimeHorizonStillRunning(Clock.Now()))
             .ToArray();
     }
@@ -29,12 +29,12 @@ public record TodoListItemReadModel(
     TodoListId ListId,
     string Description,
     DateTime? DoneDate,
-    TimeHorizons TimeHorizons,
+    TimeHorizons TimeHorizon,
     CategoryId? CategoryId
 )
 {
     public bool IsDone => DoneDate.HasValue;
 
     public bool TimeHorizonStillRunning(DateTime now) =>
-        DoneDate.HasValue && now >= TimeHorizons.GetEndDate(DoneDate.Value);
+        DoneDate.HasValue && now >= TimeHorizon.GetEndDate(DoneDate.Value);
 }

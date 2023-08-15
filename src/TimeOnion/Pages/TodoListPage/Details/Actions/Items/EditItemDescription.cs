@@ -34,7 +34,7 @@ internal class EditItemDescriptionActionHandler :
                     action.ListId,
                     item.Id,
                     new TodoItemDescription(action.NewDescription),
-                    item.TimeHorizons,
+                    item.TimeHorizon,
                     item.CategoryId,
                     state.GetAboveItem(item)?.Id
                 );

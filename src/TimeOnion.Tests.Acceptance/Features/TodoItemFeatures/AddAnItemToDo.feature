@@ -6,7 +6,7 @@ In order to remember it
 Background:
     Given I am registered and logged in
     And a personal todo list has been created
-    
+
 @ErrorHandling
 Scenario: Cannot add an item to do when not authenticated
     Given I am disconnected
@@ -31,11 +31,11 @@ Scenario: Listed items are filtered by their temporality
     When I add the item "call daddy" to do this day in my personal list
     And I add the item "prepare job interview" to do this week in my personal list
     Then my personal todo list of this day is
-      | Description | Temporality |
-      | call daddy  | this day    |
+      | Description | Time horizon |
+      | call daddy  | this day     |
     And my personal todo list of this week is
-      | Description           | Temporality |
-      | prepare job interview | this week   |
+      | Description           | Time horizon |
+      | prepare job interview | this week    |
 
 Scenario: By default, items are to do
     When I add the item "call daddy" to do this day in my personal list

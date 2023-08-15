@@ -150,7 +150,7 @@ public class TodoListComponentTests : ComponentTestBase
                 Arg.Is<AddItemToDoCommand>(x =>
                     x.ListId == todoListItemReadModel.ListId
                     && x.Description == new TodoItemDescription("item 1")
-                    && x.TimeHorizons == todoListItemReadModel.TimeHorizons
+                    && x.TimeHorizons == todoListItemReadModel.TimeHorizon
                     && x.CategoryId == todoListItemReadModel.CategoryId
                     && x.AboveItemId == todoListItemReadModel.Id
                 )

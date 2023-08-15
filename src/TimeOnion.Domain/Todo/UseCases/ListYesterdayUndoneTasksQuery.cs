@@ -21,7 +21,7 @@ internal class ListYesterdayUndoneTasksQueryHandler : IQueryHandler<ListYesterda
 
         return items
             .SelectMany(x => x.Items)
-            .Where(x => x.TimeHorizons == TimeHorizons.ThisDay)
+            .Where(x => x.TimeHorizon == TimeHorizons.ThisDay)
             .Where(x => !x.IsDone)
             .Select(x => new YesterdayUndoneTodoItem(x.ListId, x.Id, x.Description))
             .ToArray();
