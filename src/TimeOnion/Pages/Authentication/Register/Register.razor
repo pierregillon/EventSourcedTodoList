@@ -63,7 +63,7 @@
                 Color="Color.Primary"
                 Disabled="@(!_success)"
                 Class="ml-auto mt-2"
-                OnClick="() => Execute(new RegisterState.RegisterAction(State.Email, State.Password))">
+                OnClick="() => Execute(new RegisterState.RegisterAction(State.Email!, State.Password!))">
                 M'enregistrer
             </LoadingButton>
 

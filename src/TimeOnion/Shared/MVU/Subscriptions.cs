@@ -32,6 +32,22 @@ public class Subscriptions
         return this;
     }
 
+    public async Task ExecuteOnSubscribedComponents<TState>(Func<IBlazorStateComponent, Task> action)
+        where TState : IState
+    {
+        var subscriptions = _subscriptions
+            .Where(aRecord => aRecord.StateType == typeof(TState))
+            .ToList();
+
+        foreach (var subscription in subscriptions)
+        {
+            if (subscription.BlazorStateComponentReference.TryGetTarget(out var target))
+            {
+                await action(target);
+            }
+        }
+    }
+
     public void ReRenderSubscribers<T>()
     {
         var type = typeof(T);
@@ -41,7 +57,9 @@ public class Subscriptions
 
     public void ReRenderSubscribers(Type stateType)
     {
-        var subscriptions = _subscriptions.Where(aRecord => aRecord.StateType == stateType);
+        var subscriptions = _subscriptions
+            .Where(aRecord => aRecord.StateType == stateType)
+            .ToList();
 
         ReRender(subscriptions);
     }
@@ -49,14 +67,16 @@ public class Subscriptions
     public void ReRenderSubscribers(Type stateType, object stateScope)
     {
         var subscriptions = _subscriptions
-            .Where(subscription => subscription.StateType == stateType && Equals(subscription.StateScope, stateScope));
+            .Where(subscription => subscription.StateType == stateType)
+            .Where(subscription => Equals(subscription.StateScope, stateScope))
+            .ToList();
 
         ReRender(subscriptions);
     }
 
-    private void ReRender(IEnumerable<Subscription> subscriptions)
+    private void ReRender(IReadOnlyCollection<Subscription> subscriptions)
     {
-        foreach (var subscription in subscriptions.ToList())
+        foreach (var subscription in subscriptions)
         {
             if (subscription.BlazorStateComponentReference.TryGetTarget(out var target))
             {

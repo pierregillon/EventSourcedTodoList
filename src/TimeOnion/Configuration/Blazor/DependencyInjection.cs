@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IStore, InMemoryStore>();
         services.AddScoped<IActionDispatcher, MediatorActionDispatcher>();
         services.AddScoped<Subscriptions>();
+        services.AddTransient<IActionEventPublisher, OnlyActiveComponentActionEventPublisher>();
 
         services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
         services.AddScoped<CustomAuthenticationStateProvider>();

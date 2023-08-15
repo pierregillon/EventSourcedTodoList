@@ -8,30 +8,43 @@ namespace TimeOnion.Pages.TodoListPage.Details.Actions.Items;
 
 internal record DeleteItemAction(TodoListId ListId, TodoItemId ItemId) : TodoItemAction(ListId);
 
-internal class DeleteItemActionHandler : ActionApplier<DeleteItemAction, TodoListDetailsState>
+internal record DeleteItemActionHandler(
+    IStore Store,
+    ICommandDispatcher CommandDispatcher,
+    IQueryDispatcher QueryDispatcher,
+    IActionEventPublisher ActionEventPublisher
+) : IActionApplier<DeleteItemAction, TodoListDetailsState>
 {
-    public DeleteItemActionHandler(IStore store, ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
-        : base(store, commandDispatcher, queryDispatcher)
-    {
-    }
-
-    protected override async Task<TodoListDetailsState> Apply(DeleteItemAction action, TodoListDetailsState state)
+    public async Task<TodoListDetailsState> Apply(DeleteItemAction action, TodoListDetailsState state)
     {
         var item = state.TodoListItems.Single(x => x.Id == action.ItemId);
 
         if (item is TodoListItemReadModelBeingCreated)
         {
+            var newItems = state.TodoListItems.Except(new[] { item }).ToList();
+
+            await ActionEventPublisher.Publish<TodoItemDeleted, TodoListDetailsState>(
+                new TodoItemDeleted(action.ItemId)
+            );
+
             return state with
             {
-                TodoListItems = state.TodoListItems.Except(new[] { item }).ToList()
+                TodoListItems = newItems
             };
         }
 
-        await Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+        await CommandDispatcher.Dispatch(new DeleteTodoItemCommand(action.ListId, action.ItemId));
+
+        await ActionEventPublisher.Publish<TodoItemDeleted, TodoListDetailsState>(
+            new TodoItemDeleted(action.ItemId)
+        );
 
         return state with
         {
-            TodoListItems = await Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon))
+            TodoListItems =
+                await QueryDispatcher.Dispatch(new ListTodoItemsQuery(action.ListId, state.CurrentTimeHorizon))
         };
     }
 }
+
+public record TodoItemDeleted(TodoItemId ItemId) : IActionEvent<TodoListDetailsState>, IState;

@@ -57,8 +57,10 @@
     {
         if (Item is TodoListItemReadModelBeingCreated)
         {
-            await _textEditor.Focus();
+            await Focus();
         }
     }
+
+    public Task Focus() => _textEditor.Focus();
 
 }
