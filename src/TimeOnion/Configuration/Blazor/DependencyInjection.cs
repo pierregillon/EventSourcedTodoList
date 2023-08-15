@@ -24,7 +24,6 @@ public static class DependencyInjection
     {
         services.AddMediatR(configuration => { configuration.RegisterServicesFromAssembly(typeof(IStore).Assembly); });
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DisplayExceptionWithSnackbar<,>));
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LogActionsPreProcessor<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LogExceptionPreProcessor<,>));
 
         services.AddScoped<IStore, InMemoryStore>();
