@@ -41,6 +41,18 @@ public class BlazorStateComponent : ComponentBase, IBlazorStateComponent, IDispo
         GC.SuppressFinalize(this);
     }
 
+    protected virtual Task OnAfterInitialRenderAsync() => Task.CompletedTask;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await OnAfterInitialRenderAsync();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
     public override async Task SetParametersAsync(ParameterView parameters)
     {
         var initialValues = GetInitialParameterValues().OrderBy(x => x.Key);

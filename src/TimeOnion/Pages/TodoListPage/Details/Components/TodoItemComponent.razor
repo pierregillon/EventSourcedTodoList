@@ -53,10 +53,8 @@
     [Parameter]
     public bool ShowOffsetInCategory { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterInitialRenderAsync()
     {
-        await base.OnAfterRenderAsync(firstRender);
-
         if (Item is TodoListItemReadModelBeingCreated)
         {
             await _textEditor.Focus();

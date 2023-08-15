@@ -32,12 +32,14 @@ internal class AddNewItemTodoAfterItemActionHandler :
 
         if (string.IsNullOrWhiteSpace(action.NewDescription))
         {
-            var newElement = item with
-            {
-                Id = TodoItemId.New(),
-                Description = string.Empty,
-                DoneDate = null
-            };
+            var newElement = new TodoListItemReadModelBeingCreated(
+                TodoItemId.New(),
+                item.ListId,
+                string.Empty,
+                null,
+                item.TimeHorizons,
+                item.CategoryId
+            );
 
             return state with
             {

@@ -54,7 +54,7 @@
                         ItemsSelector="model => model.CategoryId is null"/>
                 </ChildContent>
                 <ItemRenderer>
-                    <TodoItemComponent Item="@context" ShowOffsetInCategory="true"></TodoItemComponent>
+                    <TodoItemComponent @key="@context.Id" Item="@context" ShowOffsetInCategory="true"></TodoItemComponent>
                 </ItemRenderer>
             </MudDropContainer>
         }
