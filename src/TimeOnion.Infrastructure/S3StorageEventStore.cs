@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Todo.Core;
 using TimeOnion.Domain.UserManagement.Core;
 
 namespace TimeOnion.Infrastructure;
@@ -15,13 +14,11 @@ public class S3StorageEventStore : IEventStore
     private static readonly string TemporaryFilePath = Path.GetTempFileName();
 
     private readonly MinioClient _client;
-    private readonly IClock _clock;
     private readonly S3StorageConfiguration _configuration;
 
-    public S3StorageEventStore(MinioClient client, IOptions<S3StorageConfiguration> configuration, IClock clock)
+    public S3StorageEventStore(MinioClient client, IOptions<S3StorageConfiguration> configuration)
     {
         _client = client;
-        _clock = clock;
         _configuration = configuration.Value;
     }
 
@@ -37,7 +34,7 @@ public class S3StorageEventStore : IEventStore
     public async Task Save(IEnumerable<IDomainEvent> domainEvents)
     {
         var storedEvents = domainEvents
-            .Select(x => StoredEvent.From(x, _clock))
+            .Select(x => StoredEvent.From(x))
             .ToArray();
 
         var allEvents = (await GetAllStoredEvents()).Concat(storedEvents).ToArray();
@@ -92,7 +89,7 @@ public class S3StorageEventStore : IEventStore
 
         if (domainEvent is IUserDomainEvent userDomainEvent)
         {
-            userDomainEvent.UserId = storedEvent.UserId.HasValue 
+            userDomainEvent.UserId = storedEvent.UserId.HasValue
                 ? new UserId(storedEvent.UserId.Value)
                 : null!;
         }
@@ -100,16 +97,23 @@ public class S3StorageEventStore : IEventStore
         return domainEvent;
     }
 
-    public record StoredEvent(Guid AggregateId, string Type, int Version, Guid? UserId, DateTime CreatedAt, JsonElement JsonData)
+    public record StoredEvent(
+        Guid AggregateId,
+        string Type,
+        int Version,
+        Guid? UserId,
+        DateTime CreatedAt,
+        JsonElement JsonData
+    )
     {
-        public static StoredEvent From(IDomainEvent domainEvent, IClock clock) => new(
+        public static StoredEvent From(IDomainEvent domainEvent) => new(
             domainEvent.AggregateId,
             domainEvent.GetType().Name,
             domainEvent.Version,
             domainEvent is IUserDomainEvent userDomainEvent
                 ? userDomainEvent.UserId.Value
                 : null,
-            clock.Now(),
+            domainEvent.CreatedAt,
             JsonSerializer.SerializeToElement(domainEvent, domainEvent.GetType())
         );
     }

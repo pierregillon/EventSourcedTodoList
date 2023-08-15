@@ -4,9 +4,10 @@ I want to mark a todo item as done
 In order to track items a completed
 
 Background:
-    Given I am registered and logged in
+    Given the current date is 2023-08-03
+    And I am registered and logged in
     And a personal todo list has been created
-    
+
 @ErrorHandling
 Scenario: Cannot mark an item as done when not authenticated
     Given I am disconnected
@@ -25,11 +26,23 @@ Scenario: Done items are listed
       | Description | Is done? |
       | call dad    | true     |
 
-Scenario: Marking an already done item as done to nothing
+Scenario: Marking an already done item as done do nothing
     Given the item "call dad" has been added to do this day in my personal list
     When I mark the item "call dad" in my personal list as done
     And I mark the item "call dad" in my personal list as done
     Then no error occurred
+
+Scenario: Done items are still listed when day-scoped time horizon still running
+    Given the item "call dad" has been added to do <time horizon> in my personal list
+    And the item "call dad" in my personal list has been marked as done
+    When <hour count> hour passed
+    Then my personal todo list of <time horizon> is
+      | Description | Is done? |
+      | call dad    | true     |
+Examples:
+  | time horizon | hour count |
+  | this day     | 2          |
+  | this week    | 90         |
 
 Scenario: Done items not listed anymore after day-scoped time horizon period passed
     Given the item "call dad" has been added to do <time horizon> in my personal list
@@ -37,7 +50,6 @@ Scenario: Done items not listed anymore after day-scoped time horizon period pas
     When <day count> day passed
     Then my personal todo list of <time horizon> is
       | Description | Is done? |
-
 Examples:
   | time horizon | day count |
   | this day     | 1         |
@@ -50,7 +62,6 @@ Scenario: Done items not listed anymore after month-scoped time horizon period p
     When <month count> months passed
     Then my personal todo list of <time horizon> is
       | Description | Is done? |
-
 Examples:
   | time horizon | month count |
   | this month   | 1           |
@@ -64,7 +75,6 @@ Scenario: Done items are still listed when month-scoped time horizon period not 
     Then my personal todo list of <time horizon> is
       | Description | Is done? |
       | call dad    | true     |
-
 Examples:
   | time horizon | month count |
   | this quarter | 2           |

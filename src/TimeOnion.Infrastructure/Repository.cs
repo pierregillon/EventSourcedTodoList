@@ -1,6 +1,6 @@
 using TimeOnion.Domain;
 using TimeOnion.Domain.BuildingBlocks;
-using TimeOnion.Domain.Categories.Core;
+using TimeOnion.Domain.Todo.Core;
 
 namespace TimeOnion.Infrastructure;
 
@@ -11,12 +11,19 @@ public class Repository<TAggregate, TAggregateId> : IRepository<TAggregate, TAgg
     private readonly IDomainEventPublisher _domainEventPublisher;
     private readonly IUserContextProvider _userContextProvider;
     private readonly IEventStore _eventStore;
+    private readonly IClock _clock;
 
-    public Repository(IEventStore eventStore, IDomainEventPublisher domainEventPublisher, IUserContextProvider userContextProvider)
+    public Repository(
+        IEventStore eventStore,
+        IDomainEventPublisher domainEventPublisher,
+        IUserContextProvider userContextProvider,
+        IClock clock
+    )
     {
         _eventStore = eventStore;
         _domainEventPublisher = domainEventPublisher;
         _userContextProvider = userContextProvider;
+        _clock = clock;
     }
 
     public async Task<TAggregate> Get(TAggregateId id)
@@ -42,12 +49,14 @@ public class Repository<TAggregate, TAggregateId> : IRepository<TAggregate, TAgg
 
         foreach (var domainEvent in domainEvents)
         {
+            domainEvent.CreatedAt = _clock.Now();
+
             if (domainEvent is IUserDomainEvent { UserId: null } userDomainEvent)
             {
                 userDomainEvent.UserId = _userContextProvider.GetUserContext().UserId;
             }
         }
-        
+
         await _eventStore.Save(domainEvents);
         await _domainEventPublisher.Publish(domainEvents);
         aggregate.MarkAsCommitted();

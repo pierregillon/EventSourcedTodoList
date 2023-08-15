@@ -15,6 +15,14 @@ public class ClockSteps
     [Given(@"the current date is (.*)")]
     public void GivenTheCurrentDateIs(DateTime date) => _application.GetService<IClock>().Now().Returns(date);
 
+    [When(@"(.*) hours? passed")]
+    public void WhenHourPassed(int hourCount)
+    {
+        var clock = _application.GetService<IClock>();
+        var currentDate = clock.Now();
+        clock.Now().Returns(currentDate.AddHours(hourCount));
+    }
+
     [When(@"(.*) days? passed")]
     public void WhenDayPassed(int dayCount)
     {
